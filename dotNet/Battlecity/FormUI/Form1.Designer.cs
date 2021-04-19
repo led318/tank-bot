@@ -30,6 +30,7 @@ namespace FormUI
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
+            this.fieldPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
@@ -43,11 +44,20 @@ namespace FormUI
             this.label1.Text = "label1";
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
             // 
+            // fieldPanel
+            // 
+            this.fieldPanel.BackColor = System.Drawing.Color.White;
+            this.fieldPanel.Location = new System.Drawing.Point(462, 12);
+            this.fieldPanel.Name = "fieldPanel";
+            this.fieldPanel.Size = new System.Drawing.Size(250, 125);
+            this.fieldPanel.TabIndex = 1;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1203, 721);
+            this.Controls.Add(this.fieldPanel);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -59,6 +69,7 @@ namespace FormUI
         #endregion
 
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel fieldPanel;
     }
 }
 

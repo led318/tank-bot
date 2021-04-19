@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Battlecity.API;
+ using API;
+ using API.Components;
 
 namespace Demo
 {

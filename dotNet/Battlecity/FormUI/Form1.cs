@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Demo;
+using API;
+using FormUI.FieldItems;
+using FormUI.Infrastructure;
 
 namespace FormUI
 {
@@ -15,13 +12,17 @@ namespace FormUI
     {
         static string serverURL = "https://epam-botchallenge.com/codenjoy-contest/board/player/vsw86l76vx5va61b7ju4?code=8749211683513820687";
 
+        public PictureBox[,] _field = new PictureBox[Constants.FieldWidth, Constants.FieldHeight];
+        public Image[,] _fieldImages = new Image[Constants.FieldWidth, Constants.FieldHeight];
+
         public Form1()
         {
             InitializeComponent();
+            InitFieldPanel();
 
             // Creating custom AI client
             var bot = new YourSolver(serverURL);
-            bot.RoundCallbackHandler += SetText;
+            bot.RoundCallbackHandler += SetBoard;
 
             // Starting thread with playing game
             Task.Run(bot.Play);
@@ -29,21 +30,59 @@ namespace FormUI
             
         }
 
-        delegate void SetTextCallback(string text);
+        private void InitFieldPanel()
+        {
+            fieldPanel.Width = Constants.FieldWidth * Constants.CellSize;
+            fieldPanel.Height = Constants.FieldHeight * Constants.CellSize;
 
-        private void SetText(string text)
+            for (var i = 0; i < Constants.FieldWidth; i++)
+            {
+                for (var j = 0; j < Constants.FieldHeight; j++)
+                {
+                    var pictureBox = new PictureBox();
+                    pictureBox.Width = Constants.CellSize;
+                    pictureBox.Height = Constants.CellSize;
+                    pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
+                    pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+                    pictureBox.Left = i * Constants.CellSize;
+                    pictureBox.Top = fieldPanel.Height - ((j + 1) * Constants.CellSize);
+
+                    _field[i, j] = pictureBox;
+                    fieldPanel.Controls.Add(pictureBox);
+                }
+            }
+        }
+
+
+
+        delegate void SetBoardCallback(Board board); //todo: change return type to string or Element[]
+
+        private void SetBoard(Board board)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
             if (this.label1.InvokeRequired)
             {
-                SetTextCallback d = new SetTextCallback(SetText);
-                this.Invoke(d, new object[] { text });
+                SetBoardCallback d = new SetBoardCallback(SetBoard);
+                this.Invoke(d, new object[] { board });
             }
             else
             {
-                this.label1.Text = text;
+                this.label1.Text = board.ToString();
+                var round = new Round(board);
+
+                for (var i = 0; i < Constants.FieldWidth; i++)
+                {
+                    for (var j = 0; j < Constants.FieldHeight; j++)
+                    {
+                        if (_field[i, j].BackgroundImage != round.Items[i, j].Image)
+                        {
+                            _field[i, j].BackgroundImage = round.Items[i, j].Image;
+                            _field[i, j].Refresh();
+                        }
+                    }
+                }
             }
         }
 

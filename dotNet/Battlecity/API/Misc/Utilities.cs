@@ -21,14 +21,10 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using API.Components;
 
-namespace Battlecity.API
+namespace API.Misc
 {
     public static class Utilities
     {

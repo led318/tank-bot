@@ -1,4 +1,4 @@
-﻿/*-
+/*-
  * #%L
  * Codenjoy - it's a dojo-like platform from developers to developers.
  * %%
@@ -19,15 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
- using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
- using API;
- using API.Components;
 
-namespace Demo
+using System;
+using System.Collections.Generic;
+using API;
+using API.Components;
+
+namespace FormUI
 {
     public class YourSolver : AbstractSolver
     {

@@ -20,14 +20,9 @@
  * #L%
  */
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Battlecity.API
+namespace API.Components
 {
     public enum Element
     {
@@ -125,8 +120,8 @@ namespace Battlecity.API
         [Description("3")]
         PRIZE_WALKING_ON_WATER,
         [Description("4")]
-        None1,
+        PRIZE_VISIBILITY,
         [Description("5")]
-        None2
+        PRIZE_NO_SLIDING
     }
 }

@@ -22,20 +22,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
-
 using WebSocketSharp;
 
-namespace Battlecity.API
+namespace API
 {
     public abstract class AbstractSolver
     {
         //public delegate void RoundCallbackHandler();
 
-        public event Action<string> RoundCallbackHandler;
+        public event Action<Board> RoundCallbackHandler;
 
         const string ResponsePrefix = "board=";
         const int MaxRetriesCount = 3;
@@ -102,7 +99,7 @@ namespace Battlecity.API
                     //Console.WriteLine("Answer: " + action);
 
                     if (RoundCallbackHandler != null)
-                        RoundCallbackHandler.Invoke(board.ToString());
+                        RoundCallbackHandler.Invoke(board);
 
                     ((WebSocket)sender).Send(action);
                 }
