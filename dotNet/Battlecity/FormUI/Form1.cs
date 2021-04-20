@@ -1,33 +1,89 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net.Cache;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API;
+using FormUI.Controls;
 using FormUI.FieldItems;
 using FormUI.Infrastructure;
+using Microsoft.VisualBasic.ApplicationServices;
+using Newtonsoft.Json;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace FormUI
 {
     public partial class Form1 : Form
     {
-        static string serverURL = "https://epam-botchallenge.com/codenjoy-contest/board/player/vsw86l76vx5va61b7ju4?code=8749211683513820687";
+        private static string _serverURL;
+        private static string _testServerURL;
+        private static bool _isProd;
+        private static string _settingsURL = "https://epam-botchallenge.com/codenjoy-balancer/rest/game/settings/get";
 
-        public PictureBox[,] _field = new PictureBox[Constants.FieldWidth, Constants.FieldHeight];
+        public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
         public Image[,] _fieldImages = new Image[Constants.FieldWidth, Constants.FieldHeight];
 
         public Form1()
         {
+            _serverURL = ConfigurationManager.AppSettings["serverURL"];
+            _testServerURL = ConfigurationManager.AppSettings["testServerURL"];
+            _isProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
+
             InitializeComponent();
+            InitSettings();
+
             InitFieldPanel();
 
             // Creating custom AI client
-            var bot = new YourSolver(serverURL);
+            var bot = new YourSolver(_isProd ? _serverURL : _testServerURL);
             bot.RoundCallbackHandler += SetBoard;
 
             // Starting thread with playing game
             Task.Run(bot.Play);
 
             
+        }
+
+        private void InitSettings()
+        {
+            try
+            {
+                var httpClient = new HttpClient();
+                var httpResponse = httpClient.GetAsync(_settingsURL).Result;
+                httpResponse.EnsureSuccessStatusCode();
+
+                if (httpResponse.Content is object && httpResponse.Content.Headers.ContentType.MediaType == "application/json")
+                {
+                    var contentStream = httpResponse.Content.ReadAsStream();
+
+                    using var streamReader = new StreamReader(contentStream);
+                    using var jsonReader = new JsonTextReader(streamReader);
+
+                    var serializer = new JsonSerializer();
+
+                    try
+                    {
+                        var response = serializer.Deserialize<SettingsModel[]>(jsonReader);
+                        if (response.Any())
+                        {
+                            Settings.Get = response[0];
+                        }
+                    }
+                    catch (JsonReaderException)
+                    {
+                        
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         private void InitFieldPanel()
@@ -39,7 +95,7 @@ namespace FormUI
             {
                 for (var j = 0; j < Constants.FieldHeight; j++)
                 {
-                    var pictureBox = new PictureBox();
+                    var pictureBox = new MyPictureBox();
                     pictureBox.Width = Constants.CellSize;
                     pictureBox.Height = Constants.CellSize;
                     pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
@@ -70,17 +126,13 @@ namespace FormUI
             else
             {
                 this.label1.Text = board.ToString();
-                var round = new Round(board);
+                State.SetCurrentRound(new Round(board));
 
                 for (var i = 0; i < Constants.FieldWidth; i++)
                 {
                     for (var j = 0; j < Constants.FieldHeight; j++)
                     {
-                        if (_field[i, j].BackgroundImage != round.Items[i, j].Image)
-                        {
-                            _field[i, j].BackgroundImage = round.Items[i, j].Image;
-                            _field[i, j].Refresh();
-                        }
+                        _field[i, j].Change(State.CurrentRound.Items[i, j]);
                     }
                 }
             }

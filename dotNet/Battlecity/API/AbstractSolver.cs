@@ -43,8 +43,17 @@ namespace API
         bool shouldExit;
         WebSocket gameServer;
 
-        public AbstractSolver(string serverUrl) =>
-            webSocketUrl = GetWebSocketUrl(serverUrl);
+        protected AbstractSolver(string serverUrl)
+        {
+            if (serverUrl.StartsWith("ws"))
+            {
+                webSocketUrl = serverUrl;
+            }
+            else
+            {
+                webSocketUrl = GetWebSocketUrl(serverUrl);
+            }
+        }
 
         public void Play()
         {

@@ -1,6 +1,15 @@
-﻿namespace FormUI.FieldItems.Tank
+﻿using System.Drawing;
+using FormUI.Infrastructure;
+
+namespace FormUI.FieldItems.Tank
 {
-    class AiPrizeTank
+    public class AiPrizeTank : AiTank
     {
+        public override int Health { get; set; } = Settings.Get.KillHitsAiPrize;
+
+        public AiPrizeTank()
+        {
+            BorderColor = Color.Orange;
+        }
     }
 }
