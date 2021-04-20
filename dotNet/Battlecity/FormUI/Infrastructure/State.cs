@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FormUI.FieldItems;
+using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 
 namespace FormUI.Infrastructure
@@ -12,6 +13,9 @@ namespace FormUI.Infrastructure
     {
         public static Round CurrentRound { get; set; }
         public static Round PrevRound { get; set; }
+        public static bool HasPrevRound => PrevRound != null;
+
+        
 
         public static void SetCurrentRound(Round currentRound)
         {

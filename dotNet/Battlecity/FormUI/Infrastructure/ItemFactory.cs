@@ -1,49 +1,35 @@
-﻿using System;
-using System.Drawing;
-using API.Components;
+﻿using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Prize;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldItems.Wall;
-using Point = API.Components.Point;
 
 namespace FormUI.Infrastructure
 {
     public static class ItemFactory
     {
-        private static readonly Random _random = new Random();
-
         public static BaseItem GetItem(Element element, Point point)
         {
-            var item = GetBaseItem(element);
-            item.Element = element;
-            item.Point = point;
-
-            /*
-            if (_random.Next(100) > 90)
-            {
-                item.BorderColor = Color.Red;
-            }
-            */
+            var item = GetBaseItem(element, point);
 
             return item;
         }
 
-        private static BaseItem GetBaseItem(Element element)
+        private static BaseItem GetBaseItem(Element element, Point point)
         {
             switch (element)
             {
                 case Element.NONE:
-                    return new Empty();
+                    return new Empty(element, point);
 
                 case Element.AI_TANK_DOWN:
                 case Element.AI_TANK_LEFT:
                 case Element.AI_TANK_RIGHT:
                 case Element.AI_TANK_UP:
-                    return new AiTank();
+                    return new AiTank(element, point);
 
                 case Element.AI_TANK_PRIZE:
-                    return new AiPrizeTank();
+                    return new AiPrizeTank(element, point);
 
                 case Element.PRIZE:
                 case Element.PRIZE_IMMORTALITY:
@@ -51,31 +37,31 @@ namespace FormUI.Infrastructure
                 case Element.PRIZE_WALKING_ON_WATER:
                 case Element.PRIZE_VISIBILITY:
                 case Element.PRIZE_NO_SLIDING:
-                    return new BasePrize();
+                    return new BasePrize(element, point);
 
                 case Element.OTHER_TANK_DOWN:
                 case Element.OTHER_TANK_LEFT:
                 case Element.OTHER_TANK_RIGHT:
                 case Element.OTHER_TANK_UP:
-                    return new EnemyTank();
+                    return new EnemyTank(element, point);
 
                 case Element.TANK_DOWN:
                 case Element.TANK_LEFT:
                 case Element.TANK_RIGHT:
                 case Element.TANK_UP:
-                    return new MyTank();
+                    return new MyTank(element, point);
 
                 case Element.BULLET:
-                    return new Bullet();
+                    return new Bullet(element, point);
                 case Element.BANG:
-                    return new Blast();
+                    return new Blast(element, point);
 
                 case Element.RIVER:
-                    return new River();
+                    return new River(element, point);
                 case Element.TREE:
-                    return new Tree();
+                    return new Tree(element, point);
                 case Element.ICE:
-                    return new Ice();
+                    return new Ice(element, point);
 
 
                 case Element.WALL:
@@ -90,16 +76,17 @@ namespace FormUI.Infrastructure
                 case Element.WALL_DESTROYED_RIGHT_TWICE:
                 case Element.WALL_DESTROYED_RIGHT_UP:
                 case Element.WALL_DESTROYED_UP:
+                case Element.WALL_DESTROYED_UP_TWICE:
                 case Element.WALL_DESTROYED_UP_DOWN:
                 case Element.WALL_DESTROYED_UP_LEFT:
-                    return new BaseWall();
+                    return new BaseWall(element, point);
 
                 case Element.BATTLE_WALL:
-                    return new BattleWall();
+                    return new BattleWall(element, point);
             }
 
 
-            return new Empty();
+            return new Empty(element, point);
         }
     }
 }

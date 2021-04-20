@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace FormUI.FieldItems.Helpers
 {
@@ -7,15 +8,28 @@ namespace FormUI.FieldItems.Helpers
         public string Text { get; set; }
         public Brush Color { get; set; }
 
+        public NoteType Type { get; set; }
+
         public Note()
         {
 
         }
 
-        public Note(string text, Brush color)
+        public Note(int text, Brush color, NoteType type = NoteType.Other) : this(text.ToString(), color, type)
+        {
+        }
+
+        public Note(string text, Brush color, NoteType type)
         {
             Text = text;
             Color = color;
+            Type = type;
         }
+    }
+
+    public enum NoteType
+    {
+        Other,
+        Health
     }
 }

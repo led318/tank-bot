@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using API.Components;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
@@ -15,11 +16,6 @@ namespace FormUI.FieldItems
 
         public List<Note> Notes { get; set; } = new List<Note>();
 
-        public void AddNote(string text, Brush color)
-        {
-            Notes.Add(new Note(text, color));
-        }
-
         public string Sprite => $"./Sprites/{Element}.png";
 
         public Image Image =>  ItemImageProvider.GetItemImage(this);
@@ -28,9 +24,25 @@ namespace FormUI.FieldItems
         public virtual bool CanShootThrough => true;
         public virtual bool CanMove => true;
 
+        protected BaseItem(Element element, Point point)
+        {
+            Element = element;
+            Point = point;
+        }
+
         public virtual void ProcessRound()
         {
             
+        }
+        
+        public void AddNote<T>(T text, Brush color, NoteType type = NoteType.Other)
+        {
+            if (type != NoteType.Other)
+            {
+                Notes = Notes.Where(n => n.Type != type).ToList();
+            }
+
+            Notes.Add(new Note(text.ToString(), color, type));
         }
     }
 }

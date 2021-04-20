@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.Components;
+using FormUI.Infrastructure;
+using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Prize
 {
@@ -11,10 +14,10 @@ namespace FormUI.FieldItems.Prize
     {
         public int Duration { get; set; }
 
-
-        public BasePrize()
+        public BasePrize(Element element, Point point) : base(element, point)
         {
-            BorderColor = Color.Orange;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.Orange;
         }
     }
 }

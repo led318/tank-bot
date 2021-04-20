@@ -4,14 +4,17 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.Components;
+using FormUI.Infrastructure;
 
 namespace FormUI.FieldItems
 {
     public class Blast : BaseItem
     {
-        public Blast()
+        public Blast(Element element, API.Components.Point point) : base(element, point)
         {
-            BorderColor = Color.Brown;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.Brown;
         }
     }
 }

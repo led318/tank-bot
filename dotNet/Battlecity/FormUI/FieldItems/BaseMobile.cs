@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Components;
+using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
 {
@@ -31,6 +33,62 @@ namespace FormUI.FieldItems
 
                 _direction = value;
             }
+        }
+
+        protected BaseMobile(Element element, Point point) : base(element, point)
+        {
+            SetDirection();
+            //SetDirectionNote();
+        }
+
+        protected abstract void SetDirection();
+
+        protected void SetDirectionNote()
+        {
+            if (CurrentDirection.HasValue)
+            {
+                AddNote(CurrentDirection.ToString()[0], Brushes.Red);
+            }
+        }
+
+        public List<Point> GetNextPoints(Point point)
+        {
+            var result = new List<Point>();
+
+            if (Speed == 1)
+            {
+                result.Add(Shift(point));
+            }
+            else
+            {
+                var tempPoint = point;
+
+                for (int i = 1; i <= Speed; i++)
+                {
+                    var tempResult = Shift(tempPoint);
+                    result.Add(tempResult);
+                    tempPoint = tempResult;
+                }
+            }
+
+            return result;
+        }
+
+        private Point Shift(Point point)
+        {
+            switch (CurrentDirection)
+            {
+                case Direction.Up:
+                    return point.ShiftTop();
+                case Direction.Down:
+                    return point.ShiftBottom();
+                case Direction.Left:
+                    return point.ShiftLeft();
+                case Direction.Right:
+                    return point.ShiftRight();
+            }
+
+            return point;
         }
     }
 }

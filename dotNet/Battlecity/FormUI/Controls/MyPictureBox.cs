@@ -16,6 +16,8 @@ namespace FormUI.Controls
         private int _noteXStart = -1;
         private int _noteXStep = 8;
 
+        private Font _font;
+
         public MyPictureBox(Cell cell)
         {
             _cell = cell;
@@ -35,11 +37,14 @@ namespace FormUI.Controls
 
             if (_cell.Notes.Any())
             {
+                _font = new Font(Font, FontStyle.Bold);
+
                 var x = _noteXStart;
 
                 foreach (var note in _cell.Notes)
                 {
-                    e.Graphics.DrawString(note.Text, Font, note.Color, x, 0);
+                    
+                    e.Graphics.DrawString(note.Text, _font, note.Color, x, 0);
                     x += _noteXStep;
                 }
             }
@@ -49,23 +54,21 @@ namespace FormUI.Controls
 
         public void Change()
         {
-            var isChanged = false;
+            var isChanged = _cell.IsDirty;
 
-            var item = _cell.Items.First();
+            //var item = _cell.Items.First();
 
-            if (BackgroundImage != item.Image)
+            if (BackgroundImage != _cell.Item.Image)
             {
-                BackgroundImage = item.Image;
+                BackgroundImage = _cell.Item.Image;
                 isChanged = true;
             }
 
-            if (_myBorderColor != item.BorderColor)
+            if (_myBorderColor != _cell.BorderColor)
             {
-                _myBorderColor = item.BorderColor;
+                _myBorderColor = _cell.BorderColor;
                 isChanged = true;
             }
-
-
 
             if (isChanged)
             {

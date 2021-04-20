@@ -1,4 +1,7 @@
 ﻿using System.Drawing;
+using API.Components;
+using FormUI.Infrastructure;
+using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Wall
 {
@@ -9,9 +12,10 @@ namespace FormUI.FieldItems.Wall
 
         public virtual bool IsDestroyable => true;
 
-        public BaseWall()
+        public BaseWall(Element element, Point point) : base(element, point)
         {
-            BorderColor = Color.Brown;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.Brown;
         }
     }
 }

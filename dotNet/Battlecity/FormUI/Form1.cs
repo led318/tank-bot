@@ -80,7 +80,7 @@ namespace FormUI
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
@@ -111,9 +111,9 @@ namespace FormUI
 
 
 
-        delegate void SetBoardCallback(Board board); //todo: change return type to string or Element[]
+        delegate string SetBoardCallback(Board board); //todo: change return type to string or Element[]
 
-        private void SetBoard(Board board)
+        private string SetBoard(Board board)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
@@ -128,6 +128,10 @@ namespace FormUI
                 this.label1.Text = board.ToString();
                 State.SetCurrentRound(new Round(board));
 
+                //todo: perform calculations
+                var calculationLogic = new CalculationLogic();
+                calculationLogic.PerformCalculations();
+
                 for (var i = 0; i < Constants.FieldWidth; i++)
                 {
                     for (var j = 0; j < Constants.FieldHeight; j++)
@@ -136,6 +140,8 @@ namespace FormUI
                     }
                 }
             }
+
+            return "Act";
         }
 
         private void label1_Click(object sender, EventArgs e)

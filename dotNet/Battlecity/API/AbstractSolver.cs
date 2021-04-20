@@ -32,7 +32,7 @@ namespace API
     {
         //public delegate void RoundCallbackHandler();
 
-        public event Action<Board> RoundCallbackHandler;
+        public event Func<Board, string> RoundCallbackHandler;
 
         const string ResponsePrefix = "board=";
         const int MaxRetriesCount = 3;
@@ -103,12 +103,14 @@ namespace API
                     //Console.SetCursorPosition(0, 0);
                     //Console.WriteLine(board.ToString());
 
-                    var action = Get(board);
+                    //var action = Get(board);
 
                     //Console.WriteLine("Answer: " + action);
 
+                    var action = string.Empty;
+
                     if (RoundCallbackHandler != null)
-                        RoundCallbackHandler.Invoke(board);
+                        action = RoundCallbackHandler.Invoke(board);
 
                     ((WebSocket)sender).Send(action);
                 }

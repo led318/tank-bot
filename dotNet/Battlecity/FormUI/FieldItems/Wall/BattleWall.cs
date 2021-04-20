@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.Components;
+using FormUI.Infrastructure;
+using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Wall
 {
@@ -11,9 +14,11 @@ namespace FormUI.FieldItems.Wall
     {
         public override bool IsDestroyable => false;
 
-        public BattleWall()
+        public BattleWall(Element element, Point point) : base(element, point)
         {
-            BorderColor = Color.White;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.White;
         }
+        
     }
 }

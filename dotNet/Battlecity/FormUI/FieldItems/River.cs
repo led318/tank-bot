@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API.Components;
+using FormUI.Infrastructure;
 
 namespace FormUI.FieldItems
 {
@@ -11,9 +13,11 @@ namespace FormUI.FieldItems
     {
         public override bool CanMove => false;
 
-        public River()
+        public River(Element element, API.Components.Point point) : base(element, point)
         {
-            BorderColor = Color.Blue;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.Blue;
         }
+
     }
 }

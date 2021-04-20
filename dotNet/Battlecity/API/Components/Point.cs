@@ -20,6 +20,8 @@
  * #L%
  */
 
+using System.Collections.Generic;
+
 namespace API.Components
 {
     public struct Point
@@ -33,7 +35,7 @@ namespace API.Components
             Y = y;
         }
 
-        public bool IsOutOf(int size) => 
+        public bool IsOutOf(int size) =>
             X >= size || Y >= size || X < 0 || Y < 0;
 
         #region Shifts
@@ -45,6 +47,19 @@ namespace API.Components
         public Point ShiftTop(int delta = 1) => new Point(X, Y + delta);
 
         public Point ShiftBottom(int delta = 1) => new Point(X, Y - delta);
+
+        public IEnumerable<Point> GetNearPoints(int delta = 1)
+        {
+            var result = new[]
+            {
+                ShiftLeft(delta),
+                ShiftRight(delta),
+                ShiftTop(delta),
+                ShiftBottom(delta)
+            };
+
+            return result;
+        }
 
         #endregion
 
@@ -71,10 +86,10 @@ namespace API.Components
 
         public override bool Equals(object obj)
         {
-            if (obj == null) 
+            if (obj == null)
                 return false;
 
-            if (!(obj is Point)) 
+            if (!(obj is Point))
                 return false;
 
             Point that = (Point)obj;
