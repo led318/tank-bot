@@ -1,8 +1,9 @@
 ﻿using API;
 using API.Components;
+using FormUI.FieldItems;
 using FormUI.Infrastructure;
 
-namespace FormUI.FieldItems
+namespace FormUI.FieldObjects
 {
     public class Round
     {
@@ -16,6 +17,9 @@ namespace FormUI.FieldItems
                 {
                     var point = new Point(i, j);
                     Items[i, j] = ItemFactory.GetItem(board.GetAt(point), point);
+
+                    Field.Cells[i, j].Items.Clear();
+                    Field.Cells[i, j].Items.Add(Items[i, j]);
                 }
             }
         }

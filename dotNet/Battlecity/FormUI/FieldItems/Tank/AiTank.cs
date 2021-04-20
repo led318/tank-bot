@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
 
 namespace FormUI.FieldItems.Tank
@@ -10,6 +11,9 @@ namespace FormUI.FieldItems.Tank
         public AiTank()
         {
             BorderColor = Color.DarkGray;
+
+            AddNote("0", Brushes.DarkGreen);
+            AddNote("1", Brushes.Red);
         }
     }
 }

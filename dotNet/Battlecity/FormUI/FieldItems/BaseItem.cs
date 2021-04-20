@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using API.Components;
+using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
 using Point = API.Components.Point;
 
@@ -10,6 +12,13 @@ namespace FormUI.FieldItems
     {
         public Point Point { get; set; }
         public Element Element { get; set; }
+
+        public List<Note> Notes { get; set; } = new List<Note>();
+
+        public void AddNote(string text, Brush color)
+        {
+            Notes.Add(new Note(text, color));
+        }
 
         public string Sprite => $"./Sprites/{Element}.png";
 

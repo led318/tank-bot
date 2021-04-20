@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using API;
 using FormUI.Controls;
 using FormUI.FieldItems;
+using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
@@ -26,7 +27,6 @@ namespace FormUI
         private static string _settingsURL = "https://epam-botchallenge.com/codenjoy-balancer/rest/game/settings/get";
 
         public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
-        public Image[,] _fieldImages = new Image[Constants.FieldWidth, Constants.FieldHeight];
 
         public Form1()
         {
@@ -95,7 +95,7 @@ namespace FormUI
             {
                 for (var j = 0; j < Constants.FieldHeight; j++)
                 {
-                    var pictureBox = new MyPictureBox();
+                    var pictureBox = new MyPictureBox(Field.Cells[i, j]);
                     pictureBox.Width = Constants.CellSize;
                     pictureBox.Height = Constants.CellSize;
                     pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
@@ -132,7 +132,7 @@ namespace FormUI
                 {
                     for (var j = 0; j < Constants.FieldHeight; j++)
                     {
-                        _field[i, j].Change(State.CurrentRound.Items[i, j]);
+                        _field[i, j].Change();
                     }
                 }
             }
