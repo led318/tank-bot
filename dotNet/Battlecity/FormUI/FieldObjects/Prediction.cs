@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using API.Components;
 using FormUI.FieldItems;
@@ -13,10 +14,14 @@ namespace FormUI.FieldObjects
 
         public List<Direction> Command { get; set; } = new List<Direction>();
 
-
         public Color? GetBorderColor()
         {
-            switch (Type)
+            return GetBorderColor(Type);
+        }
+
+        public static Color? GetBorderColor(PredictionType type)
+        {
+            switch (type)
             {
                 case PredictionType.MyShot:
                     return Color.DeepPink;
@@ -26,9 +31,9 @@ namespace FormUI.FieldObjects
                     return Color.LightCoral;
                 case PredictionType.EnemyShot:
                     return Color.DarkOrchid;
-                case PredictionType.AiTank:
+                case PredictionType.AiTankMove:
                     return Color.Aqua;
-                case PredictionType.EnemyTank:
+                case PredictionType.EnemyTankMove:
                     return Color.Green;
             }
 
@@ -37,7 +42,12 @@ namespace FormUI.FieldObjects
 
         public Brush GetTextColor()
         {
-            switch (Type)
+            return GetTextColor(Type);
+        }
+
+        public static Brush GetTextColor(PredictionType type)
+        {
+            switch (type)
             {
                 case PredictionType.MyShot:
                     return Brushes.DeepPink;
@@ -47,9 +57,9 @@ namespace FormUI.FieldObjects
                     return Brushes.LightCoral;
                 case PredictionType.EnemyShot:
                     return Brushes.DarkOrchid;
-                case PredictionType.AiTank:
+                case PredictionType.AiTankMove:
                     return Brushes.Aqua;
-                case PredictionType.EnemyTank:
+                case PredictionType.EnemyTankMove:
                     return Brushes.Green;
             }
 
@@ -59,11 +69,22 @@ namespace FormUI.FieldObjects
 
     public enum PredictionType
     {
+        [IsDefaultSelected(Selected = true)]
         MyShot,
+        [IsDefaultSelected(Selected = true)]
         AiShot,
+        [IsDefaultSelected(Selected = true)]
         Bullet,
+        [IsDefaultSelected(Selected = true)]
         EnemyShot,
-        AiTank,
-        EnemyTank
+        [IsDefaultSelected(Selected = true)]
+        AiTankMove,
+        [IsDefaultSelected(Selected = true)]
+        EnemyTankMove
+    }
+
+    public class IsDefaultSelectedAttribute : Attribute
+    {
+        public bool Selected { get; set; }
     }
 }

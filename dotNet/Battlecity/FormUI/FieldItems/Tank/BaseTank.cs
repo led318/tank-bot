@@ -19,7 +19,7 @@ namespace FormUI.FieldItems.Tank
         public int ShotCountdownLeft { get; set; } = 0;
 
         public bool IsShotThisRound => ShotCountdownLeft <= 0;
-        public bool IsShotNextRound => ShotCountdownLeft == 1;
+        //public bool IsShotNextRound => ShotCountdownLeft == 1;
 
         public bool IsPrize { get; set; }
 

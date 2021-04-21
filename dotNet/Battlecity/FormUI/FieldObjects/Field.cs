@@ -31,6 +31,11 @@ namespace FormUI.FieldObjects
             return Cells[point.X, point.Y];
         }
 
+        public static bool IsOutOfField(Point point)
+        {
+            return point.X < 0 || point.Y < 0 || point.X >= Constants.FieldWidth || point.Y >= Constants.FieldHeight;
+        }
+
         public static void Reset()
         {
             foreach (var cell in AllCells)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace FormUI
         private static bool _isProd;
         private static string _settingsURL = "https://epam-botchallenge.com/codenjoy-balancer/rest/game/settings/get";
 
+        private Stopwatch _stopWatch = new Stopwatch();
+
         public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
 
         public Form1()
@@ -39,6 +42,7 @@ namespace FormUI
             InitSettings();
 
             InitFieldPanel();
+            InitPredictionCheckboxes();
 
             // Creating custom AI client
             var bot = new YourSolver(_isProd ? _serverURL : _testServerURL);
@@ -87,6 +91,32 @@ namespace FormUI
             }
         }
 
+        private void InitPredictionCheckboxes()
+        {
+            var predictionTypes = Enum.GetValues(typeof(PredictionType));
+
+            var heightStep = 20;
+            var height = 0;
+
+            foreach (PredictionType type in predictionTypes)
+            {
+                var attribute = type.GetAttributeOfType<IsDefaultSelectedAttribute>();
+
+                var checkbox = new CheckBox();
+                checkbox.Text = type.ToString();
+                checkbox.Width = 300;
+                checkbox.Top = height;
+                checkbox.Checked = attribute?.Selected ?? false;
+                checkbox.ForeColor = Prediction.GetBorderColor(type) ?? Color.Black;
+
+                height += heightStep;
+
+                Controls.Add(checkbox);
+
+                PredictionSettings.Init(type, checkbox);
+            }
+        }
+
         private void InitFieldPanel()
         {
             fieldPanel.Width = Constants.FieldWidth * Constants.CellSize;
@@ -132,8 +162,10 @@ namespace FormUI
             }
             else
             {
+                _stopWatch.Restart();
+
                 //this.label1.Text = board.ToString();
-                State.SetCurrentRound(new Round(board));
+                State.SetThisRound(new Round(board));
                 
                 if (State.GameIsRunning)
                 {
@@ -155,6 +187,10 @@ namespace FormUI
                         result = $"{Direction.Act}";
                     }
                 }
+
+                _stopWatch.Stop();
+                label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
+
             }
 
             return result;

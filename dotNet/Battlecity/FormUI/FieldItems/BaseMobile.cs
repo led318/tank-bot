@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using API.Components;
+using FormUI.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
@@ -70,18 +72,36 @@ namespace FormUI.FieldItems
             return result;
         }
 
-        public static Point Shift(Point point, Direction? direction)
+        public Point GetNextPositionNotCheckedForCanMove()
+        {
+            var nextPoints = GetNextPoints(Point);
+
+            if (!nextPoints.Any())
+                return Point;
+
+            var nextPoint = nextPoints.Last();
+
+            //if (Field.IsOutOfField(nextPoint))
+            //    return Point;
+
+            //if (Field.GetCell(nextPoint).CanMove)
+            return nextPoint;
+
+            //return Point;
+        }
+
+        public static Point Shift(Point point, Direction? direction, int delta = 1)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return point.ShiftTop();
+                    return point.ShiftTop(delta);
                 case Direction.Down:
-                    return point.ShiftBottom();
+                    return point.ShiftBottom(delta);
                 case Direction.Left:
-                    return point.ShiftLeft();
+                    return point.ShiftLeft(delta);
                 case Direction.Right:
-                    return point.ShiftRight();
+                    return point.ShiftRight(delta);
             }
 
             return point;

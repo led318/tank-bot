@@ -20,10 +20,10 @@ namespace FormUI.Infrastructure
         public static bool IsMyShotThisRound => ThisRound?.MyTank?.IsShotThisRound ?? false;
 
 
-        public static void SetCurrentRound(Round currentRound)
+        public static void SetThisRound(Round newThisRound)
         {
             PrevRound = ThisRound;
-            ThisRound = currentRound;
+            ThisRound = newThisRound;
         }
     }
 }

@@ -17,7 +17,10 @@ namespace FormUI.FieldObjects
         public List<BaseItem> Items = new List<BaseItem>();
 
         public BaseItem Item => Items.First();
-        public Element Element => Item.Element;
+        public bool CanMove => Items.All(x => x.CanMove);
+        public bool CanShootThrough => Items.All(x => x.CanShootThrough);
+
+        //public Element Element => Item.Element;
 
         public Point Point { get; set; }
 
@@ -63,7 +66,9 @@ namespace FormUI.FieldObjects
         private List<Note> GetPredictionNotes()
         {
             var groups = Predictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
-            var result = groups.Select(g =>
+            var result = groups
+                .Where(g => PredictionSettings.GetVisible(g.Key))
+                .Select(g =>
             {
                 return new Note(g.Min(p => p.Depth), g.First().GetTextColor());
             }).ToList();
@@ -73,8 +78,12 @@ namespace FormUI.FieldObjects
 
         private Color? GetPredictionBorderColor()
         {
+
+
             var groups = Predictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
-            var colours = groups.Select(g => g.First().GetBorderColor()).ToList();
+            var colours = groups
+                .Where(g => PredictionSettings.GetVisible(g.Key))
+                .Select(g => g.First().GetBorderColor()).ToList();
 
             return colours.FirstOrDefault();
         }

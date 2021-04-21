@@ -21,7 +21,10 @@ namespace FormUI.FieldObjects
         public IEnumerable<BaseTank> AllTanks => GetAllTanks();
 
         public List<Bullet> Bullets { get; set; } = new List<Bullet>();
-        public List<Bullet> MyBullets { get; set; } = new List<Bullet>();
+        //public List<Bullet> MyBullets { get; set; } = new List<Bullet>();
+
+        public List<River> Rivers { get; set; } = new List<River>();
+        public List<Tree> Trees { get; set; } = new List<Tree>();
 
 
         public Round(Board board)
@@ -49,11 +52,11 @@ namespace FormUI.FieldObjects
             }
         }
 
-        public void AddMyBullet(Bullet bullet)
-        {
-            bullet.IsMyBullet = true;
-            MyBullets.Add(bullet);
-        }
+        //public void AddMyBullet(Bullet bullet)
+        //{
+        //    bullet.IsMyBullet = true;
+            //MyBullets.Add(bullet);
+        //}
 
         public void AddAiPrizeTank(AiTank aiTank, AiTank prevRoundAiPrizeTank)
         {
@@ -91,6 +94,18 @@ namespace FormUI.FieldObjects
             if (item is Bullet bullet)
             {
                 Bullets.Add(bullet);
+                return;
+            }
+
+            if (item is River river)
+            {
+                Rivers.Add(river);
+                return;
+            }
+
+            if (item is Tree tree)
+            {
+                Trees.Add(tree);
                 return;
             }
         }

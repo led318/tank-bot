@@ -12,6 +12,8 @@ namespace FormUI.FieldItems.Prize
 {
     public class BasePrize : BaseItem
     {
+        public override bool CanShootThrough => false;
+
         public int Duration { get; set; }
 
         public BasePrize(Element element, Point point) : base(element, point)

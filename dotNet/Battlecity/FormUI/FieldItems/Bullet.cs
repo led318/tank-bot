@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Components;
 using FormUI.FieldItems.Helpers;
+using FormUI.FieldObjects;
+using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
 {
@@ -17,7 +19,7 @@ namespace FormUI.FieldItems
 
         public override int Speed => DefaultSpeed;
 
-        public bool IsMyBullet { get; set; }
+        //public bool IsMyBullet { get; set; }
 
         public Bullet(Element element, API.Components.Point point) : base(element, point)
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using API.Components;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using Newtonsoft.Json;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
@@ -18,6 +19,7 @@ namespace FormUI.FieldItems
 
         public string Sprite => $"./Sprites/{Element}.png";
 
+        [JsonIgnore]
         public Image Image =>  ItemImageProvider.GetItemImage(this);
         public Color? BorderColor { get; set; } = null;
 

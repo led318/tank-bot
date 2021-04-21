@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace FormUI.FieldItems.Helpers
 {
     public class Note
     {
         public string Text { get; set; }
+        [JsonIgnore]
         public Brush Color { get; set; }
 
         public NoteType Type { get; set; }
