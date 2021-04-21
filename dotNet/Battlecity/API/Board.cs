@@ -30,7 +30,7 @@ namespace API
 {
     public class Board
     {
-        string BoardString { get; }
+        public string BoardString { get; }
         LengthToXY lengthXY;
 
         public Board(string boardString)

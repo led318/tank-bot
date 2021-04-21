@@ -1,24 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using API.Components;
+﻿using API.Components;
 using FormUI.FieldItems.Helpers;
-using FormUI.Infrastructure;
+using System.Drawing;
+using FormUI.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Tank
 {
     public abstract class BaseTank : BaseMobile
     {
-        public override bool CanShootThrough => false; 
+        public override bool CanShootThrough => false;
         public override bool CanMove => false;
 
         public override int Speed => 1;
 
         public virtual int Health { get; set; } = 1;
 
-        public abstract int ShotCountdown { get; }
+        public abstract int ShotCountdownDefault { get; }
         public int ShotCountdownLeft { get; set; } = 0;
+
+        public bool IsShotThisRound => ShotCountdownLeft <= 0;
+        public bool IsShotNextRound => ShotCountdownLeft == 1;
+
+        public bool IsPrize { get; set; }
 
         protected BaseTank(Element element, Point point) : base(element, point)
         {
@@ -27,13 +30,39 @@ namespace FormUI.FieldItems.Tank
 
         protected virtual void SetHealthNote()
         {
-            AddNote(Health, Brushes.Red, NoteType.Health);
+            //if (Health != 1)
+            //    AddNote(Health, Brushes.Green, NoteType.Health);
         }
 
         public void SetHealth(int health)
         {
             Health = health;
             SetHealthNote();
+        }
+
+        protected virtual void SetShotCountdownNote()
+        {
+            AddNote(ShotCountdownLeft, Brushes.Red, NoteType.ShotCountdown);
+
+            Field.MarkCellDirty(Point);
+        }
+
+        public virtual void SetShotCountdown(int countdown)
+        {
+            ShotCountdownLeft = countdown;
+            SetShotCountdownNote();
+        }
+
+        public virtual void Shot()
+        {
+            ShotCountdownLeft = ShotCountdownDefault - 1;
+            SetShotCountdownNote();
+        }
+
+        public override void Tick()
+        {
+            ShotCountdownLeft--;
+            SetShotCountdownNote();
         }
     }
 }

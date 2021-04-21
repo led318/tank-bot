@@ -11,10 +11,11 @@ namespace FormUI.FieldItems
 {
     public class Bullet : BaseMobile
     {
+        public static int DefaultSpeed => 2;
 
-        public override bool CanShootThrough => false; //todo: maybe true
+        //public override bool CanShootThrough => false; //todo: maybe true
 
-        public override int Speed => 2;
+        public override int Speed => DefaultSpeed;
 
         public bool IsMyBullet { get; set; }
 

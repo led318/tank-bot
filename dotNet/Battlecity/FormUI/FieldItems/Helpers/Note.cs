@@ -30,6 +30,7 @@ namespace FormUI.FieldItems.Helpers
     public enum NoteType
     {
         Other,
-        Health
+        Health,
+        ShotCountdown
     }
 }

@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API;
+using API.Components;
 using FormUI.Controls;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
@@ -115,33 +116,48 @@ namespace FormUI
 
         private string SetBoard(Board board)
         {
+            var result = string.Empty;
+
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
             if (this.label1.InvokeRequired)
             {
                 SetBoardCallback d = new SetBoardCallback(SetBoard);
-                this.Invoke(d, new object[] { board });
+                var invokeResult = this.Invoke(d, new object[] { board });
+                if (invokeResult is string invokeResultStr)
+                {
+                    result = invokeResultStr;
+                }
             }
             else
             {
-                this.label1.Text = board.ToString();
+                //this.label1.Text = board.ToString();
                 State.SetCurrentRound(new Round(board));
-
-                //todo: perform calculations
-                var calculationLogic = new CalculationLogic();
-                calculationLogic.PerformCalculations();
-
-                for (var i = 0; i < Constants.FieldWidth; i++)
+                
+                if (State.GameIsRunning)
                 {
-                    for (var j = 0; j < Constants.FieldHeight; j++)
+                    //todo: perform calculations
+                    var calculationLogic = new CalculationLogic();
+                    calculationLogic.PerformCalculations();
+
+                    for (var i = 0; i < Constants.FieldWidth; i++)
                     {
-                        _field[i, j].Change();
+                        for (var j = 0; j < Constants.FieldHeight; j++)
+                        {
+                            _field[i, j].Change();
+                        }
+                    }
+
+                    if (State.IsMyShotThisRound)
+                    {
+                        State.ThisRound.MyTank.Shot();
+                        result = $"{Direction.Act}";
                     }
                 }
             }
 
-            return "Act";
+            return result;
         }
 
         private void label1_Click(object sender, EventArgs e)

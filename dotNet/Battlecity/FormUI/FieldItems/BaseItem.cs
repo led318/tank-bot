@@ -44,5 +44,10 @@ namespace FormUI.FieldItems
 
             Notes.Add(new Note(text.ToString(), color, type));
         }
+
+        public virtual void Tick()
+        {
+
+        }
     }
 }

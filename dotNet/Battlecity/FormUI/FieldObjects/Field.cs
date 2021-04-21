@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using API.Components;
 using FormUI.FieldItems;
 using FormUI.Infrastructure;
 
@@ -25,6 +26,11 @@ namespace FormUI.FieldObjects
             }
         }
 
+        public static Cell GetCell(Point point)
+        {
+            return Cells[point.X, point.Y];
+        }
+
         public static void Reset()
         {
             foreach (var cell in AllCells)
@@ -44,5 +50,9 @@ namespace FormUI.FieldObjects
             }
         }
 
+        public static void MarkCellDirty(Point point)
+        {
+            GetCell(point).IsDirty = true;
+        }
     }
 }

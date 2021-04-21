@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using API.Components;
 using FormUI.FieldItems;
 
 namespace FormUI.FieldObjects
@@ -14,13 +11,21 @@ namespace FormUI.FieldObjects
         public PredictionType Type { get; set; }
         public BaseItem Item { get; set; }
 
+        public List<Direction> Command { get; set; } = new List<Direction>();
+
 
         public Color? GetBorderColor()
         {
             switch (Type)
             {
+                case PredictionType.MyShot:
+                    return Color.DeepPink;
+                case PredictionType.AiShot:
+                    return Color.Red;
                 case PredictionType.Bullet:
                     return Color.LightCoral;
+                case PredictionType.EnemyShot:
+                    return Color.DarkOrchid;
                 case PredictionType.AiTank:
                     return Color.Aqua;
                 case PredictionType.EnemyTank:
@@ -34,8 +39,14 @@ namespace FormUI.FieldObjects
         {
             switch (Type)
             {
+                case PredictionType.MyShot:
+                    return Brushes.DeepPink;
+                case PredictionType.AiShot:
+                    return Brushes.Red;
                 case PredictionType.Bullet:
                     return Brushes.LightCoral;
+                case PredictionType.EnemyShot:
+                    return Brushes.DarkOrchid;
                 case PredictionType.AiTank:
                     return Brushes.Aqua;
                 case PredictionType.EnemyTank:
@@ -48,8 +59,10 @@ namespace FormUI.FieldObjects
 
     public enum PredictionType
     {
-        MyBullet,
+        MyShot,
+        AiShot,
         Bullet,
+        EnemyShot,
         AiTank,
         EnemyTank
     }

@@ -8,7 +8,7 @@ namespace FormUI.FieldItems.Tank
 {
     public class AiTank : BaseTank
     {
-        public override int ShotCountdown => Settings.Get.AiTicksPerShoot;
+        public override int ShotCountdownDefault => Settings.Get.AiTicksPerShoot;
 
         public AiTank(Element element, Point point) : base(element, point)
         {
@@ -44,6 +44,14 @@ namespace FormUI.FieldItems.Tank
             }
 
             CurrentDirection = direction;
+        }
+
+        public override void Tick()
+        {
+            base.Tick();
+
+            if (ShotCountdownLeft < 0)
+                Shot();
         }
     }
 }

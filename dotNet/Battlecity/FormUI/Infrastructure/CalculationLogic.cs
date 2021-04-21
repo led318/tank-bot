@@ -12,15 +12,73 @@ namespace FormUI.Infrastructure
     {
         public void PerformCalculations()
         {
+            PopulateShotCountdownsFromPrevRound();
+            PerformTick();
+
             CalculateAiPrizeTanks();
             CalculateAiTanks();
             CalculateEnemyTanks();
             CalculateBullets();
+            CalculateMyShotPredictions();
+        }
+
+        private void PerformTick()
+        {
+            foreach (var baseItem in Field.AllItems)
+            {
+                baseItem.Tick();
+            }
+        }
+
+        private void PopulateShotCountdownsFromPrevRound()
+        {
+            if (!State.HasPrevRound)
+            {
+
+                return;
+            }
+
+            var allTanks = State.ThisRound.AllTanks;
+            var allPrevTanks = State.PrevRound.AllTanks;
+
+            foreach (var tank in allTanks)
+            {
+                var nearPoints = tank.Point.GetNearPoints(includeThis: true).ToList();
+
+                var nearPrevTanks = allPrevTanks.Where(t => nearPoints.Contains(t.Point)).ToList();
+
+                BaseTank prevTank = null;
+                if (nearPrevTanks.Count == 1)
+                {
+                    prevTank = nearPrevTanks.First();
+                }
+                else
+                {
+                    var tankType = tank.GetType();
+
+                    var nearPrevSameTypeTanks = nearPrevTanks.Where(t => t.GetType() == tankType).ToList();
+
+                    if (nearPrevSameTypeTanks.Count == 1)
+                    {
+                        prevTank = nearPrevSameTypeTanks.First();
+                    }
+                    else
+                    {
+                        prevTank = nearPrevSameTypeTanks.FirstOrDefault(t =>
+                            t.GetNextPoints(t.Point).Contains(tank.Point));
+                    }
+                }
+
+                if (prevTank != null)
+                {
+                    tank.SetShotCountdown(prevTank.ShotCountdownLeft);
+                }
+            }
         }
 
         private void CalculateAiPrizeTanks()
         {
-            var aiPrizeTanks = State.CurrentRound.AiPrizeTanks;
+            var aiPrizeTanks = State.ThisRound.AiPrizeTanks;
 
             if (!aiPrizeTanks.Any() || !State.HasPrevRound)
                 return;
@@ -31,7 +89,7 @@ namespace FormUI.Infrastructure
 
                 var prevRoundNearTanks = State.PrevRound.AiTanks
                     .Where(t => nearPoints.Contains(t.Point)).ToList();
-                
+
                 AiTank foundPrevRoundNearTank = null;
 
                 if (prevRoundNearTanks.Count() == 1)
@@ -54,12 +112,12 @@ namespace FormUI.Infrastructure
 
         private void CalculateAiTanks()
         {
-            var aiTanks = State.CurrentRound.AiTanks;
-            if (!State.CurrentRound.AiPrizeTanks.Any() && State.HasPrevRound)
+            var aiTanks = State.ThisRound.AiTanks;
+            if (!State.ThisRound.AiPrizeTanks.Any() && State.HasPrevRound)
             {
                 foreach (var aiTank in aiTanks)
                 {
-                    var nearPoints = aiTank.Point.GetNearPoints();
+                    var nearPoints = aiTank.Point.GetNearPoints(includeThis: true);
 
                     var prevRoundNearPrizeTanks = State.PrevRound.AiPrizeTanks
                         .Where(t => nearPoints.Contains(t.Point)).ToList();
@@ -78,25 +136,30 @@ namespace FormUI.Infrastructure
 
                     if (foundPrevRoundNearPrizeTank != null)
                     {
-                        State.CurrentRound.AddAiPrizeTank(aiTank, foundPrevRoundNearPrizeTank);
+                        State.ThisRound.AddAiPrizeTank(aiTank, foundPrevRoundNearPrizeTank);
                     }
                 }
             }
 
 
-            CalculateMobilePredictions(State.CurrentRound.AiTanks, PredictionType.AiTank, x => x.CanMove);
+            CalculateMobilePredictions(State.ThisRound.AiTanks, PredictionType.AiTank, x => x.CanMove);
+
+            CalculateTanksShotPredictions(State.ThisRound.AiTanks, PredictionType.AiShot);
         }
 
         private void CalculateEnemyTanks()
         {
-            CalculateMobilePredictions(State.CurrentRound.EnemyTanks, PredictionType.EnemyTank, x => x.CanMove, depthResctriction: AppSettings.EnemyTanksPredictionDepth);
+            foreach (var enemyTank in State.ThisRound.EnemyTanks)
+            {
+                CalculateEnemyTankShotPredictions(enemyTank);
+            }
+
+            CalculateMobilePredictions(State.ThisRound.EnemyTanks, PredictionType.EnemyTank, x => x.CanMove, depthResctriction: AppSettings.EnemyTankMovePredictionDepth);
         }
-
-
 
         private void CalculateBullets()
         {
-            var bullets = State.CurrentRound.Bullets;
+            var bullets = State.ThisRound.Bullets;
 
             if (!bullets.Any())
                 return;
@@ -115,10 +178,9 @@ namespace FormUI.Infrastructure
                         bullet.CurrentDirection = CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
                     }
 
-
                     if (prevRoundNearBullet.IsMyBullet)
                     {
-                        State.CurrentRound.AddMyBullet(bullet);
+                        State.ThisRound.AddMyBullet(bullet);
                     }
 
                     continue;
@@ -133,10 +195,11 @@ namespace FormUI.Infrastructure
                 if (currentRoundNearTank != null)
                 {
                     bullet.CurrentDirection = currentRoundNearTank.CurrentDirection;
+                    currentRoundNearTank.Shot();
 
                     if (currentRoundNearTank is MyTank)
                     {
-                        State.CurrentRound.AddMyBullet(bullet);
+                        State.ThisRound.AddMyBullet(bullet);
                     }
 
                     continue;
@@ -145,7 +208,7 @@ namespace FormUI.Infrastructure
 
 
 
-            CalculateMobilePredictions(State.CurrentRound.Bullets, PredictionType.Bullet, x => x.CanShootThrough, true);
+            CalculateMobilePredictions(State.ThisRound.Bullets, PredictionType.Bullet, x => x.CanShootThrough, true);
 
         }
 
@@ -178,7 +241,7 @@ namespace FormUI.Infrastructure
             var nearPoints = bullet.Point.GetNearPoints(delta).ToList();
 
 
-            var currentRoundNearTanks = State.CurrentRound.AllTanks
+            var currentRoundNearTanks = State.ThisRound.AllTanks
                 .Where(t => nearPoints.Contains(t.Point)).ToList();
 
             BaseTank foundCurrentRoundNearTank = null;
@@ -229,7 +292,7 @@ namespace FormUI.Infrastructure
 
                     foreach (var nextPoint in nextPoints)
                     {
-                        var nextCell = Field.Cells[nextPoint.X, nextPoint.Y];
+                        var nextCell = Field.GetCell(nextPoint);
 
                         if (breakCondition(nextCell.Item))
                         {
@@ -250,6 +313,89 @@ namespace FormUI.Infrastructure
 
                     if (canNotMoveFurther)
                         break;
+                }
+            }
+        }
+
+        private void CalculateEnemyTankShotPredictions(BaseTank tank)
+        {
+            if (tank.IsShotThisRound)
+            {
+                if (tank.CurrentDirection.HasValue)
+                {
+                    CalculateTankShotPredictions(tank.Point, PredictionType.EnemyShot, tank.CurrentDirection.Value, AppSettings.EnemyTankShotPredictionDepth);
+                }
+
+                var directions = BaseMobile.ValidDirections;
+                foreach (var direction in directions)
+                {
+                    var point = tank.Point.Shift(direction);
+                    var cell = Field.GetCell(point);
+                    if (cell.Item.CanMove)
+                    {
+                        CalculateTankShotPredictions(point, PredictionType.EnemyShot, direction, AppSettings.EnemyTankShotPredictionDepth);
+                    }
+                }
+            }
+        }
+
+        private void CalculateMyShotPredictions()
+        {
+            if (State.IsMyShotThisRound)
+            {
+                var myTank = State.ThisRound.MyTank;
+                if (myTank.CurrentDirection.HasValue)
+                {
+                    var command = new List<Direction> { Direction.Act };
+                    CalculateTankShotPredictions(myTank.Point, PredictionType.MyShot, myTank.CurrentDirection.Value, AppSettings.MyShotPredictionDepth, command);
+                }
+
+                var directions = BaseMobile.ValidDirections;
+                foreach (var direction in directions)
+                {
+                    var point = myTank.Point.Shift(direction);
+
+                    var cell = Field.GetCell(point);
+                    if (cell.Item.CanMove)
+                    {
+                        var command = new List<Direction> { direction, Direction.Act };
+                        CalculateTankShotPredictions(point, PredictionType.MyShot, direction, AppSettings.MyShotPredictionDepth, command);
+                    }
+                }
+            }
+        }
+
+        private void CalculateTanksShotPredictions(IEnumerable<BaseTank> tanks, PredictionType type, int maxDepth = 1)
+        {
+            foreach (var tank in tanks)
+            {
+                if (tank.CurrentDirection.HasValue && tank.IsShotThisRound)
+                {
+                    CalculateTankShotPredictions(tank.Point, type, tank.CurrentDirection.Value, maxDepth);
+                }
+            }
+        }
+
+        private void CalculateTankShotPredictions(Point point, PredictionType type, Direction direction, int maxDepth = 1, List<Direction> command = null)
+        {
+
+            var startShotPoint = point;
+
+            for (var i = 1; i <= Bullet.DefaultSpeed * maxDepth; i++)
+            {
+                var shotPoint = BaseMobile.Shift(startShotPoint, direction);
+                var shotCell = Field.GetCell(shotPoint);
+
+                var depth = (int)Math.Ceiling((decimal)i / 2);
+                shotCell.AddPrediction(depth, type, command);
+
+                if (shotCell.Item.CanShootThrough)
+                {
+                    startShotPoint = shotPoint;
+                }
+                else
+                {
+                    break;
                 }
             }
         }

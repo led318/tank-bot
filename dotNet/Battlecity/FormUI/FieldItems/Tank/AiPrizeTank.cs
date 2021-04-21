@@ -13,6 +13,8 @@ namespace FormUI.FieldItems.Tank
 
         public AiPrizeTank(Element element, Point point) : base(element, point)
         {
+            IsPrize = true;
+
             //if (AppSettings.DrawBaseBorders)
                 BorderColor = Color.Orange;
         }

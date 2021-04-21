@@ -10,6 +10,8 @@ namespace FormUI.FieldObjects
 {
     public class Round
     {
+        public Board Board { get; set; }
+
         public BaseItem[,] Items = new BaseItem[Constants.FieldWidth, Constants.FieldHeight];
 
         public List<AiTank> AiTanks { get; set; } = new List<AiTank>();
@@ -24,6 +26,8 @@ namespace FormUI.FieldObjects
 
         public Round(Board board)
         {
+            Board = board;
+
             Field.Reset();
 
             for (var i = 0; i < Constants.FieldWidth; i++)
@@ -37,8 +41,8 @@ namespace FormUI.FieldObjects
 
                     Items[i, j] = item;
 
-                    Field.Cells[i, j].Items.Clear();
-                    Field.Cells[i, j].Items.Add(item);
+                    Field.GetCell(point).Items.Clear();
+                    Field.GetCell(point).Items.Add(item);
 
 
                 }

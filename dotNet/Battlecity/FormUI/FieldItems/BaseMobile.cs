@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using API.Components;
 using Point = API.Components.Point;
 
@@ -14,11 +10,11 @@ namespace FormUI.FieldItems
         public abstract int Speed { get; }
 
         public Direction? _direction;
-        private static readonly HashSet<Direction> _validDirections = new[] { Direction.Left, Direction.Right, Direction.Up, Direction.Down }.ToHashSet();
+        public static List<Direction> ValidDirections { get; } = new() { Direction.Left, Direction.Right, Direction.Up, Direction.Down };
 
         public bool IsValidDirection(Direction? direction)
         {
-            return direction == null || _validDirections.Contains(direction.Value);
+            return direction == null || ValidDirections.Contains(direction.Value);
         }
 
         public Direction? CurrentDirection
@@ -57,7 +53,7 @@ namespace FormUI.FieldItems
 
             if (Speed == 1)
             {
-                result.Add(Shift(point));
+                result.Add(Shift(point, CurrentDirection));
             }
             else
             {
@@ -65,7 +61,7 @@ namespace FormUI.FieldItems
 
                 for (int i = 1; i <= Speed; i++)
                 {
-                    var tempResult = Shift(tempPoint);
+                    var tempResult = Shift(tempPoint, CurrentDirection);
                     result.Add(tempResult);
                     tempPoint = tempResult;
                 }
@@ -74,9 +70,9 @@ namespace FormUI.FieldItems
             return result;
         }
 
-        private Point Shift(Point point)
+        public static Point Shift(Point point, Direction? direction)
         {
-            switch (CurrentDirection)
+            switch (direction)
             {
                 case Direction.Up:
                     return point.ShiftTop();

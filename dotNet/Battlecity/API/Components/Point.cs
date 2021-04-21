@@ -40,6 +40,23 @@ namespace API.Components
 
         #region Shifts
 
+        public Point Shift(Direction direction, int delta = 1)
+        {
+            switch (direction)
+            {
+                case Direction.Down:
+                    return ShiftBottom(delta);
+                case Direction.Up:
+                    return ShiftTop(delta);
+                case Direction.Left:
+                    return ShiftLeft(delta);
+                case Direction.Right:
+                    return ShiftRight(delta);
+            }
+
+            return this;
+        }
+
         public Point ShiftLeft(int delta = 1) => new Point(X - delta, Y);
 
         public Point ShiftRight(int delta = 1) => new Point(X + delta, Y);
@@ -48,15 +65,18 @@ namespace API.Components
 
         public Point ShiftBottom(int delta = 1) => new Point(X, Y - delta);
 
-        public IEnumerable<Point> GetNearPoints(int delta = 1)
+        public IEnumerable<Point> GetNearPoints(int delta = 1, bool includeThis = false)
         {
-            var result = new[]
+            var result = new List<Point>
             {
                 ShiftLeft(delta),
                 ShiftRight(delta),
                 ShiftTop(delta),
                 ShiftBottom(delta)
             };
+
+            if (includeThis)
+                result.Add(this);
 
             return result;
         }

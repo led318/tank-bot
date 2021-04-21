@@ -7,7 +7,7 @@ namespace FormUI.FieldItems.Tank
 {
     public class MyTank : BaseTank
     {
-        public override int ShotCountdown => Settings.Get.TankTicksPerShoot;
+        public override int ShotCountdownDefault => Settings.Get.TankTicksPerShoot;
 
         public MyTank(Element element, Point point) : base(element, point)
         {
