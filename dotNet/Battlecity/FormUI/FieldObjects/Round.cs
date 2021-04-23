@@ -27,8 +27,10 @@ namespace FormUI.FieldObjects
         public List<Tree> Trees { get; set; } = new List<Tree>();
 
         public BasePrediction CurrentMoveSelectedPrediction { get; set; }
-        public List<Direction> CurrentMoveCommand { get; set; } = new List<Direction>();
-        public string CurrentMoveCommandString => string.Join(",", CurrentMoveCommand);
+        public List<Direction> CurrentMoveCommands { get; set; } = new List<Direction>();
+        public string CurrentMoveCommandString => string.Join(",", CurrentMoveCommands);
+
+        public bool IsInDeadZone { get; set; }
 
 
         public Round(Board board)

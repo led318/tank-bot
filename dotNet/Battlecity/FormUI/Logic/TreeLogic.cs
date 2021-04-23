@@ -84,10 +84,13 @@ namespace FormUI.Logic
             var trees = State.ThisRound.Trees;
             var prevMyTank = State.PrevRound.MyTank;
 
-            if (State.PrevRound.CurrentMoveCommand.Count == 1 && State.PrevRound.CurrentMoveCommand[0] == Direction.Act)
+            if (prevMyTank == null)
                 return;
 
-            var prevDirection = State.PrevRound.CurrentMoveCommand.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
+            if (State.PrevRound.CurrentMoveCommands.Count == 1 && State.PrevRound.CurrentMoveCommands[0] == Direction.Act)
+                return;
+
+            var prevDirection = State.PrevRound.CurrentMoveCommands.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
             var prevMyTankStepPosition = prevMyTank.GetNextPositionNotCheckedForCanMove(prevDirection);
 
             foreach (var tree in trees)
@@ -102,7 +105,7 @@ namespace FormUI.Logic
                     cell.Items.Insert(0, thisHiddenMyTank);
                     State.ThisRound.MyTank = thisHiddenMyTank;
 
-                    if (State.PrevRound.CurrentMoveCommand.Contains(Direction.Act))
+                    if (State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
                     {
                         var bulletPoint = BaseMobile.Shift(prevMyTank.Point, prevDirection, Bullet.DefaultSpeed);
 

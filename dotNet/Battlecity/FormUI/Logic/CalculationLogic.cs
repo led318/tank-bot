@@ -12,7 +12,11 @@ namespace FormUI.Logic
 {
     public static class CalculationLogic
     {
-        private static Point _defaultTargetPoint = new Point(17, 31);
+        private static readonly Point _defaultTargetPoint = new Point(17, 31);
+
+        private static readonly Point _deadZoneStart = new Point(13, 1);
+        private static readonly Point _deadZoneEnd = new Point(20, 4);
+        private static readonly List<Direction> _deadZoneAction = new List<Direction> { Direction.Left, Direction.Act };
 
         public static void PerformCalculations()
         {
@@ -42,6 +46,13 @@ namespace FormUI.Logic
 
         private static void CalculateCurrentMove()
         {
+            if (IsInDeadZone())
+            {
+                State.ThisRound.IsInDeadZone = true;
+
+                State.ThisRound.CurrentMoveCommands.AddRange(_deadZoneAction);
+            }
+
             var kills = Field.GetPredictions(x => x.MyKillPredictions);
             if (kills.Any())
             {
@@ -74,13 +85,27 @@ namespace FormUI.Logic
 
             if (prediction.Commands.Any())
             {
-                State.ThisRound.CurrentMoveCommand.Add(prediction.Commands[0]);
+                State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[0]);
 
                 if (prediction.Commands.Count > 1 && prediction.Commands[1] == Direction.Act)
                 {
-                    State.ThisRound.CurrentMoveCommand.Add(prediction.Commands[1]);
+                    State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[1]);
                 }
             }
         }
+
+        private static bool IsInDeadZone()
+        {
+            if (State.ThisRound.MyTank == null)
+                return false;
+
+            var myTank = State.ThisRound.MyTank;
+
+            var isXInDeadZone = myTank.Point.X >= _deadZoneStart.X && myTank.Point.X <= _deadZoneEnd.X;
+            var isYInDeadZone = myTank.Point.Y >= _deadZoneStart.Y && myTank.Point.Y <= _deadZoneEnd.Y;
+
+            return isXInDeadZone && isYInDeadZone;
+        }
     }
 }
+

@@ -79,6 +79,9 @@ namespace FormUI.Logic
 
             PredictionLogic.CalculateMobilePredictions(State.ThisRound.AiTanks, PredictionType.AiMove, x => x.CanMove);
 
+            var stuckAiTanks = State.ThisRound.AiTanks.Where(x => x.IsStuck).ToList();
+            PredictionLogic.CalculateStuckPosition(stuckAiTanks, PredictionType.AiMove, AppSettings.StuckAiPredictionDepth);
+
             PredictionLogic.CalculateTanksShotPredictions(State.ThisRound.AiTanks, PredictionType.AiShot, AppSettings.MyShotPredictionDepth);
         }
     }

@@ -22,7 +22,8 @@ namespace FormUI.Logic
         public static void CalculateMyTankData()
         {
             CalculateMyMovePredictions();
-            CalculateMyKillPredictions();
+            CalculateMyKillAiPredictions();
+            CalculateMyKillEnemyPredictions();
         }
 
         private static void CalculateMyMovePredictions()
@@ -167,7 +168,7 @@ namespace FormUI.Logic
             }
         }
 
-        private static void CalculateMyKillPredictions()
+        private static void CalculateMyKillAiPredictions()
         {
             var allCells = Field.AllCells;
 
@@ -175,9 +176,11 @@ namespace FormUI.Logic
 
             foreach (var aiMoveCell in aiMoveCells)
             {
-                var oneHealthAiMovePredictions = aiMoveCell.Predictions.AiMovePredictions.Where(x => ((BaseTank) x.Item).Health == 1).ToList();
+                var potentialTargetAiMovePredictions = AppSettings.IgnorePrizeAiTanks
+                    ? aiMoveCell.Predictions.AiMovePredictions.Where(x => ((BaseTank) x.Item).Health == 1).ToList()
+                    : aiMoveCell.Predictions.AiMovePredictions;
 
-                foreach (var aiMovePrediction in oneHealthAiMovePredictions)
+                foreach (var aiMovePrediction in potentialTargetAiMovePredictions)
                 {
                     var mySameDepthShots = aiMoveCell.Predictions.MyShotPredictions
                         .Where(x => x.Depth == aiMovePrediction.Depth).ToList();
@@ -185,6 +188,30 @@ namespace FormUI.Logic
                     foreach (var mySameDepthShot in mySameDepthShots)
                     {
                         aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                    }
+                }
+            }
+        }
+
+        private static void CalculateMyKillEnemyPredictions()
+        {
+            var allCells = Field.AllCells;
+
+            var enemyMoveCells = allCells.Where(x => x.Predictions.EnemyMovePredictions.Any()).ToList();
+
+            foreach (var enemyMoveCell in enemyMoveCells)
+            {
+                var enemyMovePredictions = enemyMoveCell.Predictions.EnemyMovePredictions
+                    .Where(x => ((BaseTank) x.Item).IsStuck || x.Depth <= AppSettings.IgnoreEnemyMoveDepthMoreThan).ToList();
+
+                foreach (var enemyMovePrediction in enemyMovePredictions)
+                {
+                    var mySameDepthShots = enemyMoveCell.Predictions.MyShotPredictions
+                        .Where(x => x.Depth == enemyMovePrediction.Depth).ToList();
+
+                    foreach (var mySameDepthShot in mySameDepthShots)
+                    {
+                        enemyMoveCell.AddPrediction(enemyMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
                     }
                 }
             }

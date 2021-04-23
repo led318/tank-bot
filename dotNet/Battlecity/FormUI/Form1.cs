@@ -221,6 +221,11 @@ namespace FormUI
             sb.AppendLine($"Kill: {State.ThisRound.CurrentMoveSelectedPrediction?.Point}");
             sb.AppendLine($"KillCommands: {Environment.NewLine}{FormatCommandString()}");
 
+            if (State.ThisRound.IsInDeadZone)
+            {
+                sb.AppendLine("Dead zone!!!");
+            }
+
             return sb.ToString();
         }
 

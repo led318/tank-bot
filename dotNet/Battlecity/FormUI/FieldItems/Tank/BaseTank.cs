@@ -2,6 +2,7 @@
 using FormUI.FieldItems.Helpers;
 using System.Drawing;
 using FormUI.FieldObjects;
+using FormUI.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Tank
@@ -23,9 +24,23 @@ namespace FormUI.FieldItems.Tank
 
         public bool IsPrize { get; set; }
 
+        public bool IsStuck { get; set; }
+
         protected BaseTank(Element element, Point point) : base(element, point)
         {
             SetHealthNote();
+            InitIsStuck();
+        }
+
+        private void InitIsStuck()
+        {
+            if (!State.HasPrevRound)
+                return;
+
+            var prevStepPoint = State.PrevRound.Items[Point.X, Point.Y];
+
+            if (prevStepPoint.Element == Element)
+                IsStuck = true;
         }
 
         protected virtual void SetHealthNote()

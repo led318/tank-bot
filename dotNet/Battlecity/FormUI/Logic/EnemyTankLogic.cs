@@ -20,7 +20,10 @@ namespace FormUI.Logic
                 CalculateEnemyTankShotPredictions(enemyTank);
             }
 
-            PredictionLogic.CalculateMobilePredictions(State.ThisRound.EnemyTanks, PredictionType.EnemyMove, x => x.CanMove, depthResctriction: AppSettings.EnemyTankMovePredictionDepth);
+            PredictionLogic.CalculateMobilePredictions(State.ThisRound.EnemyTanks, PredictionType.EnemyMove, x => x.CanMove, depthRestriction: AppSettings.EnemyTankMovePredictionDepth);
+
+            var stuckEnemyTanks = State.ThisRound.EnemyTanks.Where(x => x.IsStuck).ToList();
+            PredictionLogic.CalculateStuckPosition(stuckEnemyTanks, PredictionType.EnemyMove, AppSettings.StuckEnemyPredictionDepth);
         }
 
         private static void CalculateEnemyTankShotPredictions(BaseTank tank)

@@ -14,9 +14,22 @@ namespace FormUI.Logic
 {
     public static class PredictionLogic
     {
-        public static void CalculateMobilePredictions(IEnumerable<BaseMobile> mobileItems, PredictionType type, Func<Cell, bool> breakCondition, bool includeFirstObstacle = false, int? depthResctriction = null)
+        public static void CalculateStuckPosition(IEnumerable<BaseMobile> mobileItems, PredictionType type, int maxDepth)
         {
-            var maxDepth = depthResctriction ?? AppSettings.PredictionDepth;
+            foreach (var mobileItem in mobileItems)
+            {
+                var cell = Field.GetCell(mobileItem.Point);
+
+                for (var depth = 1; depth <= maxDepth; depth++)
+                {
+                    cell.AddPrediction(depth, type, item: mobileItem);
+                }
+            }
+        }
+
+        public static void CalculateMobilePredictions(IEnumerable<BaseMobile> mobileItems, PredictionType type, Func<Cell, bool> breakCondition, bool includeFirstObstacle = false, int? depthRestriction = null)
+        {
+            var maxDepth = depthRestriction ?? AppSettings.PredictionDepth;
 
             foreach (var mobileItem in mobileItems)
             {
