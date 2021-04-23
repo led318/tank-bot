@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
@@ -69,9 +70,24 @@ namespace FormUI.FieldObjects
             GetCell(point).IsDirty = true;
         }
 
+        public static List<BasePrediction> GetPredictions(Func<PredictionAggregate, IEnumerable<BasePrediction>> func)
+        {
+            return AllCells.SelectMany(x => func(x.Predictions)).ToList();
+        }
+
+        public static int GetPredictionsCount(Func<PredictionAggregate, IEnumerable<BasePrediction>> func)
+        {
+            return AllCells.Sum(x => func(x.Predictions).Count());
+        }
+
         public static int GetMyMovePredictionsCount()
         {
-            return AllCells.Sum(x => x.Predictions.MyMovePredictions.Count);
+            return GetPredictionsCount(x => x.MyMovePredictions);
+        }
+
+        public static int GetMyShotPredictionsCount()
+        {
+            return GetPredictionsCount(x => x.MyShotPredictions);
         }
 
         public static void AddMyMoveDepthPredictions(int depth, MyMovePrediction prediction)

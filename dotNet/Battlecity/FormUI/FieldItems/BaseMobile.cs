@@ -49,13 +49,15 @@ namespace FormUI.FieldItems
             }
         }
 
-        public List<Point> GetNextPoints(Point point)
+        public List<Point> GetNextPoints(Point point, Direction? direction = null)
         {
+            direction ??= CurrentDirection;
+
             var result = new List<Point>();
 
             if (Speed == 1)
             {
-                result.Add(Shift(point, CurrentDirection));
+                result.Add(Shift(point, direction));
             }
             else
             {
@@ -63,7 +65,7 @@ namespace FormUI.FieldItems
 
                 for (int i = 1; i <= Speed; i++)
                 {
-                    var tempResult = Shift(tempPoint, CurrentDirection);
+                    var tempResult = Shift(tempPoint, direction);
                     result.Add(tempResult);
                     tempPoint = tempResult;
                 }
@@ -72,9 +74,11 @@ namespace FormUI.FieldItems
             return result;
         }
 
-        public Point GetNextPositionNotCheckedForCanMove()
+        public virtual Point GetNextPositionNotCheckedForCanMove(Direction? direction = null)
         {
-            var nextPoints = GetNextPoints(Point);
+            direction ??= CurrentDirection;
+
+            var nextPoints = GetNextPoints(Point, direction);
 
             if (!nextPoints.Any())
                 return Point;

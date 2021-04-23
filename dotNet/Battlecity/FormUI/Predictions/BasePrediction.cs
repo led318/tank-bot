@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API.Components;
+using FormUI.FieldItems;
 using Point = API.Components.Point;
 
 namespace FormUI.Predictions
@@ -18,10 +19,12 @@ namespace FormUI.Predictions
         public Color? BorderColor => GetBorderColor();
         public Brush TextColor => GetTextColor();
 
-        [Obsolete]
-        public List<Direction> Command { get; set; } = new List<Direction>();
+        public BaseItem Item { get; set; }
 
-        public string CommandText => string.Join(",", Command);
+        //[Obsolete]
+        public List<Direction> Commands { get; set; } = new List<Direction>();
+
+        public string CommandsText => string.Join(",", Commands);
 
         public Color? GetBorderColor()
         {
@@ -37,7 +40,7 @@ namespace FormUI.Predictions
                 case PredictionType.MyMove:
                     return Color.LawnGreen;
                 case PredictionType.AiShot:
-                    return Color.Red;
+                    return Color.Coral;
                 case PredictionType.Bullet:
                     return Color.LightCoral;
                 case PredictionType.EnemyShot:
@@ -46,6 +49,8 @@ namespace FormUI.Predictions
                     return Color.Aqua;
                 case PredictionType.EnemyMove:
                     return Color.Green;
+                case PredictionType.MyKill:
+                    return Color.Red;
             }
 
             return null;
@@ -65,7 +70,7 @@ namespace FormUI.Predictions
                 case PredictionType.MyMove:
                     return Brushes.LawnGreen;
                 case PredictionType.AiShot:
-                    return Brushes.Red;
+                    return Brushes.Coral;
                 case PredictionType.Bullet:
                     return Brushes.LightCoral;
                 case PredictionType.EnemyShot:
@@ -74,6 +79,8 @@ namespace FormUI.Predictions
                     return Brushes.Aqua;
                 case PredictionType.EnemyMove:
                     return Brushes.Green;
+                case PredictionType.MyKill:
+                    return Brushes.Red;
             }
 
             return null;

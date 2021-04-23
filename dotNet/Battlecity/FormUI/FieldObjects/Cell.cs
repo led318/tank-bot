@@ -48,9 +48,9 @@ namespace FormUI.FieldObjects
             //NotesOverride.Add(new Note(text.ToString(), color));
         }
 
-        public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null)
+        public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null, BaseItem item = null)
         {
-            var addedPrediction = Predictions.Add(type, depth, Point, command);
+            var addedPrediction = Predictions.Add(type, depth, Point, command, item);
             IsDirty = true;
 
             return addedPrediction;

@@ -33,14 +33,14 @@ namespace FormUI.Logic
 
                         if (breakCondition(nextCell))
                         {
-                            nextCell.AddPrediction(depth, type);
+                            nextCell.AddPrediction(depth, type, item: mobileItem);
                             predictionStartPoint = nextPoint;
                         }
                         else
                         {
                             if (includeFirstObstacle)
                             {
-                                nextCell.AddPrediction(depth, type);
+                                nextCell.AddPrediction(depth, type, item: mobileItem);
                             }
 
                             canNotMoveFurther = true;
@@ -83,9 +83,9 @@ namespace FormUI.Logic
 
                 var depth = (int)Math.Ceiling((decimal)i / 2);
 
-                if (i > -1)
+                if (i >= -1)
                 {
-                    var actualDepth = Math.Max(0, tank.ShotCountdownLeft) + depth;
+                    var actualDepth = Math.Max(1, tank.ShotCountdownLeft) + depth;
                     shotCell.AddPrediction(actualDepth, type, command);
                 }
 

@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using API.Components;
+using FormUI.FieldItems;
 
 namespace FormUI.Predictions
 {
     public static class PredictionFactory
     {
-        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Direction> command)
+        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Direction> command, BaseItem item)
         {
             var prediction = Get(type);
             prediction.Depth = depth;
             prediction.Point = point;
+            prediction.Item = item;
 
             if (command != null)
-                prediction.Command.AddRange(command);
+                prediction.Commands.AddRange(command);
 
             return prediction;
         }
@@ -39,6 +38,8 @@ namespace FormUI.Predictions
                     return new MyShotPrediction();
                 case PredictionType.MyMove:
                     return new MyMovePrediction();
+                case PredictionType.MyKill:
+                    return new MyKillPrediction();
 
                 default:
                     throw new NotImplementedException();

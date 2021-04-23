@@ -5,6 +5,7 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
 
 namespace FormUI.FieldObjects
 {
@@ -21,10 +22,13 @@ namespace FormUI.FieldObjects
         public IEnumerable<BaseTank> AllTanks => GetAllTanks();
 
         public List<Bullet> Bullets { get; set; } = new List<Bullet>();
-        //public List<Bullet> MyBullets { get; set; } = new List<Bullet>();
 
         public List<River> Rivers { get; set; } = new List<River>();
         public List<Tree> Trees { get; set; } = new List<Tree>();
+
+        public BasePrediction CurrentMoveSelectedPrediction { get; set; }
+        public List<Direction> CurrentMoveCommand { get; set; } = new List<Direction>();
+        public string CurrentMoveCommandString => string.Join(",", CurrentMoveCommand);
 
 
         public Round(Board board)
@@ -51,12 +55,6 @@ namespace FormUI.FieldObjects
                 }
             }
         }
-
-        //public void AddMyBullet(Bullet bullet)
-        //{
-        //    bullet.IsMyBullet = true;
-            //MyBullets.Add(bullet);
-        //}
 
         public void AddAiPrizeTank(AiTank aiTank, AiTank prevRoundAiPrizeTank)
         {

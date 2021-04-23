@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Cache;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -148,7 +149,7 @@ namespace FormUI
 
         private string SetBoard(Board board)
         {
-            var result = string.Empty;
+            var resultString = string.Empty;
 
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
@@ -156,10 +157,17 @@ namespace FormUI
             if (this.label1.InvokeRequired)
             {
                 SetBoardCallback d = new SetBoardCallback(SetBoard);
-                var invokeResult = this.Invoke(d, new object[] { board });
-                if (invokeResult is string invokeResultStr)
+
+                try
                 {
-                    result = invokeResultStr;
+                    var invokeResult = this.Invoke(d, new object[] { board });
+                    if (invokeResult is string invokeResultStr)
+                    {
+                        resultString = invokeResultStr;
+                    }
+                }
+                catch (Exception e)
+                {
                 }
             }
             else
@@ -172,9 +180,7 @@ namespace FormUI
                 if (State.GameIsRunning)
                 {
                     //todo: perform calculations
-                    var task = new Task(CalculationLogic.PerformCalculations);
-                    task.Start();
-                    task.Wait();
+                    Task.Run(CalculationLogic.PerformCalculations).Wait();
 
                     for (var i = 0; i < Constants.FieldWidth; i++)
                     {
@@ -184,21 +190,64 @@ namespace FormUI
                         }
                     }
 
-                    if (State.IsMyShotThisRound)
-                    {
-                        State.ThisRound.MyTank.Shot();
-                        result = $"{Direction.Act}";
-                    }
+
+                    //if (State.IsMyShotThisRound)
+                    //{
+                    //    State.ThisRound.MyTank.Shot();
+                    //    result = $"{Direction.Act}";
+                    //}
+
+                    resultString = State.ThisRound.CurrentMoveCommandString;
                 }
 
                 _stopWatch.Stop();
                 label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
                 label2.Text = State.ThisRound.MyTank == null 
                     ? string.Empty 
-                    : $"Me: {State.ThisRound.MyTank.Point}. Predictions: {Field.GetMyMovePredictionsCount()}";
+                    : GetMyStateString();
             }
 
-            return result;
+            return resultString;
+        }
+
+        private string GetMyStateString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Me: {State.ThisRound.MyTank.Point}");
+            sb.AppendLine($"MyMovePredictions: {Field.GetMyMovePredictionsCount()}");
+            sb.AppendLine($"MyShotPredictions: {Field.GetMyShotPredictionsCount()}");
+            sb.AppendLine($"CurrentMove: {State.ThisRound.CurrentMoveCommandString}");
+            sb.AppendLine($"Kill: {State.ThisRound.CurrentMoveSelectedPrediction?.Point}");
+            sb.AppendLine($"KillCommands: {Environment.NewLine}{FormatCommandString()}");
+
+            return sb.ToString();
+        }
+
+        private string FormatCommandString()
+        {
+            var killCommandsTrimmedStr = string.Empty;
+            if (!string.IsNullOrEmpty(State.ThisRound.CurrentMoveSelectedPrediction?.CommandsText))
+            {
+                var breakLimit = 7;
+                var commands = State.ThisRound.CurrentMoveSelectedPrediction.Commands;
+                if (commands.Count > breakLimit)
+                {
+                    var currentIndex = 0;
+                    while (currentIndex < commands.Count)
+                    {
+                        var subList = commands.Skip(currentIndex).Take(breakLimit).ToList();
+                        killCommandsTrimmedStr += string.Join(",", subList) + Environment.NewLine;
+                        currentIndex += breakLimit;
+                    }
+                }
+                else
+                {
+                    killCommandsTrimmedStr = State.ThisRound.CurrentMoveSelectedPrediction?.CommandsText;
+                }
+            }
+
+            return killCommandsTrimmedStr;
         }
 
         private void label1_Click(object sender, EventArgs e)

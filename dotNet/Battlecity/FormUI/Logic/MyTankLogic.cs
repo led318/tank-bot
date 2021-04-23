@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
+using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
@@ -10,14 +12,20 @@ namespace FormUI.Logic
 {
     public static class MyTankLogic
     {
-        private static readonly string _logFile = "log.txt";
+        //private static readonly string _logFile = "log.txt";
 
         public static void AppendLog(string text)
         {
             //File.AppendAllLines(_logFile, new[] { text });
         }
 
-        public static void CalculateMyMovePredictions()
+        public static void CalculateMyTankData()
+        {
+            CalculateMyMovePredictions();
+            CalculateMyKillPredictions();
+        }
+
+        private static void CalculateMyMovePredictions()
         {
             if (State.ThisRound.MyTank == null)
                 return;
@@ -25,6 +33,8 @@ namespace FormUI.Logic
             var myTank = State.ThisRound.MyTank;
 
             AppendLog("=========================== STARTED ================================");
+
+            CalculateMyShotPredictions(myTank.Point, myTank.CurrentDirection.Value, new List<Direction>());
 
             CalculateMyMoveDepth(myTank.Point, 1, new List<Direction>());
 
@@ -40,7 +50,7 @@ namespace FormUI.Logic
 
                 foreach (var prediction in predictions)
                 {
-                    var currentPredictionHasNextDepth = CalculateMyMoveDepth(prediction.Point, depth, prediction.Command);
+                    var currentPredictionHasNextDepth = CalculateMyMoveDepth(prediction.Point, depth, prediction.Commands);
 
                     if (currentPredictionHasNextDepth)
                         anyPredictionHasNextDepth = true;
@@ -65,21 +75,22 @@ namespace FormUI.Logic
 
                 if (IsSafeMoveNotVisitedCell(cell, depth))
                 {
-                    var currentCommand = command.DeepClone();
+                    var currentCommand = command.ToList();
                     currentCommand.Add(direction);
 
                     var nextDepthPrediction = (MyMovePrediction)cell.AddPrediction(depth, PredictionType.MyMove, currentCommand);
                     Field.AddMyMoveDepthPredictions(depth, nextDepthPrediction);
 
-                    AppendLog($"COMMAND: {nextDepthPrediction.CommandText}");
+                    AppendLog($"COMMAND: {nextDepthPrediction.CommandsText}");
                     isNextDepthAdded = true;
+
+
+                    CalculateMyShotPredictions(cell.Point, direction, currentCommand);
                 }
             }
 
             return isNextDepthAdded;
         }
-
-
 
         private static bool IsSafeMoveNotVisitedCell(Cell cell, int depth)
         {
@@ -104,27 +115,77 @@ namespace FormUI.Logic
             return true;
         }
 
-        public static void CalculateMyShotPredictions()
+        private static void CalculateMyShotPredictions(Point currentPoint, Direction lastDirection, List<Direction> command)
         {
-            if (State.ThisRound.MyTank == null)
-                return;
-
-            var myTank = State.ThisRound.MyTank;
-            if (myTank.CurrentDirection.HasValue)
-            {
-                var command = new List<Direction> { Direction.Act };
-                PredictionLogic.CalculateTankShotPredictions(myTank.Point, PredictionType.MyShot, myTank.CurrentDirection.Value, myTank, AppSettings.MyShotPredictionDepth, command);
-            }
+            var currentCommand = command.ToList();
+            CalculateMyTankShotPredictions(currentPoint, lastDirection, currentCommand);
 
             foreach (var direction in BaseMobile.ValidDirections)
             {
-                var point = myTank.Point.Shift(direction);
+                var movePoint = currentPoint.Shift(direction);
 
-                var cell = Field.GetCell(point);
+                var cell = Field.GetCell(movePoint);
                 if (cell.CanMove)
                 {
-                    var command = new List<Direction> { direction, Direction.Act };
-                    PredictionLogic.CalculateTankShotPredictions(point, PredictionType.MyShot, direction, myTank, AppSettings.MyShotPredictionDepth, command);
+                    var directionCommand = command.ToList();
+                    directionCommand.Add(direction);
+                    CalculateMyTankShotPredictions(movePoint, direction, directionCommand);
+                }
+            }
+        }
+
+        private static void CalculateMyTankShotPredictions(Point point, Direction direction, List<Direction> command)
+        {
+            var startShotPoint = point;
+
+            var startIndex = Math.Min(-1 - State.ThisRound.MyTank.ShotCountdownLeft, 1);
+
+            for (var i = startIndex; i <= Bullet.DefaultSpeed * AppSettings.MyShotPredictionDepth; i++)
+            {
+                var shotPoint = BaseMobile.Shift(startShotPoint, direction);
+                var shotCell = Field.GetCell(shotPoint);
+
+                var depth = (int)Math.Ceiling((decimal)i / 2);
+
+                if (i >= -1)
+                {
+                    var actualDepth = (command.Count - 1) + Math.Max(0, State.ThisRound.MyTank.ShotCountdownLeft) + depth;
+
+                    var directionActCommand = command.ToList();
+                    directionActCommand.Add(Direction.Act);
+                    shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
+                }
+
+                if (shotCell.CanShootThrough)
+                {
+                    startShotPoint = shotPoint;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        private static void CalculateMyKillPredictions()
+        {
+            var allCells = Field.AllCells;
+
+            var aiMoveCells = allCells.Where(x => x.Predictions.AiMovePredictions.Any()).ToList();
+
+            foreach (var aiMoveCell in aiMoveCells)
+            {
+                var oneHealthAiMovePredictions = aiMoveCell.Predictions.AiMovePredictions.Where(x => ((BaseTank) x.Item).Health == 1).ToList();
+
+                foreach (var aiMovePrediction in oneHealthAiMovePredictions)
+                {
+                    var mySameDepthShots = aiMoveCell.Predictions.MyShotPredictions
+                        .Where(x => x.Depth == aiMovePrediction.Depth).ToList();
+
+                    foreach (var mySameDepthShot in mySameDepthShots)
+                    {
+                        aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                    }
                 }
             }
         }

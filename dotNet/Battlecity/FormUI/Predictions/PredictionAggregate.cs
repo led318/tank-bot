@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using API.Components;
+using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
 using Point = API.Components.Point;
@@ -20,6 +19,7 @@ namespace FormUI.Predictions
         public List<EnemyShotPrediction> EnemyShotPredictions { get; set; } = new List<EnemyShotPrediction>();
         public List<MyMovePrediction> MyMovePredictions { get; set; } = new List<MyMovePrediction>();
         public List<MyShotPrediction> MyShotPredictions { get; set; } = new List<MyShotPrediction>();
+        public List<MyKillPrediction> MyKillPredictions { get; set; } = new List<MyKillPrediction>();
 
         public List<BasePrediction> AllPredictions => GetAllPredictions();
 
@@ -34,13 +34,14 @@ namespace FormUI.Predictions
             result.AddRange(EnemyShotPredictions);
             result.AddRange(MyMovePredictions);
             result.AddRange(MyShotPredictions);
+            result.AddRange(MyKillPredictions);
 
             return result;
         }
 
-        public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command)
+        public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command, BaseItem item)
         {
-            var prediction = PredictionFactory.Get(type, depth, point, command);
+            var prediction = PredictionFactory.Get(type, depth, point, command, item);
 
             switch (type)
             {
@@ -65,6 +66,9 @@ namespace FormUI.Predictions
                 case PredictionType.MyShot:
                     MyShotPredictions.Add((MyShotPrediction)prediction);
                     break;
+                case PredictionType.MyKill:
+                    MyKillPredictions.Add((MyKillPrediction)prediction);
+                    break;
 
                 default:
                     throw new NotImplementedException();
@@ -82,6 +86,7 @@ namespace FormUI.Predictions
             EnemyShotPredictions.Clear();
             MyMovePredictions.Clear();
             MyShotPredictions.Clear();
+            MyKillPredictions.Clear();
         }
 
         public List<Note> GetPredictionNotes()
@@ -102,11 +107,11 @@ namespace FormUI.Predictions
 
 
             var groups = AllPredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
-            var colours = groups
+            var colors = groups
                 .Where(g => PredictionSettings.GetVisible(g.Key))
                 .Select(g => g.First().GetBorderColor()).ToList();
 
-            return colours.FirstOrDefault();
+            return colors.FirstOrDefault();
         }
     }
 }
