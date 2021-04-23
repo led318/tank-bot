@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldObjects
@@ -20,8 +21,6 @@ namespace FormUI.FieldObjects
         public bool CanMove => Items.All(x => x.CanMove);
         public bool CanShootThrough => Items.All(x => x.CanShootThrough);
 
-        //public Element Element => Item.Element;
-
         public Point Point { get; set; }
 
         public bool IsBorderBattleWall => Point.X == 0 || Point.X == Constants.FieldWidth - 1 ||
@@ -29,13 +28,16 @@ namespace FormUI.FieldObjects
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         //public List<Note> NotesOverride { get; set; } = new List<Note>();
-        public List<Note> PredictionNotes => GetPredictionNotes();
+        public List<Note> PredictionNotes => Predictions.GetPredictionNotes();
 
         public Color? BorderColor => PredictionColor ?? Item.BorderColor;
         //public Color? BorderColorOverride { get; set; }
-        public Color? PredictionColor => GetPredictionBorderColor();
+        public Color? PredictionColor => Predictions.GetPredictionBorderColor();
 
-        public List<Prediction> Predictions { get; set; } = new List<Prediction>();
+        //public List<BasePrediction> Predictions { get; set; } = new List<BasePrediction>();
+
+        public PredictionAggregate Predictions { get; set; } = new PredictionAggregate();
+
         public Cell(int i, int j)
         {
             Point = new Point(i, j);
@@ -46,14 +48,12 @@ namespace FormUI.FieldObjects
             //NotesOverride.Add(new Note(text.ToString(), color));
         }
 
-        public void AddPrediction(int depth, PredictionType type, List<Direction> command = null)
+        public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null)
         {
-            var prediction = new Prediction {Depth = depth, Type = type, Item = Item};
-            if (command != null)
-                prediction.Command.AddRange(command);
-
-            Predictions.Add(prediction);
+            var addedPrediction = Predictions.Add(type, depth, Point, command);
             IsDirty = true;
+
+            return addedPrediction;
         }
 
         public void Reset()
@@ -63,29 +63,16 @@ namespace FormUI.FieldObjects
             IsDirty = false;
         }
 
-        private List<Note> GetPredictionNotes()
+        public bool HasMyMovePrediction(int depth)
         {
-            var groups = Predictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
-            var result = groups
-                .Where(g => PredictionSettings.GetVisible(g.Key))
-                .Select(g =>
-            {
-                return new Note(g.Min(p => p.Depth), g.First().GetTextColor());
-            }).ToList();
-
-            return result;
+            return Predictions.MyMovePredictions.Any(p => p.Depth <= depth + 1);
         }
 
-        private Color? GetPredictionBorderColor()
+        public bool HasDepthPrediction<T>(int depth, Func<PredictionAggregate, IEnumerable<T>> func) where T: BasePrediction
         {
+            var hasDepthPredictions = func(Predictions).Any(x => x.Depth == depth);
 
-
-            var groups = Predictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
-            var colours = groups
-                .Where(g => PredictionSettings.GetVisible(g.Key))
-                .Select(g => g.First().GetBorderColor()).ToList();
-
-            return colours.FirstOrDefault();
+            return hasDepthPredictions;
         }
     }
 }

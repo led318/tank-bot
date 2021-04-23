@@ -1,10 +1,9 @@
 ﻿using API.Components;
-using FormUI.FieldItems;
 using FormUI.FieldItems.Prize;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldItems.Wall;
 
-namespace FormUI.Infrastructure
+namespace FormUI.FieldItems
 {
     public static class ItemFactory
     {

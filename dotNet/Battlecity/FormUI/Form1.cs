@@ -15,6 +15,8 @@ using FormUI.Controls;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUI.Logic;
+using FormUI.Predictions;
 using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
@@ -39,7 +41,7 @@ namespace FormUI
             _isProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
 
             InitializeComponent();
-            InitSettings();
+            //Task.Run(InitSettings);
 
             InitFieldPanel();
             InitPredictionCheckboxes();
@@ -107,7 +109,7 @@ namespace FormUI
                 checkbox.Width = 300;
                 checkbox.Top = height;
                 checkbox.Checked = attribute?.Selected ?? false;
-                checkbox.ForeColor = Prediction.GetBorderColor(type) ?? Color.Black;
+                checkbox.ForeColor = BasePrediction.GetBorderColor(type) ?? Color.Black;
 
                 height += heightStep;
 
@@ -170,8 +172,9 @@ namespace FormUI
                 if (State.GameIsRunning)
                 {
                     //todo: perform calculations
-                    var calculationLogic = new CalculationLogic();
-                    calculationLogic.PerformCalculations();
+                    var task = new Task(CalculationLogic.PerformCalculations);
+                    task.Start();
+                    task.Wait();
 
                     for (var i = 0; i < Constants.FieldWidth; i++)
                     {
@@ -190,7 +193,9 @@ namespace FormUI
 
                 _stopWatch.Stop();
                 label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
-
+                label2.Text = State.ThisRound.MyTank == null 
+                    ? string.Empty 
+                    : $"Me: {State.ThisRound.MyTank.Point}. Predictions: {Field.GetMyMovePredictionsCount()}";
             }
 
             return result;

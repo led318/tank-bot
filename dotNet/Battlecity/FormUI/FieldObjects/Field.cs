@@ -3,6 +3,7 @@ using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
 
 namespace FormUI.FieldObjects
 {
@@ -13,6 +14,9 @@ namespace FormUI.FieldObjects
         public static IEnumerable<Cell> AllCells => Flatten(Cells);
 
         public static IEnumerable<BaseItem> AllItems => AllCells.Select(x => x.Item).ToList();
+
+        public static IDictionary<int, List<MyMovePrediction>> AllMyMoveDepthPredictions { get; set; } =
+            new Dictionary<int, List<MyMovePrediction>>();
         
 
         static Field()
@@ -42,6 +46,11 @@ namespace FormUI.FieldObjects
             {
                 cell.Reset();
             }
+
+            foreach (var depthPredictions in AllMyMoveDepthPredictions)
+            {
+                depthPredictions.Value.Clear();
+            }
         }
 
         private static IEnumerable<T> Flatten<T>(T[,] map)
@@ -58,6 +67,33 @@ namespace FormUI.FieldObjects
         public static void MarkCellDirty(Point point)
         {
             GetCell(point).IsDirty = true;
+        }
+
+        public static int GetMyMovePredictionsCount()
+        {
+            return AllCells.Sum(x => x.Predictions.MyMovePredictions.Count);
+        }
+
+        public static void AddMyMoveDepthPredictions(int depth, MyMovePrediction prediction)
+        {
+            if (!AllMyMoveDepthPredictions.ContainsKey(depth))
+            {
+                AllMyMoveDepthPredictions[depth] = new List<MyMovePrediction>();
+            }
+
+            AllMyMoveDepthPredictions[depth].Add(prediction);
+        }
+
+        public static List<MyMovePrediction> GetMyMoveDepthPredictions(int depth)
+        {
+            if (!AllMyMoveDepthPredictions.ContainsKey(depth))
+                return new List<MyMovePrediction>();
+
+            var depthPredictions = AllMyMoveDepthPredictions[depth];
+            if (!depthPredictions.Any())
+                return new List<MyMovePrediction>();
+
+            return depthPredictions;
         }
     }
 }

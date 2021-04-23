@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using API.Components;
-using FormUI.FieldItems;
+using Point = API.Components.Point;
 
-namespace FormUI.FieldObjects
+namespace FormUI.Predictions
 {
-    public class Prediction
+    public abstract class BasePrediction
     {
+        public Point Point { get; set; }
         public int Depth { get; set; }
-        public PredictionType Type { get; set; }
-        public BaseItem Item { get; set; }
+        public abstract PredictionType Type { get; }
+        public Color? BorderColor => GetBorderColor();
+        public Brush TextColor => GetTextColor();
 
+        [Obsolete]
         public List<Direction> Command { get; set; } = new List<Direction>();
+
+        public string CommandText => string.Join(",", Command);
 
         public Color? GetBorderColor()
         {
@@ -25,15 +34,17 @@ namespace FormUI.FieldObjects
             {
                 case PredictionType.MyShot:
                     return Color.DeepPink;
+                case PredictionType.MyMove:
+                    return Color.LawnGreen;
                 case PredictionType.AiShot:
                     return Color.Red;
                 case PredictionType.Bullet:
                     return Color.LightCoral;
                 case PredictionType.EnemyShot:
                     return Color.DarkOrchid;
-                case PredictionType.AiTankMove:
+                case PredictionType.AiMove:
                     return Color.Aqua;
-                case PredictionType.EnemyTankMove:
+                case PredictionType.EnemyMove:
                     return Color.Green;
             }
 
@@ -51,40 +62,21 @@ namespace FormUI.FieldObjects
             {
                 case PredictionType.MyShot:
                     return Brushes.DeepPink;
+                case PredictionType.MyMove:
+                    return Brushes.LawnGreen;
                 case PredictionType.AiShot:
                     return Brushes.Red;
                 case PredictionType.Bullet:
                     return Brushes.LightCoral;
                 case PredictionType.EnemyShot:
                     return Brushes.DarkOrchid;
-                case PredictionType.AiTankMove:
+                case PredictionType.AiMove:
                     return Brushes.Aqua;
-                case PredictionType.EnemyTankMove:
+                case PredictionType.EnemyMove:
                     return Brushes.Green;
             }
 
             return null;
         }
-    }
-
-    public enum PredictionType
-    {
-        [IsDefaultSelected(Selected = true)]
-        MyShot,
-        [IsDefaultSelected(Selected = true)]
-        AiShot,
-        [IsDefaultSelected(Selected = true)]
-        Bullet,
-        [IsDefaultSelected(Selected = true)]
-        EnemyShot,
-        [IsDefaultSelected(Selected = true)]
-        AiTankMove,
-        [IsDefaultSelected(Selected = true)]
-        EnemyTankMove
-    }
-
-    public class IsDefaultSelectedAttribute : Attribute
-    {
-        public bool Selected { get; set; }
     }
 }
