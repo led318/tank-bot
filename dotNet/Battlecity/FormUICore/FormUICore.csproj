@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -11,7 +11,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Solver\Solver.csproj" />
+    <ProjectReference Include="..\API\API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\MyPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\MyPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
