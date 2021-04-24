@@ -21,13 +21,34 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using API.Components;
 
 namespace API.Misc
 {
     public static class Utilities
     {
+        private static readonly IDictionary<string, FieldInfo> _fieldsDictionary = new Dictionary<string, FieldInfo>();
+
+
+        static Utilities()
+        {
+            var type = typeof(Element);
+
+            foreach (var name in Enum.GetNames(type))
+            {
+                var field = type.GetField(name);
+                var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+
+                if (attribute == null)
+                    continue;
+
+                _fieldsDictionary[attribute.Description] = field;
+            }
+        }
+
         public static string GetDescription(this Element value)
         {
             var type = value.GetType();
@@ -47,20 +68,12 @@ namespace API.Misc
 
         public static Element GetElement(this string value)
         {
-            var type = typeof(Element);
+            if (!_fieldsDictionary.ContainsKey(value))
+                throw new Exception("There is no such an Element constant!");
 
-            foreach (string name in Enum.GetNames(type))
-            {
-                var field = type.GetField(name);
+            var field = _fieldsDictionary[value];
 
-                var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                if (attribute == null || attribute.Description != value)
-                    continue;
-
-                return (Element)field.GetValue(field.Name);
-            }
-
-            throw new Exception("There is no such an Element constant!");
+            return (Element)field.GetValue(field.Name);
         }
     }
 }

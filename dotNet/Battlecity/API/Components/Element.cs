@@ -75,8 +75,8 @@ namespace API.Components
         [Description("┘")]
         WALL_DESTROYED_DOWN_RIGHT,
 
-        [Description(" ")]
-        WALL_DESTROYED,
+        //[Description(" ")]
+        //WALL_DESTROYED,
 
         [Description("•")]
         BULLET,

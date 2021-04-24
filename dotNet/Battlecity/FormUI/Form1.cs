@@ -4,21 +4,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.Cache;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API;
-using API.Components;
 using FormUI.Controls;
-using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Logic;
 using FormUI.Predictions;
-using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
@@ -26,29 +21,26 @@ namespace FormUI
 {
     public partial class Form1 : Form
     {
-        private static string _serverURL;
-        private static string _testServerURL;
-        private static bool _isProd;
-        private static string _settingsURL = "https://epam-botchallenge.com/codenjoy-balancer/rest/game/settings/get";
+        private const string _settingsURL = "https://epam-botchallenge.com/codenjoy-balancer/rest/game/settings/get";
 
-        private Stopwatch _stopWatch = new Stopwatch();
+        private readonly Stopwatch _stopWatch = new();
 
         public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
 
         public Form1()
         {
-            _serverURL = ConfigurationManager.AppSettings["serverURL"];
-            _testServerURL = ConfigurationManager.AppSettings["testServerURL"];
-            _isProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
+            var serverUrl = ConfigurationManager.AppSettings["serverURL"];
+            var testServerUrl = ConfigurationManager.AppSettings["testServerURL"];
+            var isProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
 
             InitializeComponent();
-            //Task.Run(InitSettings);
+            Task.Run(InitSettings);
 
             InitFieldPanel();
             InitPredictionCheckboxes();
 
             // Creating custom AI client
-            var bot = new YourSolver(_isProd ? _serverURL : _testServerURL);
+            var bot = new YourSolver(isProd ? serverUrl : testServerUrl);
             bot.RoundCallbackHandler += SetBoard;
 
             // Starting thread with playing game
@@ -143,9 +135,7 @@ namespace FormUI
             }
         }
 
-
-
-        delegate string SetBoardCallback(Board board); //todo: change return type to string or Element[]
+        private delegate string SetBoardCallback(Board board);
 
         private string SetBoard(Board board)
         {
@@ -156,7 +146,7 @@ namespace FormUI
             // If these threads are different, it returns true.
             if (this.label1.InvokeRequired)
             {
-                SetBoardCallback d = new SetBoardCallback(SetBoard);
+                var d = new SetBoardCallback(SetBoard);
 
                 try
                 {
@@ -166,7 +156,7 @@ namespace FormUI
                         resultString = invokeResultStr;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             }

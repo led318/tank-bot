@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using FormUI.FieldItems;
 using FormUI.FieldObjects;
 
 namespace FormUI.Controls
@@ -11,7 +9,7 @@ namespace FormUI.Controls
     {
         private Color? _myBorderColor;
 
-        private Cell _cell;
+        private readonly Cell _cell;
 
         private int _noteXStart = -1;
         private int _noteXStep = 8;
@@ -55,8 +53,6 @@ namespace FormUI.Controls
         public void Change()
         {
             var isChanged = _cell.IsDirty;
-
-            //var item = _cell.Items.First();
 
             if (BackgroundImage != _cell.Item.Image)
             {

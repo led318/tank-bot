@@ -9,8 +9,8 @@ namespace FormUI.FieldItems.Tank
 {
     public abstract class BaseTank : BaseMobile
     {
-        public override bool CanShootThrough => false;
-        public override bool CanMove => false;
+        public override bool CanShootThrough => true;
+        public override bool CanMove => false; //maybe false
 
         public override int Speed => 1;
 
@@ -20,7 +20,6 @@ namespace FormUI.FieldItems.Tank
         public int ShotCountdownLeft { get; set; } = 0;
 
         public bool IsShotThisRound => ShotCountdownLeft <= 0;
-        //public bool IsShotNextRound => ShotCountdownLeft == 1;
 
         public bool IsPrize { get; set; }
 
@@ -32,7 +31,7 @@ namespace FormUI.FieldItems.Tank
             InitIsStuck();
         }
 
-        private void InitIsStuck()
+        protected virtual void InitIsStuck()
         {
             if (!State.HasPrevRound)
                 return;

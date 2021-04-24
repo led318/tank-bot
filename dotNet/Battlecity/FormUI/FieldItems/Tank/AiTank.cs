@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using API.Components;
 using FormUI.Infrastructure;
 using Point = API.Components.Point;
@@ -9,13 +10,19 @@ namespace FormUI.FieldItems.Tank
     {
         public override int ShotCountdownDefault => Settings.Get.AiTicksPerShoot;
 
+        private readonly HashSet<Element> _aiTankElements = new()
+        {
+            Element.AI_TANK_DOWN,
+            Element.AI_TANK_LEFT,
+            Element.AI_TANK_RIGHT,
+            Element.AI_TANK_UP,
+            Element.AI_TANK_PRIZE
+        };
+
         public AiTank(Element element, Point point) : base(element, point)
         {
             if (AppSettings.DrawBaseBorders)
                 BorderColor = Color.DarkGray;
-
-            //AddNote("0", Brushes.DarkGreen);
-            //AddNote("1", Brushes.Red);
         }
 
         protected override void SetDirection()
@@ -51,6 +58,17 @@ namespace FormUI.FieldItems.Tank
 
             if (ShotCountdownLeft < 0)
                 Shot();
+        }
+
+        protected override void InitIsStuck()
+        {
+            if (!State.HasPrevRound)
+                return;
+
+            var prevStepPoint = State.PrevRound.Items[Point.X, Point.Y];
+
+            if (_aiTankElements.Contains(prevStepPoint.Element))
+                IsStuck = true;
         }
     }
 }

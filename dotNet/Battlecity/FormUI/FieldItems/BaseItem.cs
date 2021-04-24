@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using API.Components;
@@ -32,11 +31,6 @@ namespace FormUI.FieldItems
             Point = point;
         }
 
-        public virtual void ProcessRound()
-        {
-            
-        }
-        
         public void AddNote<T>(T text, Brush color, NoteType type = NoteType.Other)
         {
             if (type != NoteType.Other)

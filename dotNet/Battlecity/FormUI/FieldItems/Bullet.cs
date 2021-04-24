@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using API.Components;
-using FormUI.FieldItems.Helpers;
-using FormUI.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
@@ -21,7 +14,7 @@ namespace FormUI.FieldItems
 
         //public bool IsMyBullet { get; set; }
 
-        public Bullet(Element element, API.Components.Point point) : base(element, point)
+        public Bullet(Element element, Point point) : base(element, point)
         {
             BorderColor = Color.Red;
 

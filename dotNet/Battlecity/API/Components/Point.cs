@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace API.Components
 {
-    public struct Point
+    public readonly struct Point
     {
         public readonly int X;
         public readonly int Y;
@@ -112,7 +112,7 @@ namespace API.Components
             if (!(obj is Point))
                 return false;
 
-            Point that = (Point)obj;
+            var that = (Point)obj;
             return that.X == this.X && that.Y == this.Y;
         }
 

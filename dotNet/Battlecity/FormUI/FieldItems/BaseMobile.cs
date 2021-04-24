@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using API.Components;
-using FormUI.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems

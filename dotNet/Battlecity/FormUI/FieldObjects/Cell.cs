@@ -27,25 +27,17 @@ namespace FormUI.FieldObjects
                                           Point.Y == 0 || Point.Y == Constants.FieldHeight - 1;
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
-        //public List<Note> NotesOverride { get; set; } = new List<Note>();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();
 
         public Color? BorderColor => PredictionColor ?? Item.BorderColor;
-        //public Color? BorderColorOverride { get; set; }
         public Color? PredictionColor => Predictions.GetPredictionBorderColor();
 
-        //public List<BasePrediction> Predictions { get; set; } = new List<BasePrediction>();
 
         public PredictionAggregate Predictions { get; set; } = new PredictionAggregate();
 
         public Cell(int i, int j)
         {
             Point = new Point(i, j);
-        }
-
-        public void AddNote<T>(T text, Brush color)
-        {
-            //NotesOverride.Add(new Note(text.ToString(), color));
         }
 
         public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null, BaseItem item = null)
@@ -58,7 +50,6 @@ namespace FormUI.FieldObjects
 
         public void Reset()
         {
-            //NotesOverride.Clear();
             Predictions.Clear();
             IsDirty = false;
         }

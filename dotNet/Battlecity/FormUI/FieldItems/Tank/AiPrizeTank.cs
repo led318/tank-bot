@@ -7,8 +7,6 @@ namespace FormUI.FieldItems.Tank
 {
     public class AiPrizeTank : AiTank
     {
-        //public static Color Color => Color.Orange;
-
         public override int Health { get; set; } = Settings.Get.KillHitsAiPrize;
 
         public AiPrizeTank(Element element, Point point) : base(element, point)

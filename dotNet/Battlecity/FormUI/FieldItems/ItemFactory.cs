@@ -64,6 +64,7 @@ namespace FormUI.FieldItems
 
 
                 case Element.WALL:
+                //case Element.WALL_DESTROYED:
                 case Element.WALL_DESTROYED_DOWN:
                 case Element.WALL_DESTROYED_DOWN_LEFT:
                 case Element.WALL_DESTROYED_DOWN_RIGHT:
