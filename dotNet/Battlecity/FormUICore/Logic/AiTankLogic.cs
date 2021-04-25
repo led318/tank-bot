@@ -23,7 +23,7 @@ namespace FormUI.Logic
                     : prevRoundNearTanks.FirstOrDefault(p => p.GetNextPoints(p.Point).First() == aiPrizeTank.Point);
 
                 if (foundPrevRoundNearTank != null)
-                    aiPrizeTank.CurrentDirection = foundPrevRoundNearTank.CurrentDirection;
+                    aiPrizeTank.Direction = foundPrevRoundNearTank.Direction;
             }
         }
 

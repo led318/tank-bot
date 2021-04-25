@@ -21,9 +21,21 @@ namespace FormUICore.Logic
 
         public static void CalculateMyTankData()
         {
+            CalculateMyShotBasedOnPrevRound();
             CalculateMyMovePredictions();
             CalculateMyKillAiPredictions();
             CalculateMyKillEnemyPredictions();
+        }
+
+        private static void CalculateMyShotBasedOnPrevRound()
+        {
+            if (State.HasPrevRound && State.ThisRound.MyTank != null)
+            {
+                if (State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
+                {
+                    State.ThisRound.MyTank.Shot();
+                }
+            }
         }
 
         private static void CalculateMyMovePredictions()
@@ -35,7 +47,7 @@ namespace FormUICore.Logic
 
             AppendLog("=========================== STARTED ================================");
 
-            CalculateMyShotPredictions(myTank.Point, myTank.CurrentDirection.Value, new List<Direction>());
+            CalculateMyShotPredictions(myTank.Point, myTank.Direction.Value, new List<Direction>());
 
             CalculateMyMoveDepth(myTank.Point, 1, new List<Direction>());
 
@@ -44,15 +56,12 @@ namespace FormUICore.Logic
             while (hasNextDepth)
             {
                 var predictions = Field.GetMyMoveDepthPredictions(depth);
-
                 depth++;
-
                 var anyPredictionHasNextDepth = false;
 
                 foreach (var prediction in predictions)
                 {
                     var currentPredictionHasNextDepth = CalculateMyMoveDepth(prediction.Point, depth, prediction.Commands);
-
                     if (currentPredictionHasNextDepth)
                         anyPredictionHasNextDepth = true;
                 }
@@ -149,29 +158,29 @@ namespace FormUICore.Logic
         {
             var startShotPoint = point;
 
-            var startIndex = Math.Min(1 - State.ThisRound.MyTank.ShotCountdownLeft, 1);
-            //var startIndex = 1;
+            //var startIndex = Math.Min(1 - State.ThisRound.MyTank.ShotCountdownLeft, 1);
+            var startIndex = 1;
 
             for (var i = startIndex; i <= Bullet.DefaultSpeed * AppSettings.MyShotPredictionDepth; i++)
             {
                 var shotPoint = BaseMobile.Shift(startShotPoint, direction);
                 var shotCell = Field.GetCell(shotPoint);
 
+                if (shotCell.IsWall)
+                    break;
+
                 var depth = (int)Math.Ceiling((decimal)i / 2) - 1;
 
-                if (i >= -1)
-                {
-                    var directionActCommand = command.ToList();
-                    directionActCommand.Add(Direction.Act);
+                var directionActCommand = command.ToList();
+                directionActCommand.Add(Direction.Act);
 
-                    var commandRoundsCount = directionActCommand.RoundsCount();
-                    var shotCountDownLeft = State.ThisRound.MyTank.ShotCountdownLeft;
-                    var shotDepth = depth;
+                var commandRoundsCount = directionActCommand.RoundsCount();
+                var shotCountDownLeft = State.ThisRound.MyTank.ShotCountdownLeft;
+                var shotDepth = depth;
 
-                    var actualDepth = commandRoundsCount + shotCountDownLeft + shotDepth;
+                var actualDepth = commandRoundsCount + shotCountDownLeft + shotDepth;
 
-                    shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
-                }
+                shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
 
                 if (shotCell.CanShootThrough)
                 {

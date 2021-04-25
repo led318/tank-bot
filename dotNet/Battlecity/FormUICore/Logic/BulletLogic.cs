@@ -20,7 +20,7 @@ namespace FormUICore.Logic
                 var prevRoundNearBullet = CalculateNearestBullet(bullet);
                 if (prevRoundNearBullet != null)
                 {
-                    bullet.CurrentDirection = prevRoundNearBullet.CurrentDirection ?? 
+                    bullet.Direction = prevRoundNearBullet.Direction ?? 
                                               CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
 
                     continue;
@@ -29,7 +29,7 @@ namespace FormUICore.Logic
                 var currentRoundNearTank = CalculateNearestTank(bullet) ?? CalculateNearestTank(bullet, Bullet.DefaultSpeed);
                 if (currentRoundNearTank != null)
                 {
-                    bullet.CurrentDirection = currentRoundNearTank.CurrentDirection;
+                    bullet.Direction = currentRoundNearTank.Direction;
                     currentRoundNearTank.Shot();
 
                     continue;

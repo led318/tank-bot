@@ -22,24 +22,24 @@ namespace FormUI.FieldItems.Tank
             switch (Element)
             {
                 case Element.OTHER_TANK_DOWN:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
                 case Element.OTHER_TANK_UP:
-                    direction = Direction.Up;
+                    direction = API.Components.Direction.Up;
                     break;
                 case Element.OTHER_TANK_LEFT:
-                    direction = Direction.Left;
+                    direction = API.Components.Direction.Left;
                     break;
                 case Element.OTHER_TANK_RIGHT:
-                    direction = Direction.Right;
+                    direction = API.Components.Direction.Right;
                     break;
 
                 default:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
             }
 
-            CurrentDirection = direction;
+            Direction = direction;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Configuration;
+using System.Drawing;
 using API.Components;
 using FormUI.Infrastructure;
 using Point = API.Components.Point;
@@ -15,6 +16,25 @@ namespace FormUI.FieldItems.Tank
                 BorderColor = Color.Yellow;
         }
 
+        public void UpdateElementByDirection()
+        {
+            switch (Direction)
+            {
+                case API.Components.Direction.Down:
+                    Element = Element.TANK_DOWN;
+                    break;
+                case API.Components.Direction.Up:
+                    Element = Element.TANK_UP;
+                    break;
+                case API.Components.Direction.Left:
+                    Element = Element.TANK_LEFT;
+                    break;
+                case API.Components.Direction.Right:
+                    Element = Element.TANK_RIGHT;
+                    break;
+            }
+        }
+
         protected override void SetDirection()
         {
             Direction direction;
@@ -22,24 +42,24 @@ namespace FormUI.FieldItems.Tank
             switch (Element)
             {
                 case Element.TANK_DOWN:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
                 case Element.TANK_UP:
-                    direction = Direction.Up;
+                    direction = API.Components.Direction.Up;
                     break;
                 case Element.TANK_LEFT:
-                    direction = Direction.Left;
+                    direction = API.Components.Direction.Left;
                     break;
                 case Element.TANK_RIGHT:
-                    direction = Direction.Right;
+                    direction = API.Components.Direction.Right;
                     break;
 
                 default:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
             }
 
-            CurrentDirection = direction;
+            Direction = direction;
         }
     }
 }

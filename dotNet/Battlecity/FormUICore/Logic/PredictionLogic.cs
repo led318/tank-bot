@@ -68,9 +68,9 @@ namespace FormUICore.Logic
         {
             foreach (var tank in tanks)
             {
-                if (tank.CurrentDirection.HasValue)
+                if (tank.Direction.HasValue)
                 {
-                    CalculateTankShotPredictions(tank.Point, type, tank.CurrentDirection.Value, tank, maxDepth);
+                    CalculateTankShotPredictions(tank.Point, type, tank.Direction.Value, tank, maxDepth);
                 }
             }
         }

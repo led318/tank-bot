@@ -36,8 +36,8 @@ namespace FormUICore.Logic
             if (tank.IsStuck)
                 return;
 
-            if (tank.CurrentDirection.HasValue)
-                PredictionLogic.CalculateTankShotPredictions(tank.Point, PredictionType.EnemyShot, tank.CurrentDirection.Value, tank, AppSettings.EnemyTankShotPredictionDepth);
+            if (tank.Direction.HasValue)
+                PredictionLogic.CalculateTankShotPredictions(tank.Point, PredictionType.EnemyShot, tank.Direction.Value, tank, AppSettings.EnemyTankShotPredictionDepth);
 
             var directions = BaseMobile.ValidDirections;
             foreach (var direction in directions)

@@ -32,24 +32,24 @@ namespace FormUI.FieldItems.Tank
             switch (Element)
             {
                 case Element.AI_TANK_DOWN:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
                 case Element.AI_TANK_UP:
-                    direction = Direction.Up;
+                    direction = API.Components.Direction.Up;
                     break;
                 case Element.AI_TANK_LEFT:
-                    direction = Direction.Left;
+                    direction = API.Components.Direction.Left;
                     break;
                 case Element.AI_TANK_RIGHT:
-                    direction = Direction.Right;
+                    direction = API.Components.Direction.Right;
                     break;
 
                 default:
-                    direction = Direction.Down;
+                    direction = API.Components.Direction.Down;
                     break;
             }
 
-            CurrentDirection = direction;
+            Direction = direction;
         }
 
         public override void Tick()

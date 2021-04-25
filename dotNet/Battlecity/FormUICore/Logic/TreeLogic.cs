@@ -60,12 +60,12 @@ namespace FormUICore.Logic
                 cell.Items.Insert(0, thisHiddenAiTank);
                 State.ThisRound.AiTanks.Add(thisHiddenAiTank);
 
-                if (prevHiddenAiTank.IsShotThisRound && prevHiddenAiTank.CurrentDirection.HasValue)
+                if (prevHiddenAiTank.IsShotThisRound && prevHiddenAiTank.Direction.HasValue)
                 {
-                    var bulletPoint = BaseMobile.Shift(prevHiddenAiTank.Point, prevHiddenAiTank.CurrentDirection, Bullet.DefaultSpeed);
+                    var bulletPoint = BaseMobile.Shift(prevHiddenAiTank.Point, prevHiddenAiTank.Direction, Bullet.DefaultSpeed);
 
                     var bullet = new Bullet(Element.BULLET, bulletPoint);
-                    bullet.CurrentDirection = prevHiddenAiTank.CurrentDirection;
+                    bullet.Direction = prevHiddenAiTank.Direction;
 
                     var bulletCell = Field.GetCell(bulletPoint);
                     bulletCell.Items.Insert(0, bullet);
@@ -90,7 +90,7 @@ namespace FormUICore.Logic
                                    State.PrevRound.CurrentMoveCommands[0] == Direction.Act;
 
             var prevDirection = isPrevCommandAct
-                ? prevMyTank.CurrentDirection
+                ? prevMyTank.Direction
                 : State.PrevRound.CurrentMoveCommands.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
 
             var prevMyTankStepPosition = prevMyTank.GetNextPositionNotCheckedForCanMove(prevDirection);
@@ -102,7 +102,8 @@ namespace FormUICore.Logic
 
                 var thisHiddenMyTank = prevMyTank.DeepClone();
                 thisHiddenMyTank.Point = tree.Point;
-                thisHiddenMyTank.CurrentDirection = prevDirection;
+                thisHiddenMyTank.Direction = prevDirection;
+                thisHiddenMyTank.UpdateElementByDirection();
 
                 var cell = Field.GetCell(tree.Point);
                 cell.Items.Insert(0, thisHiddenMyTank);
@@ -113,7 +114,7 @@ namespace FormUICore.Logic
                     var bulletPoint = BaseMobile.Shift(prevMyTank.Point, prevDirection, Bullet.DefaultSpeed);
 
                     var bullet = new Bullet(Element.BULLET, bulletPoint);
-                    bullet.CurrentDirection = prevDirection;
+                    bullet.Direction = prevDirection;
 
                     var bulletCell = Field.GetCell(bulletPoint);
                     bulletCell.Items.Insert(0, bullet);

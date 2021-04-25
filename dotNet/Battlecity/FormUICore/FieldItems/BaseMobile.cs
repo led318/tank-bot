@@ -14,10 +14,10 @@ namespace FormUI.FieldItems
         public Direction? _direction;
         public static List<Direction> ValidDirections { get; } = new List<Direction>
         {
-            Direction.Left, 
-            Direction.Right, 
-            Direction.Up, 
-            Direction.Down
+            API.Components.Direction.Left, 
+            API.Components.Direction.Right, 
+            API.Components.Direction.Up, 
+            API.Components.Direction.Down
         };
 
         public bool IsValidDirection(Direction? direction)
@@ -25,7 +25,7 @@ namespace FormUI.FieldItems
             return direction == null || ValidDirections.Contains(direction.Value);
         }
 
-        public Direction? CurrentDirection
+        public Direction? Direction
         {
             get => _direction;
             set
@@ -49,15 +49,15 @@ namespace FormUI.FieldItems
 
         protected void SetDirectionNote()
         {
-            if (CurrentDirection.HasValue)
+            if (Direction.HasValue)
             {
-                AddNote(CurrentDirection.ToString()[0], Brushes.Red);
+                AddNote(Direction.ToString()[0], Brushes.Red);
             }
         }
 
         public List<Point> GetNextPoints(Point point, Direction? direction = null)
         {
-            direction ??= CurrentDirection;
+            direction ??= Direction;
 
             var result = new List<Point>();
 
@@ -82,7 +82,7 @@ namespace FormUI.FieldItems
 
         public virtual Point GetNextPositionNotCheckedForCanMove(Direction? direction = null)
         {
-            direction ??= CurrentDirection;
+            direction ??= Direction;
 
             var nextPoints = GetNextPoints(Point, direction);
 
@@ -104,13 +104,13 @@ namespace FormUI.FieldItems
         {
             switch (direction)
             {
-                case Direction.Up:
+                case API.Components.Direction.Up:
                     return point.ShiftTop(delta);
-                case Direction.Down:
+                case API.Components.Direction.Down:
                     return point.ShiftBottom(delta);
-                case Direction.Left:
+                case API.Components.Direction.Left:
                     return point.ShiftLeft(delta);
-                case Direction.Right:
+                case API.Components.Direction.Right:
                     return point.ShiftRight(delta);
             }
 

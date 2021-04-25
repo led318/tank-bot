@@ -27,6 +27,28 @@ namespace FormUI.FieldObjects
         public bool IsBorderBattleWall => Point.X == 0 || Point.X == Constants.FieldWidth - 1 ||
                                           Point.Y == 0 || Point.Y == Constants.FieldHeight - 1;
 
+        public List<Element> WallElements { get; } = new List<Element>
+        {
+            Element.BATTLE_WALL,
+            Element.WALL,
+            Element.WALL_DESTROYED_DOWN,
+            Element.WALL_DESTROYED_DOWN_LEFT,
+            Element.WALL_DESTROYED_DOWN_RIGHT,
+            Element.WALL_DESTROYED_DOWN_TWICE,
+            Element.WALL_DESTROYED_LEFT,
+            Element.WALL_DESTROYED_LEFT_RIGHT,
+            Element.WALL_DESTROYED_LEFT_TWICE,
+            Element.WALL_DESTROYED_RIGHT,
+            Element.WALL_DESTROYED_RIGHT_TWICE,
+            Element.WALL_DESTROYED_RIGHT_UP,
+            Element.WALL_DESTROYED_UP,
+            Element.WALL_DESTROYED_UP_TWICE,
+            Element.WALL_DESTROYED_UP_DOWN,
+            Element.WALL_DESTROYED_UP_LEFT
+        };
+
+        public bool IsWall => IsBorderBattleWall || Items.Any(x => WallElements.Contains(x.Element));
+
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();
 
