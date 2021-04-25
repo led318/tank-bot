@@ -1,4 +1,5 @@
-﻿using API.Components;
+﻿using System;
+using API.Components;
 using FormUI.FieldItems.Helpers;
 using System.Drawing;
 using FormUI.FieldObjects;
@@ -17,7 +18,7 @@ namespace FormUI.FieldItems.Tank
         public virtual int Health { get; set; } = 1;
 
         public abstract int ShotCountdownDefault { get; }
-        public int ShotCountdownLeft { get; set; } = 0;
+        public int ShotCountdownLeft { get; set; } = 1;
 
         public bool IsShotThisRound => ShotCountdownLeft <= 0;
 
@@ -56,7 +57,7 @@ namespace FormUI.FieldItems.Tank
 
         protected virtual void SetShotCountdownNote()
         {
-            AddNote(ShotCountdownLeft, Brushes.Red, NoteType.ShotCountdown);
+            AddNote(ShotCountdownLeft, Brushes.DeepPink, NoteType.ShotCountdown);
 
             Field.MarkCellDirty(Point);
         }
@@ -69,13 +70,16 @@ namespace FormUI.FieldItems.Tank
 
         public virtual void Shot()
         {
-            ShotCountdownLeft = ShotCountdownDefault - 1;
-            SetShotCountdownNote();
+            if (ShotCountdownLeft <= 0)
+            {
+                ShotCountdownLeft = ShotCountdownDefault - 1;
+                SetShotCountdownNote();
+            }
         }
 
         public override void Tick()
         {
-            ShotCountdownLeft--;
+            ShotCountdownLeft = Math.Max(0, ShotCountdownLeft - 1);
             SetShotCountdownNote();
         }
     }

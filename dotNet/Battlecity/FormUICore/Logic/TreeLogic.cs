@@ -4,7 +4,7 @@ using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 
-namespace FormUI.Logic
+namespace FormUICore.Logic
 {
     public static class TreeLogic
     {
@@ -26,16 +26,15 @@ namespace FormUI.Logic
             foreach (var tree in trees)
             {
                 var prevHiddenBullet = prevBullets.FirstOrDefault(b => b.GetNextPositionNotCheckedForCanMove() == tree.Point);
+                if (prevHiddenBullet == null)
+                    continue;
 
-                if (prevHiddenBullet != null)
-                {
-                    var thisHiddenBullet = prevHiddenBullet.DeepClone();
-                    thisHiddenBullet.Point = tree.Point;
+                var thisHiddenBullet = prevHiddenBullet.DeepClone();
+                thisHiddenBullet.Point = tree.Point;
 
-                    var cell = Field.GetCell(tree.Point);
-                    cell.Items.Insert(0, thisHiddenBullet);
-                    State.ThisRound.Bullets.Add(thisHiddenBullet);
-                }
+                var cell = Field.GetCell(tree.Point);
+                cell.Items.Insert(0, thisHiddenBullet);
+                State.ThisRound.Bullets.Add(thisHiddenBullet);
             }
         }
 
@@ -51,26 +50,26 @@ namespace FormUI.Logic
             {
                 var prevHiddenAiTank = prevAiTanks.FirstOrDefault(b => b.GetNextPositionNotCheckedForCanMove() == tree.Point);
 
-                if (prevHiddenAiTank != null)
+                if (prevHiddenAiTank == null)
+                    continue;
+
+                var thisHiddenAiTank = prevHiddenAiTank.DeepClone();
+                thisHiddenAiTank.Point = tree.Point;
+
+                var cell = Field.GetCell(tree.Point);
+                cell.Items.Insert(0, thisHiddenAiTank);
+                State.ThisRound.AiTanks.Add(thisHiddenAiTank);
+
+                if (prevHiddenAiTank.IsShotThisRound && prevHiddenAiTank.CurrentDirection.HasValue)
                 {
-                    var thisHiddenAiTank = prevHiddenAiTank.DeepClone();
-                    thisHiddenAiTank.Point = tree.Point;
+                    var bulletPoint = BaseMobile.Shift(prevHiddenAiTank.Point, prevHiddenAiTank.CurrentDirection, Bullet.DefaultSpeed);
 
-                    var cell = Field.GetCell(tree.Point);
-                    cell.Items.Insert(0, thisHiddenAiTank);
-                    State.ThisRound.AiTanks.Add(thisHiddenAiTank);
+                    var bullet = new Bullet(Element.BULLET, bulletPoint);
+                    bullet.CurrentDirection = prevHiddenAiTank.CurrentDirection;
 
-                    if (prevHiddenAiTank.IsShotThisRound && prevHiddenAiTank.CurrentDirection.HasValue)
-                    {
-                        var bulletPoint = BaseMobile.Shift(prevHiddenAiTank.Point, prevHiddenAiTank.CurrentDirection, Bullet.DefaultSpeed);
-
-                        var bullet = new Bullet(Element.BULLET, bulletPoint);
-                        bullet.CurrentDirection = prevHiddenAiTank.CurrentDirection;
-
-                        var bulletCell = Field.GetCell(bulletPoint);
-                        bulletCell.Items.Insert(0, bullet);
-                        State.ThisRound.Bullets.Add(bullet);
-                    }
+                    var bulletCell = Field.GetCell(bulletPoint);
+                    bulletCell.Items.Insert(0, bullet);
+                    State.ThisRound.Bullets.Add(bullet);
                 }
             }
         }
@@ -87,35 +86,38 @@ namespace FormUI.Logic
             if (prevMyTank == null)
                 return;
 
-            if (State.PrevRound.CurrentMoveCommands.Count == 1 && State.PrevRound.CurrentMoveCommands[0] == Direction.Act)
-                return;
+            var isPrevCommandAct = State.PrevRound.CurrentMoveCommands.Count == 1 &&
+                                   State.PrevRound.CurrentMoveCommands[0] == Direction.Act;
 
-            var prevDirection = State.PrevRound.CurrentMoveCommands.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
+            var prevDirection = isPrevCommandAct
+                ? prevMyTank.CurrentDirection
+                : State.PrevRound.CurrentMoveCommands.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
+
             var prevMyTankStepPosition = prevMyTank.GetNextPositionNotCheckedForCanMove(prevDirection);
 
             foreach (var tree in trees)
             {
-                if (prevMyTankStepPosition == tree.Point)
+                if (prevMyTankStepPosition != tree.Point)
+                    continue;
+
+                var thisHiddenMyTank = prevMyTank.DeepClone();
+                thisHiddenMyTank.Point = tree.Point;
+                thisHiddenMyTank.CurrentDirection = prevDirection;
+
+                var cell = Field.GetCell(tree.Point);
+                cell.Items.Insert(0, thisHiddenMyTank);
+                State.ThisRound.MyTank = thisHiddenMyTank;
+
+                if (State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
                 {
-                    var thisHiddenMyTank = prevMyTank.DeepClone();
-                    thisHiddenMyTank.Point = tree.Point;
-                    thisHiddenMyTank.CurrentDirection = prevDirection;
+                    var bulletPoint = BaseMobile.Shift(prevMyTank.Point, prevDirection, Bullet.DefaultSpeed);
 
-                    var cell = Field.GetCell(tree.Point);
-                    cell.Items.Insert(0, thisHiddenMyTank);
-                    State.ThisRound.MyTank = thisHiddenMyTank;
+                    var bullet = new Bullet(Element.BULLET, bulletPoint);
+                    bullet.CurrentDirection = prevDirection;
 
-                    if (State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
-                    {
-                        var bulletPoint = BaseMobile.Shift(prevMyTank.Point, prevDirection, Bullet.DefaultSpeed);
-
-                        var bullet = new Bullet(Element.BULLET, bulletPoint);
-                        bullet.CurrentDirection = prevDirection;
-
-                        var bulletCell = Field.GetCell(bulletPoint);
-                        bulletCell.Items.Insert(0, bullet);
-                        State.ThisRound.Bullets.Add(bullet);
-                    }
+                    var bulletCell = Field.GetCell(bulletPoint);
+                    bulletCell.Items.Insert(0, bullet);
+                    State.ThisRound.Bullets.Add(bullet);
                 }
             }
         }

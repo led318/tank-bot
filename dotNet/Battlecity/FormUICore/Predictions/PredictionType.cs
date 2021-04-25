@@ -5,9 +5,9 @@ namespace FormUI.Predictions
 {
     public enum PredictionType
     {
-        [IsDefaultSelected(Selected = true)]
-        MyKill,
         //[IsDefaultSelected(Selected = true)]
+        MyKill,
+        [IsDefaultSelected(Selected = true)]
         MyShot,
         //[IsDefaultSelected(Selected = true)]
         MyMove,

@@ -8,9 +8,9 @@ using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 
-namespace FormUI.Logic
+namespace FormUICore.Logic
 {
-    public static class MyTankLogic
+    public static class MyTankPredictionLogic
     {
         //private static readonly string _logFile = "log.txt";
 
@@ -105,6 +105,10 @@ namespace FormUI.Logic
             if (hasDepthBullets)
                 return false;
 
+            var hasPrevDepthBullets = cell.HasDepthPrediction(depth - 1, x => x.BulletPredictions);
+            if (hasPrevDepthBullets)
+                return false;
+
             var hasAiShot = cell.HasDepthPrediction(depth, x => x.AiShotPredictions);
             if (hasAiShot)
                 return false;
@@ -119,7 +123,7 @@ namespace FormUI.Logic
         private static void CalculateMyShotPredictions(Point currentPoint, Direction lastDirection, List<Direction> command)
         {
             var currentCommand = command.ToList();
-            CalculateMyTankShotPredictions(currentPoint, lastDirection, currentCommand);
+            CalculateMyShotsForDirection(currentPoint, lastDirection, currentCommand);
 
             foreach (var direction in BaseMobile.ValidDirections)
             {
@@ -130,30 +134,42 @@ namespace FormUI.Logic
                 {
                     var directionCommand = command.ToList();
                     directionCommand.Add(direction);
-                    CalculateMyTankShotPredictions(movePoint, direction, directionCommand);
+                    CalculateMyShotsForDirection(movePoint, direction, directionCommand);
+                }
+                else
+                {
+                    var directionCommand = command.ToList();
+                    directionCommand.Add(direction);
+                    CalculateMyShotsForDirection(currentPoint, direction, directionCommand);
                 }
             }
         }
 
-        private static void CalculateMyTankShotPredictions(Point point, Direction direction, List<Direction> command)
+        private static void CalculateMyShotsForDirection(Point point, Direction direction, List<Direction> command)
         {
             var startShotPoint = point;
 
-            var startIndex = Math.Min(-1 - State.ThisRound.MyTank.ShotCountdownLeft, 1);
+            var startIndex = Math.Min(1 - State.ThisRound.MyTank.ShotCountdownLeft, 1);
+            //var startIndex = 1;
 
             for (var i = startIndex; i <= Bullet.DefaultSpeed * AppSettings.MyShotPredictionDepth; i++)
             {
                 var shotPoint = BaseMobile.Shift(startShotPoint, direction);
                 var shotCell = Field.GetCell(shotPoint);
 
-                var depth = (int)Math.Ceiling((decimal)i / 2);
+                var depth = (int)Math.Ceiling((decimal)i / 2) - 1;
 
                 if (i >= -1)
                 {
-                    var actualDepth = (command.Count - 1) + Math.Max(0, State.ThisRound.MyTank.ShotCountdownLeft) + depth;
-
                     var directionActCommand = command.ToList();
                     directionActCommand.Add(Direction.Act);
+
+                    var commandRoundsCount = directionActCommand.RoundsCount();
+                    var shotCountDownLeft = State.ThisRound.MyTank.ShotCountdownLeft;
+                    var shotDepth = depth;
+
+                    var actualDepth = commandRoundsCount + shotCountDownLeft + shotDepth;
+
                     shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
                 }
 
@@ -177,7 +193,7 @@ namespace FormUI.Logic
             foreach (var aiMoveCell in aiMoveCells)
             {
                 var potentialTargetAiMovePredictions = AppSettings.IgnorePrizeAiTanks
-                    ? aiMoveCell.Predictions.AiMovePredictions.Where(x => ((BaseTank) x.Item).Health == 1).ToList()
+                    ? aiMoveCell.Predictions.AiMovePredictions.Where(x => ((BaseTank)x.Item).Health == 1).ToList()
                     : aiMoveCell.Predictions.AiMovePredictions;
 
                 foreach (var aiMovePrediction in potentialTargetAiMovePredictions)
@@ -202,7 +218,7 @@ namespace FormUI.Logic
             foreach (var enemyMoveCell in enemyMoveCells)
             {
                 var enemyMovePredictions = enemyMoveCell.Predictions.EnemyMovePredictions
-                    .Where(x => ((BaseTank) x.Item).IsStuck || x.Depth <= AppSettings.IgnoreEnemyMoveDepthMoreThan).ToList();
+                    .Where(x => ((BaseTank)x.Item).IsStuck || x.Depth <= AppSettings.IgnoreEnemyMoveDepthMoreThan).ToList();
 
                 foreach (var enemyMovePrediction in enemyMovePredictions)
                 {

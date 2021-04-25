@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using API.Components;
 using FormUI.FieldItems;
+using FormUICore.Predictions;
 
 namespace FormUI.Predictions
 {

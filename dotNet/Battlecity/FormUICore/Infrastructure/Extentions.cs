@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using API.Components;
 using Newtonsoft.Json;
 
 namespace FormUI.Infrastructure
@@ -34,6 +37,19 @@ namespace FormUI.Infrastructure
             var deserializeSettings = new JsonSerializerSettings { ObjectCreationHandling = ObjectCreationHandling.Replace };
 
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
+        }
+
+        public static bool IsSingleAct(this List<Direction> commands)
+        {
+            return commands.Count == 1 && commands[0] == Direction.Act;
+        }
+
+        public static int RoundsCount(this List<Direction> commands)
+        {
+            if (commands.IsSingleAct())
+                return 1;
+
+            return commands.Count(x => x != Direction.Act);
         }
     }
 }

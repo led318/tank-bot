@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 
-namespace FormUI.Logic
+namespace FormUICore.Logic
 {
     public static class BulletLogic
     {
         public static void CalculateBullets()
         {
             var bullets = State.ThisRound.Bullets;
-
             if (!bullets.Any())
                 return;
 
@@ -25,24 +20,13 @@ namespace FormUI.Logic
                 var prevRoundNearBullet = CalculateNearestBullet(bullet);
                 if (prevRoundNearBullet != null)
                 {
-                    if (prevRoundNearBullet.CurrentDirection.HasValue)
-                    {
-                        bullet.CurrentDirection = prevRoundNearBullet.CurrentDirection;
-                    }
-                    else
-                    {
-                        bullet.CurrentDirection = CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
-                    }
+                    bullet.CurrentDirection = prevRoundNearBullet.CurrentDirection ?? 
+                                              CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
 
                     continue;
                 }
 
-                var currentRoundNearTank = CalculateNearestTank(bullet);
-                if (currentRoundNearTank == null)
-                {
-                    currentRoundNearTank = CalculateNearestTank(bullet, 2);
-                }
-
+                var currentRoundNearTank = CalculateNearestTank(bullet) ?? CalculateNearestTank(bullet, Bullet.DefaultSpeed);
                 if (currentRoundNearTank != null)
                 {
                     bullet.CurrentDirection = currentRoundNearTank.CurrentDirection;
@@ -52,29 +36,16 @@ namespace FormUI.Logic
                 }
             }
 
-            PredictionLogic.CalculateMobilePredictions(State.ThisRound.Bullets, PredictionType.Bullet, x => x.CanShootThrough, true);
-
+            BulletPredictionLogic.CalculateBulletPredictions(State.ThisRound.Bullets);
         }
 
         private static BaseTank CalculateNearestTank(Bullet bullet, int delta = 1)
         {
             var nearPoints = bullet.Point.GetNearPoints(delta).ToList();
-
-
-            var currentRoundNearTanks = State.ThisRound.AllTanks
-                .Where(t => nearPoints.Contains(t.Point)).ToList();
-
-            BaseTank foundCurrentRoundNearTank = null;
-
-            if (currentRoundNearTanks.Count() == 1)
-            {
-                foundCurrentRoundNearTank = currentRoundNearTanks.First();
-            }
-            else
-            {
-                foundCurrentRoundNearTank = currentRoundNearTanks
-                    .FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
-            }
+            var currentRoundNearTanks = State.ThisRound.AllTanks.Where(t => nearPoints.Contains(t.Point)).ToList();
+            var foundCurrentRoundNearTank = currentRoundNearTanks.Count == 1
+                ? currentRoundNearTanks.First()
+                : currentRoundNearTanks.FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
 
             return foundCurrentRoundNearTank;
         }
@@ -85,20 +56,10 @@ namespace FormUI.Logic
                 return null;
 
             var nearPoints = bullet.Point.GetNearPoints(2);
-            var prevRoundNearBullets = State.PrevRound.Bullets
-                .Where(t => nearPoints.Contains(t.Point)).ToList();
-
-            Bullet foundPrevRoundNearBullet = null;
-
-            if (prevRoundNearBullets.Count() == 1)
-            {
-                foundPrevRoundNearBullet = prevRoundNearBullets.First();
-            }
-            else
-            {
-                foundPrevRoundNearBullet = prevRoundNearBullets
-                    .FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
-            }
+            var prevRoundNearBullets = State.PrevRound.Bullets.Where(t => nearPoints.Contains(t.Point)).ToList();
+            var foundPrevRoundNearBullet = prevRoundNearBullets.Count == 1
+                ? prevRoundNearBullets.First()
+                : prevRoundNearBullets.FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
 
             return foundPrevRoundNearBullet;
         }
@@ -109,14 +70,10 @@ namespace FormUI.Logic
             var yDiff = startPoint.Y - endPoint.Y;
 
             if (xDiff == 0)
-            {
-                return yDiff > 0 ? Direction.Up : Direction.Down;
-            }
+                return yDiff < 0 ? Direction.Up : Direction.Down;
 
             if (yDiff == 0)
-            {
                 return xDiff > 0 ? Direction.Left : Direction.Right;
-            }
 
             return Direction.Down;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using API.Components;
+using FormUI.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
@@ -16,7 +17,8 @@ namespace FormUI.FieldItems
 
         public Bullet(Element element, Point point) : base(element, point)
         {
-            BorderColor = Color.Red;
+            if (AppSettings.DrawBaseBorders)
+                BorderColor = Color.Red;
 
             //AddNote("0", Brushes.Red);
         }

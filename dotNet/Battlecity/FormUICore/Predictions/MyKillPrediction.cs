@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using API.Components;
+using FormUI.Predictions;
 
-namespace FormUI.Predictions
+namespace FormUICore.Predictions
 {
     public class MyKillPrediction : BasePrediction
     {
         public override PredictionType Type => PredictionType.MyKill;
+
+        
     }
 }

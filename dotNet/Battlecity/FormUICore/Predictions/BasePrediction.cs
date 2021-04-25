@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using API.Components;
 using FormUI.FieldItems;
+using FormUI.Predictions;
 using Point = API.Components.Point;
 
-namespace FormUI.Predictions
+namespace FormUICore.Predictions
 {
     public abstract class BasePrediction
     {

@@ -14,6 +14,7 @@ namespace FormUI.Infrastructure
         public static int StuckEnemyPredictionDepth { get; set; }
         public static bool DrawBaseBorders { get; set; }
         public static bool IgnorePrizeAiTanks { get; set; }
+        public static bool ChooseKillOnlyByCommandsLength { get; set; }
 
         static AppSettings()
         {
@@ -24,6 +25,7 @@ namespace FormUI.Infrastructure
 
             DrawBaseBorders = bool.Parse(ConfigurationManager.AppSettings["drawBaseBorders"]);
             IgnorePrizeAiTanks = bool.Parse(ConfigurationManager.AppSettings["ignorePrizeAiTanks"]);
+            ChooseKillOnlyByCommandsLength = bool.Parse(ConfigurationManager.AppSettings["chooseKillOnlyByCommandsLength"]);
 
             EnemyTankMovePredictionDepth = int.Parse(ConfigurationManager.AppSettings["enemyTankMovePredictionDepth"]);
             EnemyTankShotPredictionDepth = int.Parse(ConfigurationManager.AppSettings["enemyTankShotPredictionDepth"]);

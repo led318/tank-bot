@@ -8,6 +8,7 @@ namespace FormUI.FieldItems.Prize
     public class BasePrize : BaseItem
     {
         public override bool CanShootThrough => true;
+        public override bool CanMove => true;
 
         public int Duration { get; set; }
 

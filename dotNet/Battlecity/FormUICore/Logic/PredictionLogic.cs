@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
@@ -10,21 +7,21 @@ using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 
-namespace FormUI.Logic
+namespace FormUICore.Logic
 {
     public static class PredictionLogic
     {
         public static void CalculateStuckPosition(IEnumerable<BaseMobile> mobileItems, PredictionType type, int maxDepth)
         {
             foreach (var mobileItem in mobileItems)
-            {
-                var cell = Field.GetCell(mobileItem.Point);
+                CalculateStuckPosition(mobileItem, type, maxDepth);
+        }
 
-                for (var depth = 1; depth <= maxDepth; depth++)
-                {
-                    cell.AddPrediction(depth, type, item: mobileItem);
-                }
-            }
+        public static void CalculateStuckPosition(BaseMobile mobileItem, PredictionType type, int maxDepth)
+        {
+            var cell = Field.GetCell(mobileItem.Point);
+            for (var depth = 1; depth <= maxDepth; depth++)
+                cell.AddPrediction(depth, type, item: mobileItem);
         }
 
         public static void CalculateMobilePredictions(IEnumerable<BaseMobile> mobileItems, PredictionType type, Func<Cell, bool> breakCondition, bool includeFirstObstacle = false, int? depthRestriction = null)

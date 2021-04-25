@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using API.Components;
+using FormUI.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems
@@ -76,7 +77,7 @@ namespace FormUI.FieldItems
                 }
             }
 
-            return result;
+            return result.Where(x => !Field.IsOutOfField(x)).ToList();
         }
 
         public virtual Point GetNextPositionNotCheckedForCanMove(Direction? direction = null)

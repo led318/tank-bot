@@ -14,6 +14,8 @@ using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Logic;
 using FormUI.Predictions;
+using FormUICore.Logic;
+using FormUICore.Predictions;
 using Newtonsoft.Json;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 

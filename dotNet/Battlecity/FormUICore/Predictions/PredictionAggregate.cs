@@ -6,6 +6,7 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using FormUICore.Predictions;
 using Point = API.Components.Point;
 
 namespace FormUI.Predictions
