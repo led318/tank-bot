@@ -7,6 +7,7 @@ using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.FieldObjects;
 using FormUICore.Predictions;
 
 namespace FormUICore.Logic
@@ -127,6 +128,10 @@ namespace FormUICore.Logic
             if (hasEnemyShot)
                 return false;
 
+            var hasDangerCells = cell.Predictions.DangerCellPredictions.Any(x => x.Depth == depth);
+            if (hasDangerCells)
+                return false;
+
             return true;
         }
 
@@ -213,7 +218,9 @@ namespace FormUICore.Logic
 
                     foreach (var mySameDepthShot in mySameDepthShots)
                     {
-                        aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        var killPrediction = (MyKillPrediction)aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        killPrediction.MyShot = mySameDepthShot;
+                        killPrediction.TargetMove = aiMovePrediction;
                     }
                 }
             }
@@ -237,7 +244,9 @@ namespace FormUICore.Logic
 
                     foreach (var mySameDepthShot in mySameDepthShots)
                     {
-                        enemyMoveCell.AddPrediction(enemyMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        var killPrediction = (MyKillPrediction)enemyMoveCell.AddPrediction(enemyMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        killPrediction.MyShot = mySameDepthShot;
+                        killPrediction.TargetMove = enemyMovePrediction;
                     }
                 }
             }

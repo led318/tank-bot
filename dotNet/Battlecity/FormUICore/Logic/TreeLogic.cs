@@ -76,7 +76,6 @@ namespace FormUICore.Logic
 
         private static void PopulateMyTankUnderTrees()
         {
-            Settings.Get.ShowMyTankUnderTree = false; //todo: temp
             if (!State.HasPrevRound || Settings.Get.ShowMyTankUnderTree || State.ThisRound.MyTank != null)
                 return;
 

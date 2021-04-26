@@ -5,6 +5,7 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.FieldObjects;
 using FormUICore.Predictions;
 
 namespace FormUI.FieldObjects
@@ -42,11 +43,11 @@ namespace FormUI.FieldObjects
             return point.X < 0 || point.Y < 0 || point.X >= Constants.FieldWidth || point.Y >= Constants.FieldHeight;
         }
 
-        public static void Reset()
+        public static void Reset(bool clearMySelectedKills = false)
         {
             foreach (var cell in AllCells)
             {
-                cell.Reset();
+                cell.Reset(clearMySelectedKills);
             }
 
             foreach (var depthPredictions in AllMyMoveDepthPredictions)

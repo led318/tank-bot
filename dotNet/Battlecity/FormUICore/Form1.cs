@@ -15,6 +15,7 @@ using FormUI.Infrastructure;
 using FormUI.Logic;
 using FormUI.Predictions;
 using FormUICore.Controls;
+using FormUICore.Infrastructure;
 using FormUICore.Logic;
 using FormUICore.Predictions;
 using Newtonsoft.Json;
@@ -192,12 +193,19 @@ namespace FormUI
 
                     resultString = State.ThisRound.CurrentMoveCommandString;
                 }
+                else
+                {
+                    logTextBox.Clear();
+                    Field.Reset(true);
+                }
 
                 _stopWatch.Stop();
                 label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
                 label2.Text = State.ThisRound.MyTank == null 
                     ? string.Empty 
                     : GetMyStateString();
+
+                logTextBox.AppendText(Logger.GetLogAndClean());
             }
 
             return resultString;

@@ -10,7 +10,7 @@ using FormUI.Predictions;
 using FormUICore.Predictions;
 using Point = API.Components.Point;
 
-namespace FormUI.FieldObjects
+namespace FormUICore.FieldObjects
 {
     public class Cell
     {
@@ -27,7 +27,7 @@ namespace FormUI.FieldObjects
         public bool IsBorderBattleWall => Point.X == 0 || Point.X == Constants.FieldWidth - 1 ||
                                           Point.Y == 0 || Point.Y == Constants.FieldHeight - 1;
 
-        public List<Element> WallElements { get; } = new List<Element>
+        private readonly HashSet<Element> _wallElements = new HashSet<Element>
         {
             Element.BATTLE_WALL,
             Element.WALL,
@@ -47,7 +47,7 @@ namespace FormUI.FieldObjects
             Element.WALL_DESTROYED_UP_LEFT
         };
 
-        public bool IsWall => IsBorderBattleWall || Items.Any(x => WallElements.Contains(x.Element));
+        public bool IsWall => IsBorderBattleWall || Items.Any(x => _wallElements.Contains(x.Element));
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();
@@ -71,9 +71,9 @@ namespace FormUI.FieldObjects
             return addedPrediction;
         }
 
-        public void Reset()
+        public void Reset(bool clearMySelectedKills = false)
         {
-            Predictions.Clear();
+            Predictions.Clear(clearMySelectedKills);
             IsDirty = false;
         }
 

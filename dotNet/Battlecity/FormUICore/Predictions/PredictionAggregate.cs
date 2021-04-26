@@ -23,6 +23,8 @@ namespace FormUI.Predictions
         public List<MyKillPrediction> MyKillPredictions { get; set; } = new List<MyKillPrediction>();
         public List<DangerCellPrediction> DangerCellPredictions { get; set; } = new List<DangerCellPrediction>();
 
+        public List<MyKillPrediction> MySelectedKillPredictions { get; set; } = new List<MyKillPrediction>();
+
         public List<BasePrediction> AllPredictions => GetAllPredictions();
 
         private List<BasePrediction> GetAllPredictions()
@@ -42,7 +44,7 @@ namespace FormUI.Predictions
             return result;
         }
 
-        public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command, BaseItem item)
+        public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
         {
             var prediction = PredictionFactory.Get(type, depth, point, command, item);
 
@@ -83,7 +85,7 @@ namespace FormUI.Predictions
             return prediction;
         }
 
-        public void Clear()
+        public void Clear(bool clearMySelectedKills = false)
         {
             AiMovePredictions.Clear();
             AiShotPredictions.Clear();
@@ -93,6 +95,10 @@ namespace FormUI.Predictions
             MyMovePredictions.Clear();
             MyShotPredictions.Clear();
             MyKillPredictions.Clear();
+            DangerCellPredictions.Clear();
+
+            if (clearMySelectedKills)
+                MySelectedKillPredictions.Clear();
         }
 
         public List<Note> GetPredictionNotes()
@@ -104,6 +110,15 @@ namespace FormUI.Predictions
                 {
                     return new Note(g.Min(p => p.Depth), g.First().GetTextColor());
                 }).ToList();
+
+
+            var mySelectedKillPredictionNote = MySelectedKillPredictions
+                .OrderBy(x => x.Depth)
+                .Select(x => new Note(x.Depth, x.GetTextColor()))
+                .FirstOrDefault();
+
+            if (mySelectedKillPredictionNote != null)
+                result.Insert(0, mySelectedKillPredictionNote);
 
             return result;
         }

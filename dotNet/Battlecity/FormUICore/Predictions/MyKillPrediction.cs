@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using API.Components;
-using FormUI.Predictions;
+﻿using FormUI.Predictions;
 
 namespace FormUICore.Predictions
 {
@@ -8,6 +6,7 @@ namespace FormUICore.Predictions
     {
         public override PredictionType Type => PredictionType.MyKill;
 
-        
+        public BasePrediction TargetMove { get; set; }
+        public MyShotPrediction MyShot { get; set; }
     }
 }

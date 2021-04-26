@@ -6,6 +6,7 @@ using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.FieldObjects;
 using FormUICore.Predictions;
 
 namespace FormUICore.Logic

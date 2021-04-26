@@ -34,6 +34,14 @@ namespace FormUICore.Logic
 
                     continue;
                 }
+
+                var currentRoundNearTree = CalculateNearestTree(bullet) ?? CalculateNearestTree(bullet, Bullet.DefaultSpeed);
+                if (currentRoundNearTree != null)
+                {
+                    bullet.Direction = CalculateDirection(currentRoundNearTree.Point, bullet.Point);
+
+                    continue;
+                }
             }
 
             BulletPredictionLogic.CalculateBulletPredictions(State.ThisRound.Bullets);
@@ -48,6 +56,15 @@ namespace FormUICore.Logic
                 : currentRoundNearTanks.FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
 
             return foundCurrentRoundNearTank;
+        }
+
+        private static Tree CalculateNearestTree(Bullet bullet, int delta = 1)
+        {
+            var nearPoints = bullet.Point.GetNearPoints(delta).ToList();
+            var currentRoundNearTrees = State.ThisRound.Trees.Where(t => nearPoints.Contains(t.Point)).ToList();
+            var foundCurrentRoundNearTree = currentRoundNearTrees.FirstOrDefault();
+
+            return foundCurrentRoundNearTree;
         }
 
         private static Bullet CalculateNearestBullet(Bullet bullet)

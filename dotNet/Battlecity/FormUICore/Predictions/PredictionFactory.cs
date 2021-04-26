@@ -8,7 +8,7 @@ namespace FormUI.Predictions
 {
     public static class PredictionFactory
     {
-        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Direction> command, BaseItem item)
+        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
         {
             var prediction = Get(type);
             prediction.Depth = depth;

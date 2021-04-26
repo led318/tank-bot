@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Logic;
+using FormUICore.Infrastructure;
 using FormUICore.Predictions;
 
 // ReSharper disable InconsistentNaming
@@ -32,6 +34,8 @@ namespace FormUICore.Logic
             AiTankLogic.CalculateAiPrizeTanks();
             AiTankLogic.CalculateAiTanks();
             EnemyTankPredictionLogic.CalculateEnemyTanks();
+
+            DangerCellLogic.CalculateDangerCells();
 
             MyTankPredictionLogic.CalculateMyTankData();
 
@@ -94,6 +98,16 @@ namespace FormUICore.Logic
                 nearestKill = minMovesKills.First();
             }
 
+            var sb = new StringBuilder();
+            sb.AppendLine($"SelectedKill: {nearestKill.Point}");
+            sb.AppendLine($"MyShot: {nearestKill.MyShot.Depth}");
+            sb.AppendLine($"TargetMove: {nearestKill.TargetMove.Depth}");
+
+            if (AppSettings.StoreMySelectedKillPredictions)
+                Field.GetCell(nearestKill.Point).Predictions.MySelectedKillPredictions.Add(nearestKill);
+
+            Logger.Append(sb.ToString());
+
             SetCurrentMove(nearestKill);
             return true;
         }
@@ -144,11 +158,11 @@ namespace FormUICore.Logic
 
             var myCell = Field.GetCell(myTank.Point);
 
-            var myCellIsBulletNextRound = myCell.Predictions.BulletPredictions.Any(x => x.Depth == 1);
-            var myCellIsAiShotNextRound = myCell.Predictions.AiShotPredictions.Any(x => x.Depth == 1);
-            var myCellIsEnemyShotNextRound = myCell.Predictions.EnemyShotPredictions.Any(x => x.Depth == 1);
+            //var myCellIsBulletNextRound = myCell.Predictions.BulletPredictions.Any(x => x.Depth == 1);
+            //var myCellIsAiShotNextRound = myCell.Predictions.AiShotPredictions.Any(x => x.Depth == 1);
+            //var myCellIsEnemyShotNextRound = myCell.Predictions.EnemyShotPredictions.Any(x => x.Depth == 1);
 
-            var myCellIsDangerous = myCellIsBulletNextRound || myCellIsAiShotNextRound || myCellIsEnemyShotNextRound;
+            var myCellIsDangerous = myCell.Predictions.DangerCellPredictions.Any(x => x.Depth == 1);
 
             return myCellIsDangerous;
         }

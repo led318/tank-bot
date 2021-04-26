@@ -17,6 +17,7 @@ namespace FormUI.Infrastructure
         public static bool DrawBaseBorders { get; set; }
         public static bool IgnorePrizeAiTanks { get; set; }
         public static bool ChooseKillOnlyByCommandsLength { get; set; }
+        public static bool StoreMySelectedKillPredictions { get; set; }
 
         static AppSettings()
         {
@@ -35,6 +36,7 @@ namespace FormUI.Infrastructure
 
             IgnoreEnemyMoveDepthMoreThan = int.Parse(ConfigurationManager.AppSettings["ignoreEnemyMoveDepthMoreThan"]);
             StuckEnemyPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckEnemyPredictionDepth"]);
+            StoreMySelectedKillPredictions = bool.Parse(ConfigurationManager.AppSettings["storeMySelectedKillPredictions"]);
         }
     }
 }
