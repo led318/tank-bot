@@ -7,7 +7,7 @@ namespace FormUI.Predictions
     {
         //[IsDefaultSelected(Selected = true)]
         MyKill,
-        [IsDefaultSelected(Selected = true)]
+        //[IsDefaultSelected(Selected = true)]
         MyShot,
         //[IsDefaultSelected(Selected = true)]
         MyMove,
