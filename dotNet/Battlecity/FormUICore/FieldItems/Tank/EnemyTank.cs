@@ -41,5 +41,11 @@ namespace FormUI.FieldItems.Tank
 
             Direction = direction;
         }
+
+        public override void Shot()
+        {
+            base.Shot();
+            IsStuck = false;
+        }
     }
 }

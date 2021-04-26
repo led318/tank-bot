@@ -10,6 +10,8 @@ namespace FormUI.Infrastructure
         public static int MyMovePredictionDepth { get; set; }
         public static int EnemyTankMovePredictionDepth { get; set; }
         public static int EnemyTankShotPredictionDepth { get; set; }
+        public static bool EnableEnemyTankNotForwardNearestMoves { get; set; }
+
         public static int IgnoreEnemyMoveDepthMoreThan { get; set; }
         public static int StuckEnemyPredictionDepth { get; set; }
         public static bool DrawBaseBorders { get; set; }
@@ -29,6 +31,8 @@ namespace FormUI.Infrastructure
 
             EnemyTankMovePredictionDepth = int.Parse(ConfigurationManager.AppSettings["enemyTankMovePredictionDepth"]);
             EnemyTankShotPredictionDepth = int.Parse(ConfigurationManager.AppSettings["enemyTankShotPredictionDepth"]);
+            EnableEnemyTankNotForwardNearestMoves = bool.Parse(ConfigurationManager.AppSettings["enableEnemyTankNotForwardNearestMoves"]);
+
             IgnoreEnemyMoveDepthMoreThan = int.Parse(ConfigurationManager.AppSettings["ignoreEnemyMoveDepthMoreThan"]);
             StuckEnemyPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckEnemyPredictionDepth"]);
         }

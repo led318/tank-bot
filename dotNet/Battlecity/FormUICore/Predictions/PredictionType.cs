@@ -16,10 +16,10 @@ namespace FormUI.Predictions
         //[IsDefaultSelected(Selected = true)]
         Bullet,
         //[IsDefaultSelected(Selected = true)]
-        EnemyShot,
-        //[IsDefaultSelected(Selected = true)]
         AiMove,
-        //[IsDefaultSelected(Selected = true)]
+        [IsDefaultSelected(Selected = true)]
+        EnemyShot,
+        [IsDefaultSelected(Selected = true)]
         EnemyMove
     }
 

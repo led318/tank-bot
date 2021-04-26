@@ -31,10 +31,11 @@ namespace FormUICore.Logic
             ShotCountdownLogic.PopulateShotCountdownsFromPrevRound();
             PerformTick();
 
+            BulletLogic.CalculateBullets();
+
             AiTankLogic.CalculateAiPrizeTanks();
             AiTankLogic.CalculateAiTanks();
-            EnemyTankLogic.CalculateEnemyTanks();
-            BulletLogic.CalculateBullets();
+            EnemyTankPredictionLogic.CalculateEnemyTanks();
 
             MyTankPredictionLogic.CalculateMyTankData();
 
