@@ -19,6 +19,8 @@ namespace FormUI.Infrastructure
         public static bool ChooseKillOnlyByCommandsLength { get; set; }
         public static bool StoreMySelectedKillPredictions { get; set; }
 
+        public static bool IsOldMap { get; set; }
+
         static AppSettings()
         {
             PredictionDepth = int.Parse(ConfigurationManager.AppSettings["predictionDepth"]);
@@ -37,6 +39,8 @@ namespace FormUI.Infrastructure
             IgnoreEnemyMoveDepthMoreThan = int.Parse(ConfigurationManager.AppSettings["ignoreEnemyMoveDepthMoreThan"]);
             StuckEnemyPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckEnemyPredictionDepth"]);
             StoreMySelectedKillPredictions = bool.Parse(ConfigurationManager.AppSettings["storeMySelectedKillPredictions"]);
+
+            IsOldMap = bool.Parse(ConfigurationManager.AppSettings["isOldMap"]);
         }
     }
 }

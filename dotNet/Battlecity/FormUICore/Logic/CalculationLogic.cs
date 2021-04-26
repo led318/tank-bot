@@ -17,9 +17,6 @@ namespace FormUICore.Logic
     public static class CalculationLogic
     {
         private static readonly Random _random = new Random();
-        private static int _currentDefaultTargetPointIndex;
-        private static readonly List<Point> _defaultTargetPoints = new List<Point> { new Point(3, 31), new Point(31, 31) };
-        private static Point _currentDefaultTargetPoint => _defaultTargetPoints[_currentDefaultTargetPointIndex];
 
         public static void PerformCalculations()
         {
@@ -56,7 +53,7 @@ namespace FormUICore.Logic
             if (ProcessMyKill())
                 return;
 
-            if (ProcessDefaultTarget())
+            if (DefaultTargetLogic.ProcessDefaultTarget())
                 return;
 
             if (ProcessMyTankLost())
@@ -112,20 +109,6 @@ namespace FormUICore.Logic
             return true;
         }
 
-        private static bool ProcessDefaultTarget()
-        {
-            CheckAndChangeDefaultTargetPoint();
-            var defaultCell = Field.GetCell(_currentDefaultTargetPoint);
-            var defaultCellNearestMovePrediction =
-                defaultCell.Predictions.MyMovePredictions.OrderBy(x => x.Depth).FirstOrDefault();
-
-            if (defaultCellNearestMovePrediction == null)
-                return false;
-
-            SetCurrentMove(defaultCellNearestMovePrediction);
-            return true;
-        }
-
         private static bool ProcessMyTankLost()
         {
             if (State.HasPrevRound && State.ThisRound.MyTank == null)
@@ -167,7 +150,7 @@ namespace FormUICore.Logic
             return myCellIsDangerous;
         }
 
-        private static void SetCurrentMove(BasePrediction prediction)
+        public static void SetCurrentMove(BasePrediction prediction)
         {
             State.ThisRound.CurrentMoveSelectedPrediction = prediction;
 
@@ -178,15 +161,6 @@ namespace FormUICore.Logic
 
             if (prediction.Commands.Count > 1 && prediction.Commands[1] == Direction.Act)
                 State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[1]);
-        }
-
-        private static void CheckAndChangeDefaultTargetPoint()
-        {
-            if (State.ThisRound.MyTank == null)
-                return;
-
-            if (State.ThisRound.MyTank.Point == _currentDefaultTargetPoint)
-                _currentDefaultTargetPointIndex = (_currentDefaultTargetPointIndex + 1) % _defaultTargetPoints.Count;
         }
     }
 }

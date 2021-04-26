@@ -20,8 +20,8 @@ namespace FormUICore.Logic
                 var prevRoundNearBullet = CalculateNearestBullet(bullet);
                 if (prevRoundNearBullet != null)
                 {
-                    bullet.Direction = prevRoundNearBullet.Direction ?? 
-                                              CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
+                    //prevRoundNearBullet.Direction ?? 
+                    bullet.Direction = CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
 
                     continue;
                 }
