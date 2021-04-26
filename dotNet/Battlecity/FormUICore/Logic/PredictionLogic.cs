@@ -6,6 +6,7 @@ using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.Predictions;
 
 namespace FormUICore.Logic
 {
@@ -75,7 +76,7 @@ namespace FormUICore.Logic
             }
         }
 
-        public static void CalculateTankShotPredictions(Point point, PredictionType type, Direction direction, BaseTank tank, int maxDepth = 1, List<Direction> command = null)
+        public static void CalculateTankShotPredictions(Point point, PredictionType type, Direction direction, BaseTank tank, int maxDepth = 1)
         {
 
             var startShotPoint = point;
@@ -96,7 +97,7 @@ namespace FormUICore.Logic
                 if (i >= -1)
                 {
                     var actualDepth = Math.Max(1, tank.ShotCountdownLeft) + depth;
-                    shotCell.AddPrediction(actualDepth, type, command);
+                    shotCell.AddPrediction(actualDepth, type);
                 }
 
                 if (shotCell.CanShootThrough)

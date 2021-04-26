@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FormUI.FieldObjects;
 using FormUI.Predictions;
+using FormUICore.Predictions;
 
 namespace FormUI.Infrastructure
 {

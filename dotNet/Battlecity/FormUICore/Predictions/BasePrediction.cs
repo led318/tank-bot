@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using API.Components;
 using FormUI.FieldItems;
@@ -47,6 +48,8 @@ namespace FormUICore.Predictions
                     return Color.Green;
                 case PredictionType.MyKill:
                     return Color.Red;
+                case PredictionType.DangerCell:
+                    return Color.DarkRed;
             }
 
             return null;
@@ -77,6 +80,8 @@ namespace FormUICore.Predictions
                     return Brushes.Green;
                 case PredictionType.MyKill:
                     return Brushes.Red;
+                case PredictionType.DangerCell:
+                    return Brushes.DarkRed;
             }
 
             return null;

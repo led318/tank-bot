@@ -2,6 +2,7 @@
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 using FormUICore.Logic;
+using FormUICore.Predictions;
 
 namespace FormUI.Logic
 {

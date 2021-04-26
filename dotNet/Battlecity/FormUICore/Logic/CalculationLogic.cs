@@ -14,14 +14,10 @@ namespace FormUICore.Logic
 {
     public static class CalculationLogic
     {
-        private static Random _random = new Random();
+        private static readonly Random _random = new Random();
         private static int _currentDefaultTargetPointIndex;
         private static readonly List<Point> _defaultTargetPoints = new List<Point> { new Point(3, 31), new Point(31, 31) };
         private static Point _currentDefaultTargetPoint => _defaultTargetPoints[_currentDefaultTargetPointIndex];
-
-        private static readonly Point _deadZoneStart = new Point(13, 1);
-        private static readonly Point _deadZoneEnd = new Point(20, 4);
-        private static readonly List<Direction> _deadZoneAction = new List<Direction> { Direction.Left, Direction.Act };
 
         public static void PerformCalculations()
         {
@@ -50,7 +46,7 @@ namespace FormUICore.Logic
 
         private static void CalculateCurrentMove()
         {
-            if (ProcessDeadZone())
+            if (DeadZoneLogic.ProcessDeadZone())
                 return;
 
             if (ProcessMyKill())
@@ -99,17 +95,6 @@ namespace FormUICore.Logic
             }
 
             SetCurrentMove(nearestKill);
-            return true;
-        }
-
-        private static bool ProcessDeadZone()
-        {
-            if (!IsInDeadZone())
-
-                return false;
-            State.ThisRound.IsInDeadZone = true;
-            State.ThisRound.CurrentMoveCommands.AddRange(_deadZoneAction);
-
             return true;
         }
 
@@ -179,19 +164,6 @@ namespace FormUICore.Logic
 
             if (prediction.Commands.Count > 1 && prediction.Commands[1] == Direction.Act)
                 State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[1]);
-        }
-
-        private static bool IsInDeadZone()
-        {
-            if (State.ThisRound.MyTank == null)
-                return false;
-
-            var myTank = State.ThisRound.MyTank;
-
-            var isXInDeadZone = myTank.Point.X >= _deadZoneStart.X && myTank.Point.X <= _deadZoneEnd.X;
-            var isYInDeadZone = myTank.Point.Y >= _deadZoneStart.Y && myTank.Point.Y <= _deadZoneEnd.Y;
-
-            return isXInDeadZone && isYInDeadZone;
         }
 
         private static void CheckAndChangeDefaultTargetPoint()

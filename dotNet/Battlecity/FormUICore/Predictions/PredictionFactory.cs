@@ -41,6 +41,8 @@ namespace FormUI.Predictions
                     return new MyMovePrediction();
                 case PredictionType.MyKill:
                     return new MyKillPrediction();
+                case PredictionType.DangerCell:
+                    return new DangerCellPrediction();
 
                 default:
                     throw new NotImplementedException();

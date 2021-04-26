@@ -1,10 +1,14 @@
 ﻿using System;
+
 // ReSharper disable InconsistentNaming
 
-namespace FormUI.Predictions
+namespace FormUICore.Predictions
 {
     public enum PredictionType
     {
+        [IsDefaultSelected(Selected = true)]
+        DangerCell,
+
         //[IsDefaultSelected(Selected = true)]
         MyKill,
         //[IsDefaultSelected(Selected = true)]
@@ -17,9 +21,9 @@ namespace FormUI.Predictions
         Bullet,
         //[IsDefaultSelected(Selected = true)]
         AiMove,
-        [IsDefaultSelected(Selected = true)]
+        //[IsDefaultSelected(Selected = true)]
         EnemyShot,
-        [IsDefaultSelected(Selected = true)]
+        //[IsDefaultSelected(Selected = true)]
         EnemyMove
     }
 

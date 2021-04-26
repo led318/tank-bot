@@ -1,9 +1,10 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using FormUI.FieldObjects;
 
-namespace FormUI.Controls
+namespace FormUICore.Controls
 {
     public class MyPictureBox : PictureBox
     {
@@ -16,12 +17,16 @@ namespace FormUI.Controls
 
         private Font _font;
 
+        private ToolTip _toolTip;
+
         public MyPictureBox(Cell cell)
         {
             _cell = cell;
 
             if (_cell.IsBorderBattleWall)
                 Visible = false;
+
+            MouseHover += MyPictureBox_MouseHover;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -70,6 +75,13 @@ namespace FormUI.Controls
             {
                 Refresh();
             }
+        }
+
+        private void MyPictureBox_MouseHover(object sender, EventArgs e)
+        {
+            _toolTip ??= new ToolTip();
+
+            _toolTip.SetToolTip(this, _cell.Point.ToString());
         }
     }
 }

@@ -21,6 +21,7 @@ namespace FormUI.Predictions
         public List<MyMovePrediction> MyMovePredictions { get; set; } = new List<MyMovePrediction>();
         public List<MyShotPrediction> MyShotPredictions { get; set; } = new List<MyShotPrediction>();
         public List<MyKillPrediction> MyKillPredictions { get; set; } = new List<MyKillPrediction>();
+        public List<DangerCellPrediction> DangerCellPredictions { get; set; } = new List<DangerCellPrediction>();
 
         public List<BasePrediction> AllPredictions => GetAllPredictions();
 
@@ -36,6 +37,7 @@ namespace FormUI.Predictions
             result.AddRange(MyMovePredictions);
             result.AddRange(MyShotPredictions);
             result.AddRange(MyKillPredictions);
+            result.AddRange(DangerCellPredictions);
 
             return result;
         }
@@ -69,6 +71,9 @@ namespace FormUI.Predictions
                     break;
                 case PredictionType.MyKill:
                     MyKillPredictions.Add((MyKillPrediction)prediction);
+                    break;
+                case PredictionType.DangerCell:
+                    DangerCellPredictions.Add((DangerCellPrediction)prediction);
                     break;
 
                 default:
@@ -105,8 +110,6 @@ namespace FormUI.Predictions
 
         public Color? GetPredictionBorderColor()
         {
-
-
             var groups = AllPredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
             var colors = groups
                 .Where(g => PredictionSettings.GetVisible(g.Key))
