@@ -21,6 +21,7 @@ namespace FormUICore.Logic
         public static void PerformCalculations()
         {
             WaterLogic.PopulateHiddenWater();
+            IceLogic.PopulateHiddenIce();
             TreeLogic.PopulateItemsUnderTrees();
 
             ShotCountdownLogic.PopulateShotCountdownsFromPrevRound();
@@ -47,10 +48,10 @@ namespace FormUICore.Logic
 
         private static void CalculateCurrentMove()
         {
-            if (DeadZoneLogic.ProcessDeadZone())
+            if (ProcessMyKill())
                 return;
 
-            if (ProcessMyKill())
+            if (DeadZoneLogic.ProcessDeadZone())
                 return;
 
             if (DefaultTargetLogic.ProcessDefaultTarget())

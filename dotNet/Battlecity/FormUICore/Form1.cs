@@ -47,10 +47,12 @@ namespace FormUI
             var bot = new YourSolver(isProd ? serverUrl : testServerUrl);
             bot.RoundCallbackHandler += SetBoard;
 
+            Logger.LoggerTextBox = logTextBox;
+
             // Starting thread with playing game
             Task.Run(bot.Play);
 
-            
+
         }
 
         private void InitSettings()
@@ -80,7 +82,7 @@ namespace FormUI
                     }
                     catch (JsonReaderException)
                     {
-                        
+
                     }
                 }
             }
@@ -166,46 +168,49 @@ namespace FormUI
             }
             else
             {
-                _stopWatch.Restart();
-
-                //this.label1.Text = board.ToString();
-                State.SetThisRound(new Round(board));
-                
-                if (State.GameIsRunning)
+                if (checkBoxRunProcessing.Checked)
                 {
-                    //todo: perform calculations
-                    Task.Run(CalculationLogic.PerformCalculations).Wait();
+                    _stopWatch.Restart();
 
-                    for (var i = 0; i < Constants.FieldWidth; i++)
+                    //this.label1.Text = board.ToString();
+                    State.SetThisRound(new Round(board));
+
+                    if (State.GameIsRunning)
                     {
-                        for (var j = 0; j < Constants.FieldHeight; j++)
+                        //todo: perform calculations
+                        Task.Run(CalculationLogic.PerformCalculations).Wait();
+
+                        for (var i = 0; i < Constants.FieldWidth; i++)
                         {
-                            _field[i, j].Change();
+                            for (var j = 0; j < Constants.FieldHeight; j++)
+                            {
+                                _field[i, j].Change();
+                            }
                         }
+
+
+                        //if (State.IsMyShotThisRound)
+                        //{
+                        //    State.ThisRound.MyTank.Shot();
+                        //    result = $"{Direction.Act}";
+                        //}
+
+                        resultString = State.ThisRound.CurrentMoveCommandString;
+                    }
+                    else
+                    {
+                        //logTextBox.Clear();
+                        Field.Reset(true);
                     }
 
+                    _stopWatch.Stop();
+                    label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
+                    label2.Text = State.ThisRound.MyTank == null
+                        ? string.Empty
+                        : GetMyStateString();
 
-                    //if (State.IsMyShotThisRound)
-                    //{
-                    //    State.ThisRound.MyTank.Shot();
-                    //    result = $"{Direction.Act}";
-                    //}
-
-                    resultString = State.ThisRound.CurrentMoveCommandString;
+                    //logTextBox.AppendText(Logger.GetLogAndClean());
                 }
-                else
-                {
-                    logTextBox.Clear();
-                    Field.Reset(true);
-                }
-
-                _stopWatch.Stop();
-                label1.Text = $"{_stopWatch.ElapsedMilliseconds}ms";
-                label2.Text = State.ThisRound.MyTank == null 
-                    ? string.Empty 
-                    : GetMyStateString();
-
-                logTextBox.AppendText(Logger.GetLogAndClean());
             }
 
             return resultString;
@@ -267,6 +272,11 @@ namespace FormUI
         }
 
         private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
         }

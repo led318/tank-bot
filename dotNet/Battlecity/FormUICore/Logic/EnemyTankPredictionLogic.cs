@@ -108,6 +108,9 @@ namespace FormUICore.Logic
 
         private static void CalculateEnemyMovePredictions(EnemyTank enemyTank)
         {
+            var thisCell = Field.GetCell(enemyTank.Point);
+            thisCell.AddPrediction(1, PredictionType.EnemyMove, item: enemyTank);
+
             CalculateNotForwardNearestMoves(enemyTank);
 
             var predictionStartPoint = enemyTank.Point;

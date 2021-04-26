@@ -25,6 +25,7 @@ namespace FormUI.FieldObjects
         public List<Bullet> Bullets { get; set; } = new List<Bullet>();
 
         public List<River> Rivers { get; set; } = new List<River>();
+        public List<Ice> Ice { get; set; } = new List<Ice>();
         public List<Tree> Trees { get; set; } = new List<Tree>();
 
         public BasePrediction CurrentMoveSelectedPrediction { get; set; }
@@ -107,6 +108,12 @@ namespace FormUI.FieldObjects
             if (item is Tree tree)
             {
                 Trees.Add(tree);
+                return;
+            }
+
+            if (item is Ice ice)
+            {
+                Ice.Add(ice);
                 return;
             }
         }

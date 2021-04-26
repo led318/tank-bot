@@ -2,8 +2,8 @@
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
+using FormUI.FieldObjects;
 using FormUI.Infrastructure;
-using FormUI.Predictions;
 
 namespace FormUICore.Logic
 {
@@ -35,10 +35,19 @@ namespace FormUICore.Logic
                     continue;
                 }
 
-                var currentRoundNearTree = CalculateNearestTree(bullet) ?? CalculateNearestTree(bullet, Bullet.DefaultSpeed);
+                var currentRoundNearTree = CalculateNearestTree(bullet, Bullet.DefaultSpeed);
                 if (currentRoundNearTree != null)
                 {
-                    bullet.Direction = CalculateDirection(currentRoundNearTree.Point, bullet.Point);
+                    var direction = CalculateDirection(currentRoundNearTree.Point, bullet.Point);
+
+                    bullet.Direction = direction;
+                    
+                    var enemyTank = new EnemyTank(Element.OTHER_TANK_DOWN, currentRoundNearTree.Point);
+                    enemyTank.Direction = direction;
+                    enemyTank.UpdateElementByDirection();
+                    State.ThisRound.EnemyTanks.Add(enemyTank);
+                    var cell = Field.GetCell(currentRoundNearTree.Point);
+                    cell.Items.Insert(0, enemyTank);
 
                     continue;
                 }

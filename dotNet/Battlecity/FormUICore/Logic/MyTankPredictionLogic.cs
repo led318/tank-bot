@@ -138,7 +138,7 @@ namespace FormUICore.Logic
         private static void CalculateMyShotPredictions(Point currentPoint, Direction lastDirection, List<Direction> command)
         {
             var currentCommand = command.ToList();
-            CalculateMyShotsForDirection(currentPoint, lastDirection, currentCommand);
+            CalculateMyShotsForDirection(currentPoint, lastDirection, currentCommand, true);
 
             foreach (var direction in BaseMobile.ValidDirections)
             {
@@ -160,7 +160,7 @@ namespace FormUICore.Logic
             }
         }
 
-        private static void CalculateMyShotsForDirection(Point point, Direction direction, List<Direction> command)
+        private static void CalculateMyShotsForDirection(Point point, Direction direction, List<Direction> command, bool correctFirstShotDepth = false)
         {
             var startShotPoint = point;
 
@@ -175,7 +175,9 @@ namespace FormUICore.Logic
                 if (shotCell.IsWall)
                     break;
 
-                var depth = (int)Math.Ceiling((decimal)i / 2) - 1;
+                var depth = (int)Math.Ceiling((decimal)i / 2);
+                if (correctFirstShotDepth)
+                    depth--;
 
                 var directionActCommand = command.ToList();
                 directionActCommand.Add(Direction.Act);

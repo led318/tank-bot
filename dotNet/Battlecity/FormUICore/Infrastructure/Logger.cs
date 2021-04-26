@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Security.Cryptography.Pkcs;
 using System.Text;
+using System.Windows.Forms;
 
 namespace FormUICore.Infrastructure
 {
     public static class Logger
     {
         private static readonly StringBuilder _stringBuilder = new StringBuilder();
+
+        public static TextBox LoggerTextBox { get; set; }
 
         public static void Append(string line)
         {
@@ -20,6 +23,12 @@ namespace FormUICore.Infrastructure
             _stringBuilder.Clear();
 
             return str;
+        }
+
+        public static void SetText(string text)
+        {
+            if (LoggerTextBox != null)
+                LoggerTextBox.Text = text;
         }
     }
 }

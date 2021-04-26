@@ -33,13 +33,14 @@ namespace FormUI
             this.fieldPanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.logTextBox = new System.Windows.Forms.TextBox();
+            this.checkBoxRunProcessing = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(12, 186);
+            this.label1.Location = new System.Drawing.Point(1349, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 15);
             this.label1.TabIndex = 0;
@@ -66,18 +67,31 @@ namespace FormUI
             // 
             // logTextBox
             // 
-            this.logTextBox.Enabled = false;
             this.logTextBox.Location = new System.Drawing.Point(12, 410);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.Size = new System.Drawing.Size(419, 456);
             this.logTextBox.TabIndex = 3;
             // 
+            // checkBoxRunProcessing
+            // 
+            this.checkBoxRunProcessing.AutoSize = true;
+            this.checkBoxRunProcessing.Checked = true;
+            this.checkBoxRunProcessing.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxRunProcessing.Location = new System.Drawing.Point(12, 374);
+            this.checkBoxRunProcessing.Name = "checkBoxRunProcessing";
+            this.checkBoxRunProcessing.Size = new System.Drawing.Size(131, 24);
+            this.checkBoxRunProcessing.TabIndex = 4;
+            this.checkBoxRunProcessing.Text = "Run processing";
+            this.checkBoxRunProcessing.UseVisualStyleBackColor = true;
+            this.checkBoxRunProcessing.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1422, 878);
+            this.Controls.Add(this.checkBoxRunProcessing);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.fieldPanel);
@@ -95,6 +109,8 @@ namespace FormUI
         private System.Windows.Forms.Panel fieldPanel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox logTextBox;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxRunProcessing;
     }
 }
 

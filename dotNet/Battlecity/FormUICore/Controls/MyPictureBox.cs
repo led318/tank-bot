@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using FormUI.FieldObjects;
 using FormUICore.FieldObjects;
+using FormUICore.Infrastructure;
+using Newtonsoft.Json;
 
 namespace FormUICore.Controls
 {
@@ -28,6 +30,7 @@ namespace FormUICore.Controls
                 Visible = false;
 
             MouseHover += MyPictureBox_MouseHover;
+            MouseClick += MyPictureBox_MouseClick;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -83,6 +86,13 @@ namespace FormUICore.Controls
             _toolTip ??= new ToolTip();
 
             _toolTip.SetToolTip(this, _cell.Point.ToString());
+        }
+
+        private void MyPictureBox_MouseClick(object sender, EventArgs e)
+        {
+            var cellJson = JsonConvert.SerializeObject(_cell);
+
+            Logger.SetText(cellJson);
         }
     }
 }

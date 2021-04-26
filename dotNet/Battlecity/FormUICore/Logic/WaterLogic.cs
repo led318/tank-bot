@@ -2,7 +2,7 @@
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 
-namespace FormUI.Logic
+namespace FormUICore.Logic
 {
     public static class WaterLogic
     {
