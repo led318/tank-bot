@@ -37,7 +37,7 @@ namespace FormUICore.Logic
             if (defaultCellNearestMovePrediction == null)
                 return false;
 
-            CalculationLogic.SetCurrentMove(defaultCellNearestMovePrediction);
+            NextCommandCalculationLogic.SetCurrentMove(defaultCellNearestMovePrediction);
             return true;
         }
 

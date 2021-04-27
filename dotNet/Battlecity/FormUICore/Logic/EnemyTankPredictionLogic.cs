@@ -30,7 +30,7 @@ namespace FormUICore.Logic
 
         private static void CalculateEnemyTankShotPredictions(EnemyTank tank)
         {
-            if (!tank.IsShoting)
+            if (tank.IsStuck && !tank.IsShoting)
                 return;
 
             var directions = BaseMobile.ValidDirections;

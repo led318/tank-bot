@@ -15,7 +15,7 @@ namespace FormUICore.Logic
         {
             if (AppSettings.IsOldMap)
             {
-                _deadZones.Add(new DeadZone(new Point(13, 1), new Point(20, 4)));
+                _deadZones.Add(new DeadZone(new Point(14, 1), new Point(19, 3)));
             }
             else
             {
