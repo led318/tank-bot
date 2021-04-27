@@ -1,9 +1,10 @@
 ﻿using System.Drawing;
 using API.Components;
+using FormUI.FieldItems;
 using FormUI.Infrastructure;
 using Point = API.Components.Point;
 
-namespace FormUI.FieldItems
+namespace FormUICore.FieldItems
 {
     public class Bullet : BaseMobile
     {
@@ -13,7 +14,7 @@ namespace FormUI.FieldItems
 
         public override int Speed => DefaultSpeed;
 
-        //public bool IsMyBullet { get; set; }
+        public bool IsMyBullet { get; set; }
 
         public Bullet(Element element, Point point) : base(element, point)
         {

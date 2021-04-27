@@ -7,6 +7,7 @@ using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.FieldItems;
 using FormUICore.FieldObjects;
 using FormUICore.Predictions;
 
@@ -112,11 +113,11 @@ namespace FormUICore.Logic
             if (cell.HasMyMovePrediction(depth))
                 return false;
 
-            var hasDepthBullets = cell.HasDepthPrediction(depth, x => x.BulletPredictions);
+            var hasDepthBullets = cell.HasDepthPrediction(depth, x => x.NotMyBulletPredictions);
             if (hasDepthBullets)
                 return false;
 
-            var hasPrevDepthBullets = cell.HasDepthPrediction(depth - 1, x => x.BulletPredictions);
+            var hasPrevDepthBullets = cell.HasDepthPrediction(depth - 1, x => x.NotMyBulletPredictions);
             if (hasPrevDepthBullets)
                 return false;
 

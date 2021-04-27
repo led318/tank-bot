@@ -6,6 +6,7 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using FormUICore.FieldItems;
 using FormUICore.Predictions;
 using Point = API.Components.Point;
 
@@ -16,6 +17,8 @@ namespace FormUI.Predictions
         public List<AiMovePrediction> AiMovePredictions { get; set; } = new List<AiMovePrediction>();
         public List<AiShotPrediction> AiShotPredictions { get; set; } = new List<AiShotPrediction>();
         public List<BulletPrediction> BulletPredictions { get; set; } = new List<BulletPrediction>();
+        public List<BulletPrediction> NotMyBulletPredictions => BulletPredictions.Where(x => !((Bullet)x.Item).IsMyBullet).ToList();
+
         public List<EnemyMovePrediction> EnemyMovePredictions { get; set; } = new List<EnemyMovePrediction>();
         public List<EnemyShotPrediction> EnemyShotPredictions { get; set; } = new List<EnemyShotPrediction>();
         public List<MyMovePrediction> MyMovePredictions { get; set; } = new List<MyMovePrediction>();
@@ -25,25 +28,41 @@ namespace FormUI.Predictions
 
         public List<MyKillPrediction> MySelectedKillPredictions { get; set; } = new List<MyKillPrediction>();
 
-        public List<BasePrediction> AllPredictions => _allPredictionsLazy.Value;
+        public List<BasePrediction> AllVisiblePredictions => _allVisiblePredictionsLazy.Value;
 
-        private Lazy<List<BasePrediction>> _allPredictionsLazy => new Lazy<List<BasePrediction>>(() => GetAllPredictions());
+        private Lazy<List<BasePrediction>> _allVisiblePredictionsLazy => new Lazy<List<BasePrediction>>(() => GetAllVisiblePredictions());
 
-        private List<BasePrediction> GetAllPredictions()
+        private List<BasePrediction> GetAllVisiblePredictions()
         {
-            var result = new List<BasePrediction>();
+            //var result = new List<BasePrediction>();
 
-            result.AddRange(AiMovePredictions);
-            result.AddRange(AiShotPredictions);
-            result.AddRange(BulletPredictions);
-            result.AddRange(EnemyMovePredictions);
-            result.AddRange(EnemyShotPredictions);
-            result.AddRange(MyMovePredictions);
-            result.AddRange(MyShotPredictions);
-            result.AddRange(MyKillPredictions);
-            result.AddRange(DangerCellPredictions);
+            //result.AddRange(AiMovePredictions);
+            //result.AddRange(AiShotPredictions);
+            //result.AddRange(BulletPredictions);
+            //result.AddRange(EnemyMovePredictions);
+            //result.AddRange(EnemyShotPredictions);
+            //result.AddRange(MyMovePredictions);
+            //result.AddRange(MyShotPredictions);
+            //result.AddRange(MyKillPredictions);
+            //result.AddRange(DangerCellPredictions);
 
-            return result;
+            return GetVisiblePredictions(PredictionType.AiMove, AiMovePredictions.Select(x => (BasePrediction)x))
+                .Concat(GetVisiblePredictions(PredictionType.AiShot, AiShotPredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.Bullet, BulletPredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.EnemyMove, EnemyMovePredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.EnemyShot, EnemyShotPredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.MyMove, MyMovePredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.MyShot, MyShotPredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.MyKill, MyKillPredictions.Select(x => (BasePrediction)x)))
+                .Concat(GetVisiblePredictions(PredictionType.DangerCell, DangerCellPredictions.Select(x => (BasePrediction)x)))
+                .ToList();
+        }
+
+        private List<BasePrediction> GetVisiblePredictions(PredictionType type, IEnumerable<BasePrediction> list)
+        {
+            return PredictionSettings.GetVisible(type)
+                ? list.ToList()
+                : new List<BasePrediction>();
         }
 
         public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
@@ -105,7 +124,7 @@ namespace FormUI.Predictions
 
         public List<Note> GetPredictionNotes()
         {
-            var groups = AllPredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
+            var groups = AllVisiblePredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
             var result = groups
                 .Where(g => PredictionSettings.GetVisible(g.Key))
                 .Select(g =>
@@ -127,7 +146,7 @@ namespace FormUI.Predictions
 
         public Color? GetPredictionBorderColor()
         {
-            var groups = AllPredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
+            var groups = AllVisiblePredictions.GroupBy(p => p.Type).OrderBy(g => (int)g.Key);
             var colors = groups
                 .Where(g => PredictionSettings.GetVisible(g.Key))
                 .Select(g => g.First().GetBorderColor()).ToList();

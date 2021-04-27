@@ -2,6 +2,7 @@
 using FormUI.FieldItems.Prize;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldItems.Wall;
+using FormUICore.FieldItems;
 
 namespace FormUI.FieldItems
 {

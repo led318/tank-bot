@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
+using FormUICore.FieldItems;
 using FormUICore.FieldObjects;
 using FormUICore.Predictions;
 
@@ -23,6 +26,10 @@ namespace FormUICore.Logic
             var bulletPredictions = cell.Predictions.BulletPredictions.Where(x => x.Depth == 0 || x.Depth == 1).ToList();
             foreach (var bulletPrediction in bulletPredictions)
             {
+                var bullet = (Bullet) bulletPrediction.Item;
+                if (bullet.IsMyBullet)
+                    continue;
+
                 var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
                 prediction.IsCritical = true;
             }

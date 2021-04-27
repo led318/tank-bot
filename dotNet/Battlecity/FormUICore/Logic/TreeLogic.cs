@@ -5,6 +5,7 @@ using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUICore.FieldItems;
 
 namespace FormUICore.Logic
 {
@@ -219,6 +220,7 @@ namespace FormUICore.Logic
 
                     var bullet = new Bullet(Element.BULLET, bulletPoint);
                     bullet.Direction = direction;
+                    bullet.IsMyBullet = true;
 
                     var bulletCell = Field.GetCell(bulletPoint);
                     bulletCell.Items.Insert(0, bullet);

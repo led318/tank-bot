@@ -5,6 +5,7 @@ using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUICore.FieldItems;
 
 namespace FormUICore.Logic
 {
@@ -21,8 +22,8 @@ namespace FormUICore.Logic
                 var prevRoundNearBullet = CalculateNearestBullet(bullet);
                 if (prevRoundNearBullet != null)
                 {
-                    //prevRoundNearBullet.Direction ?? 
                     bullet.Direction = prevRoundNearBullet.Point.CalculateDirectionToPoint(bullet.Point);
+                    bullet.IsMyBullet = prevRoundNearBullet.IsMyBullet;
 
                     continue;
                 }
@@ -32,6 +33,9 @@ namespace FormUICore.Logic
                 {
                     bullet.Direction = currentRoundNearTank.Direction;
                     currentRoundNearTank.Shot();
+
+                    if (currentRoundNearTank is MyTank)
+                        bullet.IsMyBullet = true;
 
                     continue;
                 }
