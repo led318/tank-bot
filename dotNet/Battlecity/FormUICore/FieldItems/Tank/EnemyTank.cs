@@ -9,6 +9,8 @@ namespace FormUI.FieldItems.Tank
     public class EnemyTank : BaseTank
     {
         public int HiddenRoundsInRow { get; set; }
+        public bool IsShoting { get; set; }
+
 
         public override int ShotCountdownDefault => Settings.Get.TankTicksPerShoot;
 
@@ -75,7 +77,8 @@ namespace FormUI.FieldItems.Tank
         public override void Shot()
         {
             base.Shot();
-            IsStuck = false;
+            //IsStuck = false;
+            IsShoting = true;
             HiddenRoundsInRow = 0;
         }
 

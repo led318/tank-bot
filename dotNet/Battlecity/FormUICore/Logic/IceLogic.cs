@@ -23,6 +23,7 @@ namespace FormUICore.Logic
                 if (thisIceItem == null)
                 {
                     Field.GetCell(prevIceItem.Point).Items.Add(prevIceItem);
+                    State.ThisRound.Ice.Add(prevIceItem);
                 }
             }
         }

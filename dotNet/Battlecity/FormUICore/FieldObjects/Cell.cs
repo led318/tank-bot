@@ -49,6 +49,7 @@ namespace FormUICore.FieldObjects
 
         public bool IsWall => IsBorderBattleWall || Items.Any(x => _wallElements.Contains(x.Element));
         public bool IsIce => Items.Any(x => x.Element == Element.ICE);
+        public bool IsTree => Items.Any(x => x.Element == Element.TREE);
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();

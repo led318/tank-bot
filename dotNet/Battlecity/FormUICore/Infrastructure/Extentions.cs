@@ -51,5 +51,19 @@ namespace FormUI.Infrastructure
 
             return commands.Count(x => x != Direction.Act);
         }
+
+        public static Direction CalculateDirectionToPoint(this Point startPoint, Point endPoint)
+        {
+            var xDiff = startPoint.X - endPoint.X;
+            var yDiff = startPoint.Y - endPoint.Y;
+
+            if (xDiff == 0)
+                return yDiff < 0 ? Direction.Up : Direction.Down;
+
+            if (yDiff == 0)
+                return xDiff > 0 ? Direction.Left : Direction.Right;
+
+            return Direction.Down;
+        }
     }
 }

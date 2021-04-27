@@ -65,7 +65,7 @@ namespace API.Components
 
         public Point ShiftBottom(int delta = 1) => new Point(X, Y - delta);
 
-        public IEnumerable<Point> GetNearPoints(int delta = 1, bool includeThis = false)
+        public List<Point> GetNearPoints(int delta = 1, bool includeThis = false)
         {
             var result = new List<Point>
             {

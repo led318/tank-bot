@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
@@ -21,7 +22,7 @@ namespace FormUICore.Logic
                 if (prevRoundNearBullet != null)
                 {
                     //prevRoundNearBullet.Direction ?? 
-                    bullet.Direction = CalculateDirection(prevRoundNearBullet.Point, bullet.Point);
+                    bullet.Direction = prevRoundNearBullet.Point.CalculateDirectionToPoint(bullet.Point);
 
                     continue;
                 }
@@ -35,21 +36,22 @@ namespace FormUICore.Logic
                     continue;
                 }
 
-                var currentRoundNearTree = CalculateNearestTree(bullet, Bullet.DefaultSpeed);
-                if (currentRoundNearTree != null)
+                var currentRoundNearTrees = CalculateNearestTrees(bullet, Bullet.DefaultSpeed);
+                if (currentRoundNearTrees.Any())
                 {
-                    var direction = CalculateDirection(currentRoundNearTree.Point, bullet.Point);
+                    foreach (var currentRoundNearTree in currentRoundNearTrees)
+                    {
+                        var direction = currentRoundNearTree.Point.CalculateDirectionToPoint(bullet.Point);
 
-                    bullet.Direction = direction;
-                    
-                    var enemyTank = new EnemyTank(Element.OTHER_TANK_DOWN, currentRoundNearTree.Point);
-                    enemyTank.Direction = direction;
-                    enemyTank.UpdateElementByDirection();
-                    State.ThisRound.EnemyTanks.Add(enemyTank);
-                    var cell = Field.GetCell(currentRoundNearTree.Point);
-                    cell.Items.Insert(0, enemyTank);
+                        bullet.Direction = direction;
 
-                    continue;
+                        var enemyTank = new EnemyTank(Element.OTHER_TANK_DOWN, currentRoundNearTree.Point);
+                        enemyTank.Direction = direction;
+                        enemyTank.UpdateElementByDirection();
+                        State.ThisRound.EnemyTanks.Add(enemyTank);
+                        var cell = Field.GetCell(currentRoundNearTree.Point);
+                        cell.Items.Insert(0, enemyTank);
+                    }
                 }
             }
 
@@ -67,13 +69,12 @@ namespace FormUICore.Logic
             return foundCurrentRoundNearTank;
         }
 
-        private static Tree CalculateNearestTree(Bullet bullet, int delta = 1)
+        private static List<Tree> CalculateNearestTrees(Bullet bullet, int delta = 1)
         {
             var nearPoints = bullet.Point.GetNearPoints(delta).ToList();
             var currentRoundNearTrees = State.ThisRound.Trees.Where(t => nearPoints.Contains(t.Point)).ToList();
-            var foundCurrentRoundNearTree = currentRoundNearTrees.FirstOrDefault();
 
-            return foundCurrentRoundNearTree;
+            return currentRoundNearTrees;
         }
 
         private static Bullet CalculateNearestBullet(Bullet bullet)
@@ -88,20 +89,6 @@ namespace FormUICore.Logic
                 : prevRoundNearBullets.FirstOrDefault(p => p.GetNextPoints(p.Point).Last() == bullet.Point);
 
             return foundPrevRoundNearBullet;
-        }
-
-        private static Direction CalculateDirection(Point startPoint, Point endPoint)
-        {
-            var xDiff = startPoint.X - endPoint.X;
-            var yDiff = startPoint.Y - endPoint.Y;
-
-            if (xDiff == 0)
-                return yDiff < 0 ? Direction.Up : Direction.Down;
-
-            if (yDiff == 0)
-                return xDiff > 0 ? Direction.Left : Direction.Right;
-
-            return Direction.Down;
         }
     }
 }

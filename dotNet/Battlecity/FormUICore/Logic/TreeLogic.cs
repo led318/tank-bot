@@ -14,7 +14,8 @@ namespace FormUICore.Logic
         {
             PopulateBulletsUnderTrees();
             PopulateAiTanksUnderTrees();
-            PopulateEnemyTanksUnderTrees();
+            PopulateEnemyTanksUnderTreesJustMovedIn();
+            PopulateEnemyTanksUnderTreesStuckOnTheSamePosition();
             PopulateMyTankUnderTrees();
         }
 
@@ -80,7 +81,48 @@ namespace FormUICore.Logic
             }
         }
 
-        private static void PopulateEnemyTanksUnderTrees()
+        private static void PopulateEnemyTanksUnderTreesJustMovedIn()
+        {
+            if (!State.HasPrevRound)
+                return;
+
+            var trees = State.ThisRound.Trees;
+            var prevEnemyTanks = State.PrevRound.EnemyTanks;
+            var thisEnemyTanks = State.ThisRound.EnemyTanks;
+
+            foreach (var prevEnemyTank in prevEnemyTanks)
+            {
+                var prevCell = Field.GetCell(prevEnemyTank.Point);
+                if (prevCell.IsTree)
+                    continue;
+
+                var prevEnemyTankNearPointsIncludingCurrent = prevEnemyTank.Point.GetNearPoints(1, true);
+                var thisEnemyTank = thisEnemyTanks.FirstOrDefault(x => prevEnemyTankNearPointsIncludingCurrent.Contains(x.Point));
+                if (thisEnemyTank != null)
+                    continue;
+
+                var prevEnemyTankNearPointsWithoutCurrent = prevEnemyTank.Point.GetNearPoints();
+
+                foreach (var tree in trees)
+                {
+                    var isTreeWhereLostTankMoved = prevEnemyTankNearPointsWithoutCurrent.Contains(tree.Point);
+
+                    if (!isTreeWhereLostTankMoved)
+                        continue;
+
+                    var thisHiddenEnemyTank = prevEnemyTank.DeepClone();
+                    thisHiddenEnemyTank.Point = tree.Point;
+                    thisHiddenEnemyTank.Direction = prevEnemyTank.Point.CalculateDirectionToPoint(tree.Point);
+                    thisHiddenEnemyTank.UpdateElementByDirection();
+
+                    var cell = Field.GetCell(tree.Point);
+                    cell.Items.Insert(0, thisHiddenEnemyTank);
+                    State.ThisRound.EnemyTanks.Add(thisHiddenEnemyTank);
+                }
+            }
+        }
+
+        private static void PopulateEnemyTanksUnderTreesStuckOnTheSamePosition()
         {
             if (!State.HasPrevRound)
                 return;

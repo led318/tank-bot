@@ -20,6 +20,7 @@ namespace FormUICore.Logic
                 if (thisRiver == null)
                 {
                     Field.GetCell(prevRiver.Point).Items.Add(prevRiver);
+                    State.ThisRound.Rivers.Add(prevRiver);
                 }
             }
         }
