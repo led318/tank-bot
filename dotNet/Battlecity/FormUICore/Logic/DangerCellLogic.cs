@@ -30,28 +30,41 @@ namespace FormUICore.Logic
                 if (bullet.IsMyBullet)
                     continue;
 
-                var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
-                prediction.IsCritical = true;
+                MarkCellAsDangerous(cell, true);
             }
 
             var aiShotPredictions = cell.Predictions.AiShotPredictions.Where(x => x.Depth == 1).ToList();
             foreach (var aiShotPrediction in aiShotPredictions)
             {
-                var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
-                prediction.IsCritical = true;
+                MarkCellAsDangerous(cell, true);
             }
 
             var enemyShotPredictions = cell.Predictions.EnemyShotPredictions.Where(x => x.Depth == 1).ToList();
             foreach (var enemyShotPrediction in enemyShotPredictions)
             {
-                cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
+                MarkCellAsDangerous(cell);
             }
 
             var enemy = State.ThisRound.EnemyTanks.FirstOrDefault(x => x.Point == cell.Point);
             if (enemy != null)
             {
-                cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
+                MarkCellAsDangerous(cell);
             }
+
+            var aiTank = State.ThisRound.AiTanks.FirstOrDefault(x => x.Point == cell.Point);
+            if (aiTank != null)
+            {
+                if (aiTank.IsShotThisRound)
+                {
+                    MarkCellAsDangerous(cell, true);
+                }
+            }
+        }
+
+        private static void MarkCellAsDangerous(Cell cell, bool isCritical = false)
+        {
+            var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
+            prediction.IsCritical = isCritical;
         }
     }
 }
