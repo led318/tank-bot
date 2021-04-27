@@ -3,6 +3,8 @@ using System.Linq;
 using API.Components;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
+
 // ReSharper disable InconsistentNaming
 
 namespace FormUICore.Logic
@@ -25,6 +27,15 @@ namespace FormUICore.Logic
                 _defaultTargetPoints.Add(new Point(2, 9));
                 _defaultTargetPoints.Add(new Point(24, 9));
             }
+        }
+
+        public static List<MyMovePrediction> GetDefaultTargetMovePredictions()
+        {
+            CheckAndChangeDefaultTargetPoint();
+            var defaultCell = Field.GetCell(_currentDefaultTargetPoint);
+            var defaultCellNearestMovePredictions = defaultCell.Predictions.MyMovePredictions.ToList();
+
+            return defaultCellNearestMovePredictions;
         }
 
         public static bool ProcessDefaultTarget()

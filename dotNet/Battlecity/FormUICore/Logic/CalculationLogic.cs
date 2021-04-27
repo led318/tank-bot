@@ -44,17 +44,17 @@ namespace FormUICore.Logic
 
         private static void CalculateCurrentMove()
         {
-            if (NextCommandCalculationLogic.ProcessMyKill())
-                return;
-
-            //if (NextCommandCalculationLogic.CalculateNextCommand())
+            //if (NextCommandCalculationLogic.ProcessMyKill())
             //    return;
+
+            if (NextCommandCalculationLogic.CalculateNextCommand())
+                return;
 
             if (DeadZoneLogic.ProcessDeadZone())
                 return;
 
-            if (DefaultTargetLogic.ProcessDefaultTarget())
-                return;
+            //if (DefaultTargetLogic.ProcessDefaultTarget())
+            //    return;
 
             if (ProcessMyTankLost())
                 return;

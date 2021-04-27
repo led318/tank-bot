@@ -50,7 +50,7 @@ namespace FormUICore.Controls
                 foreach (var note in _cell.Notes)
                 {
                     
-                    e.Graphics.DrawString(note.Text, _font, note.Color, x, 0);
+                    e.Graphics.DrawString(note.Text, _font, note.Color ?? Brushes.Blue, x, 0);
                     x += _noteXStep;
                 }
             }

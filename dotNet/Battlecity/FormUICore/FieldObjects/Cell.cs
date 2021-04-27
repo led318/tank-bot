@@ -5,6 +5,7 @@ using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
+using FormUI.FieldItems.Prize;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 using FormUICore.Predictions;
@@ -50,6 +51,12 @@ namespace FormUICore.FieldObjects
         public bool IsWall => IsBorderBattleWall || Items.Any(x => _wallElements.Contains(x.Element));
         public bool IsIce => Items.Any(x => x.Element == Element.ICE);
         public bool IsTree => Items.Any(x => x.Element == Element.TREE);
+        public bool IsPrize => Items.Any(x => BasePrize.IsPrize(x.Element));
+
+
+        public int DangerCount => Predictions.DangerCellPredictions.Count();
+        public int CriticalDangerCount => Predictions.DangerCellPredictions.Count(x => x.IsCritical);
+        public int NonCriticalDangerCount => Predictions.DangerCellPredictions.Count(x => !x.IsCritical);
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();

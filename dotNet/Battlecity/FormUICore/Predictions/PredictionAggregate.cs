@@ -25,7 +25,9 @@ namespace FormUI.Predictions
 
         public List<MyKillPrediction> MySelectedKillPredictions { get; set; } = new List<MyKillPrediction>();
 
-        public List<BasePrediction> AllPredictions => GetAllPredictions();
+        public List<BasePrediction> AllPredictions => _allPredictionsLazy.Value;
+
+        private Lazy<List<BasePrediction>> _allPredictionsLazy => new Lazy<List<BasePrediction>>(() => GetAllPredictions());
 
         private List<BasePrediction> GetAllPredictions()
         {
