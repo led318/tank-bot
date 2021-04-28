@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using API.Components;
+using FormUI.FieldItems;
+using FormUI.FieldItems.Tank;
+using FormUICore.Predictions;
 
 namespace FormUICore.Infrastructure
 {
@@ -18,14 +21,25 @@ namespace FormUICore.Infrastructure
             _targets.Clear();
         }
 
-        public static bool IsSameTargetMultipleRounds(Point point)
+        public static bool IsSameTargetMultipleRounds(BasePrediction prediction)
         {
             var targetsToScan = 10;
             var threshold = 8;
 
             var lastXTargets = _targets.TakeLast(targetsToScan).ToList();
 
-            return lastXTargets.Count(x => x == point) >= threshold;
+            if (prediction.Item != null)
+            {
+                if (prediction.Item is EnemyTank enemyTank)
+                {
+                    if (enemyTank.IsStuck && !enemyTank.IsShoting)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return lastXTargets.Count(x => x == prediction.Point) >= threshold;
         }
     }
 }

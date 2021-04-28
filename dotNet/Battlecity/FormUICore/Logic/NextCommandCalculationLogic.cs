@@ -169,7 +169,7 @@ namespace FormUICore.Logic
 
         private static List<BasePrediction> FilterOutRepeatedTargets(List<BasePrediction> allMyKillPredictions)
         {
-            return allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x.Point)).ToList();
+            return allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x)).ToList();
         }
 
         private static List<BasePrediction> FilterOutRendezvous(List<BasePrediction> allMyKillPredictions)
@@ -198,13 +198,18 @@ namespace FormUICore.Logic
             if (prevPrediction.Commands.Count != prediction.Commands.Count)
                 return false;
 
-            var prevCommandText = prevPrediction.CommandsText;
-            var thisCommandText = prediction.CommandsText;
+            var prevCommandText = NormalizeCommandText(prevPrediction.CommandsText);
+            var thisCommandText = NormalizeCommandText(prediction.CommandsText);
 
             if (prevCommandText != thisCommandText)
                 return false;
 
             return true;
+        }
+
+        private static string NormalizeCommandText(string commandText)
+        {
+            return commandText.Replace("|", "_").Replace(",", "_");
         }
 
         private static List<BasePrediction> GetDefaultTargetPredictionsOrderedByDepth()
