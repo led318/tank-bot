@@ -160,6 +160,7 @@ namespace FormUICore.Logic
                     thisHiddenEnemyTank.Point = tree.Point;
                     thisHiddenEnemyTank.Direction = prevEnemyTank.Point.CalculateDirectionToPoint(tree.Point);
                     thisHiddenEnemyTank.UpdateElementByDirection();
+                    thisHiddenEnemyTank.IsPhantom = true;
 
                     var cell = Field.GetCell(tree.Point);
                     cell.Items.Insert(0, thisHiddenEnemyTank);
@@ -202,6 +203,7 @@ namespace FormUICore.Logic
                 thisHiddenEnemyTank.Point = tree.Point;
                 thisHiddenEnemyTank.HiddenRoundsInRow++;
                 thisHiddenEnemyTank.IsStuck = true;
+                thisHiddenEnemyTank.IsPhantom = true;
 
                 var cell = Field.GetCell(tree.Point);
                 cell.Items.Insert(0, thisHiddenEnemyTank);

@@ -53,6 +53,8 @@ namespace FormUICore.Logic
                         var enemyTank = new EnemyTank(Element.OTHER_TANK_DOWN, currentRoundNearTree.Point);
                         enemyTank.Direction = direction;
                         enemyTank.UpdateElementByDirection();
+                        enemyTank.IsPhantom = true;
+
                         State.ThisRound.EnemyTanks.Add(enemyTank);
                         var cell = Field.GetCell(currentRoundNearTree.Point);
                         cell.Items.Insert(0, enemyTank);

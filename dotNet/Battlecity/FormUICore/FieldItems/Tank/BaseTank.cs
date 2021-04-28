@@ -3,7 +3,6 @@ using API.Components;
 using FormUI.FieldItems.Helpers;
 using System.Drawing;
 using FormUI.FieldObjects;
-using FormUI.Infrastructure;
 using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
@@ -26,6 +25,8 @@ namespace FormUI.FieldItems.Tank
         public bool IsPrize { get; set; }
 
         public bool IsStuck { get; set; }
+
+        public bool IsPhantom { get; set; }
 
         protected BaseTank(Element element, Point point) : base(element, point)
         {

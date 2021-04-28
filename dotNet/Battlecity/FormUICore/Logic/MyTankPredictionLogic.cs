@@ -31,7 +31,7 @@ namespace FormUICore.Logic
             {
                 if (State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
                 {
-                    State.ThisRound.MyTank.Shot();
+                    //State.ThisRound.MyTank.Shot();
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace FormUICore.Logic
 
                 var depth = (int)Math.Ceiling((decimal)i / 2);
                 //if (correctFirstShotDepth)
-                    depth--;
+                depth--;
 
                 var directionActCommand = command.ToList();
                 directionActCommand.Add(Direction.Act);
@@ -195,7 +195,7 @@ namespace FormUICore.Logic
                 //var shotCountDownDifference = State.ThisRound.MyTank.ShotCountdownLeft - depthShotDelay;
 
                 var notShotRoundsCount = directionActCommands.Count(x => !x.IsActCommand());
-                var shotCountDownLeft = Math.Max(State.ThisRound.MyTank.ShotCountdownLeft - notShotRoundsCount,  0);
+                var shotCountDownLeft = Math.Max(State.ThisRound.MyTank.ShotCountdownLeft - notShotRoundsCount, 0);
                 //var shotCountDownLeft = 0;
 
                 var actualDepth = commandRoundsCount + shotDepth + shotCountDownLeft;
@@ -203,11 +203,11 @@ namespace FormUICore.Logic
                 //var currentDirectionStr = directionActCommand.CommandsToString();
 
                 //var shotCellPredictions = shotCell.Predictions.MyShotPredictions
-                 //   .Where(x => x.Depth == actualDepth && x.Commands.AreSameCommands(directionActCommands))
+                //   .Where(x => x.Depth == actualDepth && x.Commands.AreSameCommands(directionActCommands))
                 //    .ToList();
 
                 //if (!shotCellPredictions.Any())
-                    shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommands);
+                shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommands);
 
                 if (shotCell.CanShootThrough)
                 {
@@ -256,7 +256,7 @@ namespace FormUICore.Logic
             foreach (var enemyMoveCell in enemyMoveCells)
             {
                 var enemyMovePredictions = enemyMoveCell.Predictions.EnemyMovePredictions
-                    .Where(x => ((BaseTank)x.Item).IsStuck || x.Depth <= AppSettings.IgnoreEnemyMoveDepthMoreThan).ToList();
+                    .Where(x => CheckIfEnemyShouldBeTargeted(x)).ToList();
 
                 foreach (var enemyMovePrediction in enemyMovePredictions)
                 {
@@ -271,6 +271,22 @@ namespace FormUICore.Logic
                     }
                 }
             }
+        }
+
+        private static bool CheckIfEnemyShouldBeTargeted(EnemyMovePrediction prediction)
+        {
+            var enemyTank = (EnemyTank)prediction.Item;
+
+            if (enemyTank.IsPhantom)
+                return false;
+
+            if (enemyTank.IsStuck)
+                return true;
+
+            if (prediction.Depth <= AppSettings.IgnoreEnemyMoveDepthMoreThan)
+                return true;
+
+            return false;
         }
     }
 }
