@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using API;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
-using FormUI.Infrastructure;
-using FormUI.Predictions;
+using FormUI.FieldObjects;
 using FormUICore.FieldItems;
+using FormUICore.FieldItems.Tank;
+using FormUICore.Infrastructure;
 using FormUICore.Predictions;
 
-namespace FormUI.FieldObjects
+namespace FormUICore.FieldObjects
 {
     public class Round
     {
@@ -17,20 +17,22 @@ namespace FormUI.FieldObjects
 
         public BaseItem[,] Items = new BaseItem[Constants.FieldWidth, Constants.FieldHeight];
 
-        public List<AiTank> AiTanks { get; set; } = new List<AiTank>();
-        public List<AiTank> AiPrizeTanks { get; set; } = new List<AiTank>();
-        public List<EnemyTank> EnemyTanks { get; set; } = new List<EnemyTank>();
+
+        public List<AiTank> AiTanks { get; } = new List<AiTank>();
+        public List<AiTank> AiPrizeTanks { get; } = new List<AiTank>();
+        public List<EnemyTank> EnemyTanks { get; } = new List<EnemyTank>();
         public MyTank MyTank { get; set; }
         public IEnumerable<BaseTank> AllTanks => GetAllTanks();
 
-        public List<Bullet> Bullets { get; set; } = new List<Bullet>();
+        public List<Bullet> Bullets { get; } = new List<Bullet>();
 
-        public List<River> Rivers { get; set; } = new List<River>();
-        public List<Ice> Ice { get; set; } = new List<Ice>();
-        public List<Tree> Trees { get; set; } = new List<Tree>();
+        public List<Empty> EmptyItems { get; } = new List<Empty>();
+        public List<River> Rivers { get; } = new List<River>();
+        public List<Ice> Ice { get; } = new List<Ice>();
+        public List<Tree> Trees { get; } = new List<Tree>();
 
         public BasePrediction CurrentMoveSelectedPrediction { get; set; }
-        public List<Direction> CurrentMoveCommands { get; set; } = new List<Direction>();
+        public List<Direction> CurrentMoveCommands { get; } = new List<Direction>();
         public string CurrentMoveCommandString => string.Join(",", CurrentMoveCommands);
 
         public bool IsInDeadZone { get; set; }
@@ -70,6 +72,12 @@ namespace FormUI.FieldObjects
 
         private void PopulateState(BaseItem item)
         {
+            if (item is Empty empty)
+            {
+                EmptyItems.Add(empty);
+                return;
+            }
+
             if (item is AiTank aiTank)
             {
                 AiTanks.Add(aiTank);

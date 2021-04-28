@@ -90,10 +90,10 @@ namespace FormUICore
 
                     try
                     {
-                        var response = serializer.Deserialize<SettingsModel[]>(jsonReader);
+                        var response = serializer.Deserialize<ServerSettingsModel[]>(jsonReader);
                         if (response.Any())
                         {
-                            Settings.Get = response[0];
+                            ServerSettings.Settings = response[0];
                         }
                     }
                     catch (JsonReaderException)

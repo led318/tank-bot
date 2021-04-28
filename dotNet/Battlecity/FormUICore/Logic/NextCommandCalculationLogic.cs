@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
-using FormUI.Infrastructure;
 using FormUICore.FieldObjects;
 using FormUICore.Infrastructure;
 using FormUICore.Predictions;
@@ -37,9 +35,7 @@ namespace FormUICore.Logic
             }
 
             var evaluatedDirections = GetDirectionEvaluationsWithDangerIndex();
-
             var groupedEvaluatedDirections = evaluatedDirections.GroupBy(x => x.DangerIndex).OrderBy(x => x.Key).ToList();
-
 
             foreach (var directionsGroup in groupedEvaluatedDirections)
             {
@@ -81,6 +77,7 @@ namespace FormUICore.Logic
                     if (prevRoundNextDirection.HasValue)
                     {
                         var preferredPrediction = minDepthPredictions.FirstOrDefault(x => x.Commands.StartWith(prevRoundNextDirection.Value));
+
                         return preferredPrediction;
                     }
                 }
@@ -136,7 +133,7 @@ namespace FormUICore.Logic
                 var nonCriticalDangerCount = cell.NonCriticalDangerCount();
                 index += nonCriticalDangerCount * 10;
 
-                if (cell.IsIce)
+                if (AppSettings.IceIsDangerousToStep && cell.IsIce)
                     index += 5;
 
                 if (cell.IsPrize)
@@ -154,7 +151,7 @@ namespace FormUICore.Logic
 
             var allMyKillPredictions = Field.GetPredictions(x => x.MyKillPredictions);
             allMyKillPredictions = FilterOutRepeatedTargets(allMyKillPredictions);
-            allMyKillPredictions = FilterOutRendezvous(allMyKillPredictions);
+            allMyKillPredictions = RendezvousLogic.FilterOutRendezvousPredictions(allMyKillPredictions);
 
             var myKillPredictions = allMyKillPredictions
                 .Select(x => (MyKillPrediction)x)
@@ -170,43 +167,6 @@ namespace FormUICore.Logic
         private static List<BasePrediction> FilterOutRepeatedTargets(List<BasePrediction> allMyKillPredictions)
         {
             return allMyKillPredictions.Where(x => !TargetLogLogic.IsSameTargetMultipleRounds(x)).ToList();
-        }
-
-        private static List<BasePrediction> FilterOutRendezvous(List<BasePrediction> allMyKillPredictions)
-        {
-            return allMyKillPredictions.Where(x => !CheckIfPredictionIsRendezvous(x)).ToList();
-        }
-
-        private static bool CheckIfPredictionIsRendezvous(BasePrediction prediction)
-        {
-            var rendezvousMin = 3;
-            var rendezvousMax = 4;
-
-            if (prediction.Commands.Count < rendezvousMin || prediction.Commands.Count > rendezvousMax)
-                return false;
-
-            if (!State.HasPrevRound)
-                return false;
-
-            if (State.PrevRound.CurrentMoveSelectedPrediction == null)
-                return false;
-
-            var prevPrediction = State.PrevRound.CurrentMoveSelectedPrediction;
-            if (prevPrediction.Commands.Count < rendezvousMin || prevPrediction.Commands.Count > rendezvousMax)
-                return false;
-
-            var prevCommandText = NormalizeCommandText(prevPrediction.CommandsText);
-            var thisCommandText = NormalizeCommandText(prediction.CommandsText);
-
-            if (prevCommandText != thisCommandText)
-                return false;
-
-            return true;
-        }
-
-        private static string NormalizeCommandText(string commandText)
-        {
-            return commandText.Replace("|", "_").Replace(",", "_");
         }
 
         private static List<BasePrediction> GetDefaultTargetPredictionsOrderedByDepth()

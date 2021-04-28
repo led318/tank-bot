@@ -9,7 +9,7 @@ namespace FormUI.FieldItems.Tank
 {
     public class AiTank : BaseTank
     {
-        public override int ShotCountdownDefault => Settings.Get.AiTicksPerShoot;
+        public override int ShotCountdownDefault => ServerSettings.Settings.AiTicksPerShoot;
 
         private readonly HashSet<Element> _aiTankElements = new HashSet<Element>
         {

@@ -178,8 +178,8 @@ namespace FormUICore.Logic
                     break;
 
                 var depth = (int)Math.Ceiling((decimal)i / 2);
-                //if (correctFirstShotDepth)
-                depth--;
+                if (correctFirstShotDepth)
+                    depth--;
 
                 var directionActCommand = command.ToList();
                 directionActCommand.Add(Direction.Act);

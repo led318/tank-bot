@@ -18,10 +18,7 @@ namespace FormUICore.FieldObjects
 
         public bool IsInDeadZone(MyTank myTank)
         {
-            var isXInDeadZone = myTank.Point.X >= _start.X && myTank.Point.X <= _end.X;
-            var isYInDeadZone = myTank.Point.Y >= _start.Y && myTank.Point.Y <= _end.Y;
-
-            return isXInDeadZone && isYInDeadZone;
+            return myTank.Point.IsInArea(_start, _end);
         }
     }
 }

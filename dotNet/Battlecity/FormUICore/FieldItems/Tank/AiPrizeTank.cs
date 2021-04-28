@@ -1,20 +1,21 @@
 ﻿using System.Drawing;
 using API.Components;
-using FormUI.Infrastructure;
+using FormUI.FieldItems.Tank;
+using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
-namespace FormUI.FieldItems.Tank
+namespace FormUICore.FieldItems.Tank
 {
     public class AiPrizeTank : AiTank
     {
-        public override int Health { get; set; } = Settings.Get.KillHitsAiPrize;
+        public override int Health { get; set; } = ServerSettings.Settings.KillHitsAiPrize;
 
         public AiPrizeTank(Element element, Point point) : base(element, point)
         {
             IsPrize = true;
 
             //if (AppSettings.DrawBaseBorders)
-                BorderColor = Color.Orange;
+            BorderColor = Color.Orange;
         }
 
         protected override void SetDirection()

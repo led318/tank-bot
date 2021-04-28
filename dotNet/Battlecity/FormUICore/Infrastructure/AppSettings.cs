@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Configuration;
 
-namespace FormUI.Infrastructure
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+
+namespace FormUICore.Infrastructure
 {
     public static class AppSettings
     {
-        private static string _urlArtem = "https://epam-botchallenge.com/codenjoy-contest/board/player/vsw86l76vx5va61b7ju4?code=8749211683513820687";
-        private static string _urlRuslana = "https://epam-botchallenge.com/codenjoy-contest/board/player/s7aq92okytrsnnnrb2lx?code=5922020647759530101";
+        private const string _urlArtem = "https://epam-botchallenge.com/codenjoy-contest/board/player/vsw86l76vx5va61b7ju4?code=8749211683513820687";
+        private const string _urlRuslana = "https://epam-botchallenge.com/codenjoy-contest/board/player/s7aq92okytrsnnnrb2lx?code=5922020647759530101";
 
         public static bool IsProd { get; set; }
         public static string ServerURL { get; set; }
@@ -28,8 +31,7 @@ namespace FormUI.Infrastructure
         public static bool IgnorePrizeAiTanks { get; set; }
         public static bool ChooseKillOnlyByCommandsLength { get; set; }
         public static bool StoreMySelectedKillPredictions { get; set; }
-
-        public static bool IsOldMap { get; set; }
+        public static bool IceIsDangerousToStep { get; set; }
 
         static AppSettings()
         {
@@ -69,8 +71,7 @@ namespace FormUI.Infrastructure
             IgnoreEnemyMoveDepthMoreThan = int.Parse(ConfigurationManager.AppSettings["ignoreEnemyMoveDepthMoreThan"]);
             StuckEnemyPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckEnemyPredictionDepth"]);
             StoreMySelectedKillPredictions = bool.Parse(ConfigurationManager.AppSettings["storeMySelectedKillPredictions"]);
-
-            IsOldMap = bool.Parse(ConfigurationManager.AppSettings["isOldMap"]);
+            IceIsDangerousToStep = bool.Parse(ConfigurationManager.AppSettings["iceIsDangerousToStep"]);
         }
     }
 

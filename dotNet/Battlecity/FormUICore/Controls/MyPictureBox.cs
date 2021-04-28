@@ -25,8 +25,8 @@ namespace FormUICore.Controls
         {
             _cell = cell;
 
-            if (_cell.IsBorderBattleWall)
-                Visible = false;
+            //if (_cell.IsBorderBattleWall)
+            //    Visible = false;
 
             MouseHover += MyPictureBox_MouseHover;
             MouseClick += MyPictureBox_MouseClick;

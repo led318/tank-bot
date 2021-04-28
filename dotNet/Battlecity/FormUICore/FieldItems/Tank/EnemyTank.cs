@@ -15,7 +15,7 @@ namespace FormUI.FieldItems.Tank
 
         public int StuckIndex { get; set; }
 
-        public override int ShotCountdownDefault => Settings.Get.TankTicksPerShoot;
+        public override int ShotCountdownDefault => ServerSettings.Settings.TankTicksPerShoot;
 
         private static readonly HashSet<Element> _enemyTankElements = new HashSet<Element>
         {

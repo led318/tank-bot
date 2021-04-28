@@ -1,65 +1,74 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using API.Components;
+using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
-using FormUI.Infrastructure;
 using FormUI.Predictions;
 using FormUICore.Infrastructure;
 
 // ReSharper disable InconsistentNaming
-
 namespace FormUICore.Logic
 {
     public static class DefaultTargetLogic
     {
-        private static int _currentDefaultTargetPointIndex;
-        private static readonly List<Point> _defaultTargetPoints = new List<Point>();
-        private static Point _currentDefaultTargetPoint => _defaultTargetPoints[_currentDefaultTargetPointIndex];
+        private static readonly int _chunksPerLine = 4;
+
+        private static Point _currentDefaultTargetPoint;
 
         static DefaultTargetLogic()
         {
-            if (AppSettings.IsOldMap)
-            {
-                _defaultTargetPoints.Add(new Point(3, 31));
-                _defaultTargetPoints.Add(new Point(31, 31));
-            }
-            else
-            {
-                _defaultTargetPoints.Add(new Point(2, 9));
-                _defaultTargetPoints.Add(new Point(24, 9));
-            }
+            InitNewDefaultTargetPoint();
         }
 
         public static List<MyMovePrediction> GetDefaultTargetMovePredictions()
         {
-            CheckAndChangeDefaultTargetPoint();
+            RecalculateDefaultTargetPoint();
             var defaultCell = Field.GetCell(_currentDefaultTargetPoint);
             var defaultCellNearestMovePredictions = defaultCell.Predictions.MyMovePredictions.ToList();
 
             return defaultCellNearestMovePredictions;
         }
 
-        public static bool ProcessDefaultTarget()
-        {
-            CheckAndChangeDefaultTargetPoint();
-            var defaultCell = Field.GetCell(_currentDefaultTargetPoint);
-            var defaultCellNearestMovePrediction =
-                defaultCell.Predictions.MyMovePredictions.OrderBy(x => x.Depth).FirstOrDefault();
-
-            if (defaultCellNearestMovePrediction == null)
-                return false;
-
-            NextCommandCalculationLogic.SetCurrentMove(defaultCellNearestMovePrediction);
-            return true;
-        }
-
-        private static void CheckAndChangeDefaultTargetPoint()
+        private static void RecalculateDefaultTargetPoint()
         {
             if (State.ThisRound.MyTank == null)
                 return;
 
-            if (State.ThisRound.MyTank.Point == _currentDefaultTargetPoint)
-                _currentDefaultTargetPointIndex = (_currentDefaultTargetPointIndex + 1) % _defaultTargetPoints.Count;
+            InitNewDefaultTargetPoint();
+        }
+
+        private static void InitNewDefaultTargetPoint()
+        {
+            var aiTanks = State.ThisRound.AiTanks;
+            var chunkSize = State.ThisRound.Board.Size / _chunksPerLine;
+
+            var chunks = new Dictionary<Tuple<int, int>, List<AiTank>>();
+
+            for (var i = 0; i < _chunksPerLine; i++)
+            {
+                for (var j = 0; j < _chunksPerLine; j++)
+                {
+                    var start = new Point(i * chunkSize, j * chunkSize);
+                    var end = new Point(((i + 1) * chunkSize) - 1, ((j + 1) * chunkSize) - 1);
+
+                    var chunkAiTanks = aiTanks.Where(x => x.Point.IsInArea(start, end)).ToList();
+
+                    var chunkKey = new Tuple<int, int>(i, j);
+
+                    chunks[chunkKey] = chunkAiTanks;
+                }
+            }
+
+            var maxChunkPopulation = chunks.Max(x => x.Value.Count);
+            var mostPopulatedChunks = chunks.Where(x => x.Value.Count == maxChunkPopulation).ToList();
+
+            var mostPopulatedChunksTanks = mostPopulatedChunks.SelectMany(x => x.Value).ToList();
+
+            var myTank = State.ThisRound.MyTank;
+            var nearestAiTank = mostPopulatedChunksTanks.OrderBy(x => myTank.Point.DistantionTo(x.Point)).First();
+
+            _currentDefaultTargetPoint = nearestAiTank.Point;
         }
     }
 }

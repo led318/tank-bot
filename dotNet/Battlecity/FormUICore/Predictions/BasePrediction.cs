@@ -12,8 +12,8 @@ namespace FormUICore.Predictions
         public Point Point { get; set; }
         public int Depth { get; set; }
         public abstract PredictionType Type { get; }
-        public Color? BorderColor => GetBorderColor();
-        public Brush TextColor => GetTextColor();
+
+        public bool IsRendezvous { get; set; }
 
         public BaseItem Item { get; set; }
 

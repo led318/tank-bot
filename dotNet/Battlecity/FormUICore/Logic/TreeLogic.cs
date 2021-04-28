@@ -213,7 +213,7 @@ namespace FormUICore.Logic
 
         private static void PopulateMyTankUnderTrees()
         {
-            if (!State.HasPrevRound || Settings.Get.ShowMyTankUnderTree || State.ThisRound.MyTank != null)
+            if (!State.HasPrevRound || ServerSettings.Settings.ShowMyTankUnderTree || State.ThisRound.MyTank != null)
                 return;
 
             var trees = State.ThisRound.Trees;

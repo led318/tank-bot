@@ -2,6 +2,7 @@
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUICore.FieldItems

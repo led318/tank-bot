@@ -20,6 +20,7 @@
  * #L%
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace API.Components
@@ -117,6 +118,20 @@ namespace API.Components
         }
 
         public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
+
+        public bool IsInArea(Point start, Point end)
+        {
+            var isXInArea = X >= start.X && X <= end.X;
+            var isYInArea = Y >= start.Y && Y <= end.Y;
+
+            return isXInArea && isYInArea;
+        }
+
+        public double DistantionTo(Point target)
+        {
+            return Math.Sqrt(Math.Pow((target.X - X), 2) + Math.Pow((target.Y - Y), 2));
+        }
+
 
         #endregion
     }

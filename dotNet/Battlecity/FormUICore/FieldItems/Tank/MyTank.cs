@@ -2,13 +2,14 @@
 using System.Drawing;
 using API.Components;
 using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Tank
 {
     public class MyTank : BaseTank
     {
-        public override int ShotCountdownDefault => Settings.Get.TankTicksPerShoot;
+        public override int ShotCountdownDefault => ServerSettings.Settings.TankTicksPerShoot;
 
         public MyTank(Element element, Point point) : base(element, point)
         {

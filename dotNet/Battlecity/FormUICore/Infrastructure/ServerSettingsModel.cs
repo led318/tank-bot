@@ -1,6 +1,7 @@
-﻿namespace FormUI.Infrastructure
+﻿// ReSharper disable CommentTypo
+namespace FormUICore.Infrastructure
 {
-    public class SettingsModel
+    public class ServerSettingsModel
     {
         /// <summary>
         /// Затримка між пострілами звичайних танків
