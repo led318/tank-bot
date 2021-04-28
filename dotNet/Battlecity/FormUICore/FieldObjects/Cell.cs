@@ -8,6 +8,7 @@ using FormUI.FieldItems.Helpers;
 using FormUI.FieldItems.Prize;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.FieldItems;
 using FormUICore.Predictions;
 using Point = API.Components.Point;
 

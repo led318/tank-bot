@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.Predictions;
+using FormUICore.FieldItems;
 using FormUICore.FieldObjects;
 
 namespace FormUICore.Predictions

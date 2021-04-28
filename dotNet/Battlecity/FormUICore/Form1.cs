@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -54,6 +53,7 @@ namespace FormUICore
 
             Task.Run(InitSettings);
 
+
             InitFieldPanel();
             InitPredictionCheckboxes();
 
@@ -62,6 +62,8 @@ namespace FormUICore
             bot.RoundCallbackHandler += SetBoard;
 
             Logger.LoggerTextBox = logTextBox;
+
+            ChangeFieldItem += Form1_ChangeFieldItem;
 
             // Starting thread with playing game
             Task.Run(bot.Play);
@@ -106,6 +108,89 @@ namespace FormUICore
             }
         }
 
+        #region ChangeFieldItem
+        event EventHandler ChangeFieldItem;
+        class ChangeFieldItemEvent : EventArgs
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
+
+        private void Form1_ChangeFieldItem(object sender, EventArgs e)
+        {
+            var data = e as ChangeFieldItemEvent;
+            if (InvokeRequired)
+                BeginInvoke(new Action(() => { ChangeFieldItemAction(data); }));
+            else
+                ChangeFieldItemAction(data);
+        }
+
+        private void ChangeFieldItemAction(ChangeFieldItemEvent data)
+        {
+            _field[data.X, data.Y].Change();
+        }
+        #endregion ChangeFieldItem
+
+        #region InitFieldItem
+
+        private void InitFieldPanel()
+        {
+            InitFieldItem += Form1_InitFieldItem;
+
+            fieldPanel.Width = Constants.FieldWidth * Constants.CellSize;
+            fieldPanel.Height = Constants.FieldHeight * Constants.CellSize;
+
+            Parallel.For(0, Constants.FieldWidth, (i) =>
+            {
+                Parallel.For(0, Constants.FieldHeight, (j) =>
+                {
+                    if (InitFieldItem != null)
+                        InitFieldItem(null, new InitFieldItemEvent { X = i, Y = j });
+                });
+            });
+        }
+
+        event EventHandler InitFieldItem;
+        class InitFieldItemEvent : EventArgs
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
+
+        private void Form1_InitFieldItem(object sender, EventArgs e)
+        {
+            var data = e as InitFieldItemEvent;
+            if (InvokeRequired)
+                BeginInvoke(new Action(() => { InitFieldItemAction(data); }));
+            else
+                InitFieldItemAction(data);
+        }
+
+        private readonly object _initFieldItemLock = new Object();
+
+        private void InitFieldItemAction(InitFieldItemEvent data)
+        {
+            var i = data.X;
+            var j = data.Y;
+
+            var pictureBox = new MyPictureBox(Field.Cells[i, j]);
+            pictureBox.Width = Constants.CellSize;
+            pictureBox.Height = Constants.CellSize;
+            pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
+            pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+            pictureBox.Left = i * Constants.CellSize;
+            pictureBox.Top = fieldPanel.Height - ((j + 1) * Constants.CellSize);
+
+            _field[i, j] = pictureBox;
+
+            lock (_initFieldItemLock)
+            {
+                fieldPanel.Controls.Add(pictureBox);
+            }
+        }
+
+        #endregion InitFieldItem
+
         private void InitPredictionCheckboxes()
         {
             var predictionTypes = Enum.GetValues(typeof(PredictionType));
@@ -129,29 +214,6 @@ namespace FormUICore
                 Controls.Add(checkbox);
 
                 PredictionSettings.Init(type, checkbox);
-            }
-        }
-
-        private void InitFieldPanel()
-        {
-            fieldPanel.Width = Constants.FieldWidth * Constants.CellSize;
-            fieldPanel.Height = Constants.FieldHeight * Constants.CellSize;
-
-            for (var i = 0; i < Constants.FieldWidth; i++)
-            {
-                for (var j = 0; j < Constants.FieldHeight; j++)
-                {
-                    var pictureBox = new MyPictureBox(Field.Cells[i, j]);
-                    pictureBox.Width = Constants.CellSize;
-                    pictureBox.Height = Constants.CellSize;
-                    pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
-                    pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
-                    pictureBox.Left = i * Constants.CellSize;
-                    pictureBox.Top = fieldPanel.Height - ((j + 1) * Constants.CellSize);
-
-                    _field[i, j] = pictureBox;
-                    fieldPanel.Controls.Add(pictureBox);
-                }
             }
         }
 
@@ -186,29 +248,21 @@ namespace FormUICore
                 {
                     _stopWatch.Restart();
 
-                    //this.label1.Text = board.ToString();
                     State.SetThisRound(board);
 
                     if (State.GameIsRunning)
                     {
                         //todo: perform calculations
                         Task.Run(CalculationLogic.PerformCalculations).Wait();
-                        //CalculationLogic.PerformCalculations();
 
                         for (var i = 0; i < Constants.FieldWidth; i++)
                         {
-                            for (var j = 0; j < Constants.FieldHeight; j++)
+                            Parallel.For(0, Constants.FieldHeight, (j) =>
                             {
-                                _field[i, j].Change();
-                            }
+                                if (ChangeFieldItem != null)
+                                    ChangeFieldItem(null, new ChangeFieldItemEvent { X = i, Y = j });
+                            });
                         }
-
-
-                        //if (State.IsMyShotThisRound)
-                        //{
-                        //    State.ThisRound.MyTank.Shot();
-                        //    result = $"{Direction.Act}";
-                        //}
 
                         if (IsKeyControl)
                         {
@@ -221,7 +275,6 @@ namespace FormUICore
                     }
                     else
                     {
-                        //logTextBox.Clear();
                         Field.Reset(true);
                         TargetLogLogic.Clear();
                     }
@@ -231,8 +284,6 @@ namespace FormUICore
                     label2.Text = State.ThisRound.MyTank == null
                         ? string.Empty
                         : GetMyStateString();
-
-                    //logTextBox.AppendText(Logger.GetLogAndClean());
                 }
             }
 
@@ -268,27 +319,7 @@ namespace FormUICore
 
             return killCommandsTrimmedStr;
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        
         private void Form1_Activated(object sender, EventArgs e)
         {
             keyControlTextBox.Focus();

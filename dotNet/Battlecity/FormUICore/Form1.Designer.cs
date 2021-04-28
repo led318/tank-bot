@@ -46,7 +46,6 @@ namespace FormUICore
             this.label1.Size = new System.Drawing.Size(61, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
-            this.label1.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // fieldPanel
             // 
@@ -84,7 +83,6 @@ namespace FormUICore
             this.checkBoxRunProcessing.TabIndex = 4;
             this.checkBoxRunProcessing.Text = "Run processing";
             this.checkBoxRunProcessing.UseVisualStyleBackColor = true;
-            this.checkBoxRunProcessing.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // keyControlTextBox
             // 

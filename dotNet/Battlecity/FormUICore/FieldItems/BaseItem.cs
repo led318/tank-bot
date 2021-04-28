@@ -3,11 +3,11 @@ using System.Drawing;
 using System.Linq;
 using API.Components;
 using FormUI.FieldItems.Helpers;
-using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 using Newtonsoft.Json;
 using Point = API.Components.Point;
 
-namespace FormUI.FieldItems
+namespace FormUICore.FieldItems
 {
     public abstract class BaseItem
     {

@@ -1,26 +1,29 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using API.Components;
-using FormUI.FieldItems;
+using FormUICore.FieldItems;
 
-namespace FormUI.Infrastructure
+namespace FormUICore.Infrastructure
 {
     public static class ItemImageProvider
     {
-        private static IDictionary<Element, Image> _dictionary = new Dictionary<Element, Image>();
+        private static readonly IDictionary<Element, Image> _dictionary = new ConcurrentDictionary<Element, Image>();
 
         public static Image GetItemImage(BaseItem baseItem)
         {
-            if (!_dictionary.ContainsKey(baseItem.Element))
+
+            return GetElementImage(baseItem.Element, baseItem.Sprite);
+        }
+
+        public static Image GetElementImage(Element element, string sprite)
+        {
+            if (!_dictionary.ContainsKey(element))
             {
-                _dictionary[baseItem.Element] = Image.FromFile(baseItem.Sprite);
+                _dictionary[element] = Image.FromFile(sprite);
             }
 
-            return _dictionary[baseItem.Element];
+            return _dictionary[element];
         }
     }
 }
