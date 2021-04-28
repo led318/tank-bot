@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
@@ -43,29 +44,73 @@ namespace FormUICore.Logic
             foreach (var directionsGroup in groupedEvaluatedDirections)
             {
                 var directions = directionsGroup.Select(x => x.Direction).ToList();
-                var directionMyKills = orderedMyKillPredictions.Where(x => x.Commands.StartWith(directions)).ToList();
-                if (directionMyKills.Any())
+
+                var preferredMyKill = SelectPreferredPrediction(orderedMyKillPredictions, directions);
+                if (preferredMyKill != null)
                 {
-                    var prediction = directionMyKills.FirstOrDefault();
-
-                    SetCurrentMove(prediction);
-
-
+                    SetCurrentMove(preferredMyKill);
                     return true;
                 }
 
-                var directionDefaultTargetPredictions = orderedDefaultTargetPredictions.Where(x => x.Commands.StartWith(directions)).ToList();
-                if (directionDefaultTargetPredictions.Any())
+                var preferredDefaultTarget = SelectPreferredPrediction(orderedDefaultTargetPredictions, directions);
+                if (preferredDefaultTarget != null)
                 {
-                    var prediction = directionDefaultTargetPredictions.FirstOrDefault();
-
-                    SetCurrentMove(prediction);
-
+                    SetCurrentMove(preferredDefaultTarget);
                     return true;
                 }
+
             }
 
             return false;
+        }
+
+        private static BasePrediction SelectPreferredPrediction(IEnumerable<BasePrediction> predictions, List<Direction> directions)
+        {
+            var directionPredictions = predictions.Where(x => x.Commands.StartWith(directions)).ToList();
+            if (directionPredictions.Any())
+            {
+                var minDepth = directionPredictions.Min(x => x.Depth);
+                var minDepthPredictions = directionPredictions.Where(x => x.Depth == minDepth).ToList();
+
+                if (minDepthPredictions.Count > 1)
+                {
+                    var minDepthStartDirections = minDepthPredictions.Select(x => x.Commands.GetStartDirection())
+                        .Where(x => x.HasValue).Select(x => x.Value).Distinct().ToList();
+
+                    var prevRoundNextDirection = GetPrevRoundNextDirection(minDepthStartDirections);
+                    if (prevRoundNextDirection.HasValue)
+                    {
+                        var preferredPrediction = minDepthPredictions.FirstOrDefault(x => x.Commands.StartWith(prevRoundNextDirection.Value));
+                        return preferredPrediction;
+                    }
+                }
+
+                var prediction = minDepthPredictions.FirstOrDefault();
+                return prediction;
+            }
+
+            return null;
+        }
+
+        private static Direction? GetPrevRoundNextDirection(List<Direction> availableDirections)
+        {
+            if (!State.HasPrevRound)
+                return null;
+
+            var prevRoundPrediction = State.PrevRound.CurrentMoveSelectedPrediction;
+            if (prevRoundPrediction == null)
+                return null;
+
+            if (prevRoundPrediction.Commands.Count <= 1)
+                return null;
+
+            var prevRoundNextCommand = prevRoundPrediction.Commands[1];
+            var prevRoundNextDirection = prevRoundNextCommand.FirstOrDefault(x => BaseMobile.ValidDirections.Contains(x));
+
+            if (availableDirections.Contains(prevRoundNextDirection))
+                return prevRoundNextDirection;
+
+            return null;
         }
 
         private static List<DirectionEvaluation> GetDirectionEvaluationsWithDangerIndex()
@@ -108,9 +153,10 @@ namespace FormUICore.Logic
             var result = new List<MyKillPrediction>();
 
             var allMyKillPredictions = Field.GetPredictions(x => x.MyKillPredictions);
-            var myKillPredictionsWithoutRepeats = allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x.Point)).ToList();
+            allMyKillPredictions = FilterOutRepeatedTargets(allMyKillPredictions);
+            allMyKillPredictions = FilterOutRendezvous(allMyKillPredictions);
 
-            var myKillPredictions = myKillPredictionsWithoutRepeats
+            var myKillPredictions = allMyKillPredictions
                 .Select(x => (MyKillPrediction)x)
                 .OrderBy(x => x.Depth)
                 .ThenBy(x => x.Commands.Count())
@@ -119,31 +165,46 @@ namespace FormUICore.Logic
             result.AddRange(myKillPredictions);
 
             return result;
+        }
 
+        private static List<BasePrediction> FilterOutRepeatedTargets(List<BasePrediction> allMyKillPredictions)
+        {
+            return allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x.Point)).ToList();
+        }
 
-            //if (AppSettings.ChooseKillOnlyByCommandsLength)
-            //{
-            //    var minCommandsCount = myKillPredictions.Min(x => x.Commands.RoundsCount());
-            //    var minCommandsKills = myKillPredictions.Where(x => x.Commands.RoundsCount() == minCommandsCount).ToList();
+        private static List<BasePrediction> FilterOutRendezvous(List<BasePrediction> allMyKillPredictions)
+        {
+            return allMyKillPredictions.Where(x => !CheckIfPredictionIsRendezvous(x)).ToList();
+        }
 
-            //    //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-            //    //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+        private static bool CheckIfPredictionIsRendezvous(BasePrediction prediction)
+        {
+            var rendezvousMin = 3;
+            var rendezvousMax = 4;
 
-            //    //nearestKill = minCommandsKills.First();
-            //}
-            //else
-            //{
-            //    var minDepth = myKillPredictions.Min(x => x.Depth);
-            //    var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
+            if (prediction.Commands.Count < rendezvousMin || prediction.Commands.Count > rendezvousMax)
+                return false;
 
-            //    var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-            //    var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+            if (!State.HasPrevRound)
+                return false;
 
-            //    //nearestKill = minMovesKills.First();
-            //}
+            if (State.PrevRound.CurrentMoveSelectedPrediction == null)
+                return false;
 
+            var prevPrediction = State.PrevRound.CurrentMoveSelectedPrediction;
+            if (prevPrediction.Commands.Count < rendezvousMin || prevPrediction.Commands.Count > rendezvousMax)
+                return false;
 
-            //return result;
+            if (prevPrediction.Commands.Count != prediction.Commands.Count)
+                return false;
+
+            var prevCommandText = prevPrediction.CommandsText;
+            var thisCommandText = prediction.CommandsText;
+
+            if (prevCommandText != thisCommandText)
+                return false;
+
+            return true;
         }
 
         private static List<BasePrediction> GetDefaultTargetPredictionsOrderedByDepth()
@@ -158,56 +219,6 @@ namespace FormUICore.Logic
 
             return result;
         }
-
-
-        //public static bool ProcessMyKill()
-        //{
-        //    var myKillBasePredictions = !IsMyCellSafe()
-        //        ? Field.GetPredictions(x => x.MyKillPredictions)
-        //            .Where(x => !((MyKillPrediction)x).Commands.IsSingleAct()).ToList()
-        //        : Field.GetPredictions(x => x.MyKillPredictions);
-
-        //    if (!myKillBasePredictions.Any())
-        //        return false;
-
-        //    var myKillPredictions = myKillBasePredictions.Select(x => (MyKillPrediction)x).ToList();
-
-        //    MyKillPrediction nearestKill;
-
-        //    if (AppSettings.ChooseKillOnlyByCommandsLength)
-        //    {
-        //        var minCommandsCount = myKillPredictions.Min(x => x.Commands.Count());
-        //        var minCommandsKills = myKillPredictions.Where(x => x.Commands.Count() == minCommandsCount).ToList();
-
-        //        //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-        //        //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
-
-        //        nearestKill = minCommandsKills.First();
-        //    }
-        //    else
-        //    {
-        //        var minDepth = myKillPredictions.Min(x => x.Depth);
-        //        var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
-
-        //        var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-        //        var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
-
-        //        nearestKill = minMovesKills.First();
-        //    }
-
-        //    var sb = new StringBuilder();
-        //    sb.AppendLine($"SelectedKill: {nearestKill.Point}");
-        //    sb.AppendLine($"MyShot: {nearestKill.MyShot.Depth}");
-        //    sb.AppendLine($"TargetMove: {nearestKill.TargetMove.Depth}");
-
-        //    if (AppSettings.StoreMySelectedKillPredictions)
-        //        Field.GetCell(nearestKill.Point).Predictions.MySelectedKillPredictions.Add(nearestKill);
-
-        //    Logger.Append(sb.ToString());
-
-        //    SetCurrentMove(nearestKill);
-        //    return true;
-        //}
 
         [Obsolete]
         public static void SetCurrentMove(BasePrediction prediction)

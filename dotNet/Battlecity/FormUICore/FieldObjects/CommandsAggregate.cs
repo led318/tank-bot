@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Xml.Serialization;
 using API.Components;
+using FormUI.FieldItems;
 
 namespace FormUICore.FieldObjects
 {
@@ -12,6 +13,19 @@ namespace FormUICore.FieldObjects
         public bool IsSingleAct()
         {
             return Count == 1 && this[0].IsSingleActCommand();
+        }
+
+        public Direction? GetStartDirection()
+        {
+            if (Count == 0)
+                return null;
+
+            var firstCommand = this[0];
+
+            if (firstCommand.Count == 0 || firstCommand.IsSingleActCommand())
+                return null;
+
+            return BaseMobile.ValidDirections.FirstOrDefault(x => x == firstCommand[0]);
         }
 
         public bool StartWith(List<Direction> directions)
