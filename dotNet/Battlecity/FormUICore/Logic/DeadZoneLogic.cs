@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using API.Components;
-using FormUI.Infrastructure;
+using FormUI.FieldObjects;
 using FormUICore.FieldObjects;
 using FormUICore.Infrastructure;
 
@@ -32,12 +32,15 @@ namespace FormUICore.Logic
                 return false;
 
             var myTank = State.ThisRound.MyTank;
-            var activeDeadZone = _deadZones.FirstOrDefault(x => x.IsInDeadZone(myTank));
-            if (activeDeadZone == null)
+
+            var leftPoint = myTank.Point.ShiftLeft();
+            var leftCell = Field.GetCell(leftPoint);
+
+            if (leftCell.Predictions.DangerCellPredictions.Any())
                 return false;
 
             State.ThisRound.IsInDeadZone = true;
-            State.ThisRound.CurrentMoveCommands.Add(activeDeadZone.EscapeDirection);
+            State.ThisRound.CurrentMoveCommands.Add(Direction.Left);
             State.ThisRound.CurrentMoveCommands.Add(Direction.Act);
 
             return true;
