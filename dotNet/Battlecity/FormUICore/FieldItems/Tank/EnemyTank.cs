@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using API.Components;
+using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Tank
@@ -11,6 +13,7 @@ namespace FormUI.FieldItems.Tank
         public int HiddenRoundsInRow { get; set; }
         public bool IsShoting { get; set; }
 
+        public int StuckIndex { get; set; }
 
         public override int ShotCountdownDefault => Settings.Get.TankTicksPerShoot;
 
@@ -26,6 +29,26 @@ namespace FormUI.FieldItems.Tank
         {
             if (AppSettings.DrawBaseBorders)
                 BorderColor = Color.Green;
+        }
+
+        protected override void InitIsStuck()
+        {
+            if (!State.HasPrevRound)
+                return;
+
+            var prevStepItem = State.PrevRound.Items[Point.X, Point.Y];
+
+            if (prevStepItem.Element == Element)
+            {
+                var prevEnemyTank = (EnemyTank) prevStepItem;
+                StuckIndex = prevEnemyTank.StuckIndex + 1;
+
+                if (StuckIndex > 1)
+                {
+                    IsStuck = true;
+                    AddNote("S", Brushes.GreenYellow, NoteType.Other);
+                }
+            }
         }
 
         protected override void SetDirection()

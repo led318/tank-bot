@@ -172,7 +172,7 @@ namespace FormUICore
                     _stopWatch.Restart();
 
                     //this.label1.Text = board.ToString();
-                    State.SetThisRound(new Round(board));
+                    State.SetThisRound(board);
 
                     if (State.GameIsRunning)
                     {
@@ -200,6 +200,7 @@ namespace FormUICore
                     {
                         //logTextBox.Clear();
                         Field.Reset(true);
+                        TargetLog.Clear();
                     }
 
                     _stopWatch.Stop();

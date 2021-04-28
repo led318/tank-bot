@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 
 namespace FormUICore.Logic
 {

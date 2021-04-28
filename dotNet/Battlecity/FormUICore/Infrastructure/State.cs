@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FormUI.FieldItems;
-using FormUI.FieldItems.Tank;
+﻿using API;
 using FormUI.FieldObjects;
 
-namespace FormUI.Infrastructure
+namespace FormUICore.Infrastructure
 {
     public static class State
     {
@@ -19,11 +13,10 @@ namespace FormUI.Infrastructure
 
         public static bool IsMyShotThisRound => ThisRound?.MyTank?.IsShotThisRound ?? false;
 
-
-        public static void SetThisRound(Round newThisRound)
+        public static void SetThisRound(Board board)
         {
             PrevRound = ThisRound;
-            ThisRound = newThisRound;
+            ThisRound = new Round(board);
         }
     }
 }

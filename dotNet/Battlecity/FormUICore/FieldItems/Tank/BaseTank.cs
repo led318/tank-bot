@@ -4,6 +4,7 @@ using FormUI.FieldItems.Helpers;
 using System.Drawing;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
+using FormUICore.Infrastructure;
 using Point = API.Components.Point;
 
 namespace FormUI.FieldItems.Tank

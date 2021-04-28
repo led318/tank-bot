@@ -4,6 +4,7 @@ using API.Components;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.Infrastructure;
 
 // ReSharper disable InconsistentNaming
 

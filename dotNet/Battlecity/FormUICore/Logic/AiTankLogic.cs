@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
+using FormUICore.Infrastructure;
 using FormUICore.Logic;
 using FormUICore.Predictions;
 

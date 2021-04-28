@@ -50,6 +50,7 @@ namespace FormUICore.Logic
 
                     SetCurrentMove(prediction);
 
+
                     return true;
                 }
 
@@ -106,7 +107,10 @@ namespace FormUICore.Logic
         {
             var result = new List<MyKillPrediction>();
 
-            var myKillPredictions = Field.GetPredictions(x => x.MyKillPredictions)
+            var allMyKillPredictions = Field.GetPredictions(x => x.MyKillPredictions);
+            var myKillPredictionsWithoutRepeats = allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x.Point)).ToList();
+
+            var myKillPredictions = myKillPredictionsWithoutRepeats
                 .Select(x => (MyKillPrediction)x)
                 .OrderBy(x => x.Depth)
                 .ThenBy(x => x.Commands.Count())
@@ -156,58 +160,60 @@ namespace FormUICore.Logic
         }
 
 
-        public static bool ProcessMyKill()
-        {
-            var myKillBasePredictions = !IsMyCellSafe()
-                ? Field.GetPredictions(x => x.MyKillPredictions)
-                    .Where(x => !((MyKillPrediction)x).Commands.IsSingleAct()).ToList()
-                : Field.GetPredictions(x => x.MyKillPredictions);
+        //public static bool ProcessMyKill()
+        //{
+        //    var myKillBasePredictions = !IsMyCellSafe()
+        //        ? Field.GetPredictions(x => x.MyKillPredictions)
+        //            .Where(x => !((MyKillPrediction)x).Commands.IsSingleAct()).ToList()
+        //        : Field.GetPredictions(x => x.MyKillPredictions);
 
-            if (!myKillBasePredictions.Any())
-                return false;
+        //    if (!myKillBasePredictions.Any())
+        //        return false;
 
-            var myKillPredictions = myKillBasePredictions.Select(x => (MyKillPrediction)x).ToList();
+        //    var myKillPredictions = myKillBasePredictions.Select(x => (MyKillPrediction)x).ToList();
 
-            MyKillPrediction nearestKill;
+        //    MyKillPrediction nearestKill;
 
-            if (AppSettings.ChooseKillOnlyByCommandsLength)
-            {
-                var minCommandsCount = myKillPredictions.Min(x => x.Commands.Count());
-                var minCommandsKills = myKillPredictions.Where(x => x.Commands.Count() == minCommandsCount).ToList();
+        //    if (AppSettings.ChooseKillOnlyByCommandsLength)
+        //    {
+        //        var minCommandsCount = myKillPredictions.Min(x => x.Commands.Count());
+        //        var minCommandsKills = myKillPredictions.Where(x => x.Commands.Count() == minCommandsCount).ToList();
 
-                //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-                //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+        //        //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
+        //        //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
 
-                nearestKill = minCommandsKills.First();
-            }
-            else
-            {
-                var minDepth = myKillPredictions.Min(x => x.Depth);
-                var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
+        //        nearestKill = minCommandsKills.First();
+        //    }
+        //    else
+        //    {
+        //        var minDepth = myKillPredictions.Min(x => x.Depth);
+        //        var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
 
-                var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-                var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+        //        var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
+        //        var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
 
-                nearestKill = minMovesKills.First();
-            }
+        //        nearestKill = minMovesKills.First();
+        //    }
 
-            var sb = new StringBuilder();
-            sb.AppendLine($"SelectedKill: {nearestKill.Point}");
-            sb.AppendLine($"MyShot: {nearestKill.MyShot.Depth}");
-            sb.AppendLine($"TargetMove: {nearestKill.TargetMove.Depth}");
+        //    var sb = new StringBuilder();
+        //    sb.AppendLine($"SelectedKill: {nearestKill.Point}");
+        //    sb.AppendLine($"MyShot: {nearestKill.MyShot.Depth}");
+        //    sb.AppendLine($"TargetMove: {nearestKill.TargetMove.Depth}");
 
-            if (AppSettings.StoreMySelectedKillPredictions)
-                Field.GetCell(nearestKill.Point).Predictions.MySelectedKillPredictions.Add(nearestKill);
+        //    if (AppSettings.StoreMySelectedKillPredictions)
+        //        Field.GetCell(nearestKill.Point).Predictions.MySelectedKillPredictions.Add(nearestKill);
 
-            Logger.Append(sb.ToString());
+        //    Logger.Append(sb.ToString());
 
-            SetCurrentMove(nearestKill);
-            return true;
-        }
+        //    SetCurrentMove(nearestKill);
+        //    return true;
+        //}
 
         [Obsolete]
         public static void SetCurrentMove(BasePrediction prediction)
         {
+            TargetLog.Add(prediction.Point);
+
             State.ThisRound.CurrentMoveSelectedPrediction = prediction;
 
             if (!prediction.Commands.Any())
