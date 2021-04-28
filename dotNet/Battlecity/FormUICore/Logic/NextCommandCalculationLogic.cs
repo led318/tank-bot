@@ -195,9 +195,6 @@ namespace FormUICore.Logic
             if (prevPrediction.Commands.Count < rendezvousMin || prevPrediction.Commands.Count > rendezvousMax)
                 return false;
 
-            if (prevPrediction.Commands.Count != prediction.Commands.Count)
-                return false;
-
             var prevCommandText = NormalizeCommandText(prevPrediction.CommandsText);
             var thisCommandText = NormalizeCommandText(prediction.CommandsText);
 
