@@ -23,47 +23,58 @@ namespace FormUICore.Logic
 
         private static void CalculateDangerCell(Cell cell)
         {
-            var bulletPredictions = cell.Predictions.BulletPredictions.Where(x => x.Depth == 0 || x.Depth == 1).ToList();
+            for (var depth = 1; depth <= AppSettings.DangerCellPredictionDepth; depth++)
+            {
+                CalculateDangerCellForDepth(cell, depth);
+            }
+        }
+
+        private static void CalculateDangerCellForDepth(Cell cell, int depth)
+        {
+            var bulletPredictions = cell.Predictions.BulletPredictions.Where(x => x.Depth == depth - 1 || x.Depth == depth).ToList();
             foreach (var bulletPrediction in bulletPredictions)
             {
                 var bullet = (Bullet) bulletPrediction.Item;
                 if (bullet.IsMyBullet)
                     continue;
 
-                MarkCellAsDangerous(cell, true);
+                MarkCellAsDangerous(cell, depth, true);
             }
 
-            var aiShotPredictions = cell.Predictions.AiShotPredictions.Where(x => x.Depth == 1).ToList();
+            var aiShotPredictions = cell.Predictions.AiShotPredictions.Where(x => x.Depth == depth).ToList();
             foreach (var aiShotPrediction in aiShotPredictions)
             {
-                MarkCellAsDangerous(cell, true);
+                MarkCellAsDangerous(cell, depth, true);
             }
 
-            var enemyShotPredictions = cell.Predictions.EnemyShotPredictions.Where(x => x.Depth == 1).ToList();
+            var enemyShotPredictions = cell.Predictions.EnemyShotPredictions.Where(x => x.Depth == depth).ToList();
             foreach (var enemyShotPrediction in enemyShotPredictions)
             {
-                MarkCellAsDangerous(cell);
+                MarkCellAsDangerous(cell, depth);
             }
 
-            var enemy = State.ThisRound.EnemyTanks.FirstOrDefault(x => x.Point == cell.Point);
-            if (enemy != null)
+            if (depth == 1)
             {
-                MarkCellAsDangerous(cell);
-            }
-
-            var aiTank = State.ThisRound.AiTanks.FirstOrDefault(x => x.Point == cell.Point);
-            if (aiTank != null)
-            {
-                if (aiTank.IsShotThisRound)
+                var enemy = State.ThisRound.EnemyTanks.FirstOrDefault(x => x.Point == cell.Point);
+                if (enemy != null && !enemy.IsStuck && enemy.IsShotThisRound)
                 {
-                    MarkCellAsDangerous(cell, true);
+                    MarkCellAsDangerous(cell, depth);
+                }
+
+                var aiTank = State.ThisRound.AiTanks.FirstOrDefault(x => x.Point == cell.Point);
+                if (aiTank != null)
+                {
+                    if (aiTank.IsShotThisRound)
+                    {
+                        MarkCellAsDangerous(cell, depth, true);
+                    }
                 }
             }
         }
 
-        private static void MarkCellAsDangerous(Cell cell, bool isCritical = false)
+        private static void MarkCellAsDangerous(Cell cell, int depth, bool isCritical = false)
         {
-            var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, 1, cell.Point);
+            var prediction = (DangerCellPrediction)cell.Predictions.Add(PredictionType.DangerCell, depth, cell.Point);
             prediction.IsCritical = isCritical;
         }
     }

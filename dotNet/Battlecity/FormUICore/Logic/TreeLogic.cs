@@ -18,6 +18,7 @@ namespace FormUICore.Logic
             PopulateEnemyTanksUnderTreesJustMovedIn();
             PopulateEnemyTanksUnderTreesStuckOnTheSamePosition();
             PopulateMyTankUnderTrees();
+            PopulateMyBulletsUnderTrees();
         }
 
         private static void PopulateBulletsUnderTrees()
@@ -41,6 +42,46 @@ namespace FormUICore.Logic
                 var cell = Field.GetCell(tree.Point);
                 cell.Items.Insert(0, thisHiddenBullet);
                 State.ThisRound.Bullets.Add(thisHiddenBullet);
+            }
+        }
+
+        private static void PopulateMyBulletsUnderTrees()
+        {
+            if (!State.HasPrevRound || State.PrevRound.MyTank == null)
+                return;
+
+            if (State.PrevRound.MyTank.IsShotThisRound && State.PrevRound.CurrentMoveCommands.Contains(Direction.Act))
+            {
+                var trees = State.ThisRound.Trees;
+                var prevMyTank = State.PrevRound.MyTank;
+
+                var indexOfActCommand = State.PrevRound.CurrentMoveCommands.IndexOf(Direction.Act);
+
+                var prevMyShotStartPoint = prevMyTank.Point;
+                var prevMyShotDirection = prevMyTank.Direction;
+
+                if (indexOfActCommand == 1)
+                {
+                    var moveCommand = State.PrevRound.CurrentMoveCommands[0];
+                    prevMyShotStartPoint = prevMyShotStartPoint.Shift(moveCommand);
+                    prevMyShotDirection = moveCommand;
+                }
+
+                if (prevMyShotDirection.HasValue)
+                {
+                    var shotTargetPoint = prevMyShotStartPoint.Shift(prevMyShotDirection.Value, Bullet.DefaultSpeed);
+                    var shotTargetPointTree = trees.FirstOrDefault(x => x.Point == shotTargetPoint);
+                    if (shotTargetPointTree != null)
+                    {
+                        var thisHiddenBullet = new Bullet(Element.BULLET, shotTargetPointTree.Point);
+                        thisHiddenBullet.IsMyBullet = true;
+                        thisHiddenBullet.Direction = prevMyShotDirection;
+
+                        var cell = Field.GetCell(shotTargetPointTree.Point);
+                        cell.Items.Insert(0, thisHiddenBullet);
+                        State.ThisRound.Bullets.Add(thisHiddenBullet);
+                    }
+                }
             }
         }
 
@@ -95,6 +136,9 @@ namespace FormUICore.Logic
             {
                 var prevCell = Field.GetCell(prevEnemyTank.Point);
                 if (prevCell.IsTree)
+                    continue;
+
+                if (prevCell.IsBlast)
                     continue;
 
                 var prevEnemyTankNearPointsIncludingCurrent = prevEnemyTank.Point.GetNearPoints(1, true);
@@ -156,6 +200,7 @@ namespace FormUICore.Logic
                 var thisHiddenEnemyTank = prevEnemyTank.DeepClone();
                 thisHiddenEnemyTank.Point = tree.Point;
                 thisHiddenEnemyTank.HiddenRoundsInRow++;
+                thisHiddenEnemyTank.IsStuck = true;
 
                 var cell = Field.GetCell(tree.Point);
                 cell.Items.Insert(0, thisHiddenEnemyTank);

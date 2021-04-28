@@ -6,11 +6,11 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
+using FormUI.Predictions;
 using FormUICore.FieldItems;
-using FormUICore.Predictions;
 using Point = API.Components.Point;
 
-namespace FormUI.Predictions
+namespace FormUICore.Predictions
 {
     public class PredictionAggregate
     {
@@ -30,39 +30,17 @@ namespace FormUI.Predictions
 
         public List<BasePrediction> AllVisiblePredictions => _allVisiblePredictionsLazy.Value;
 
-        private Lazy<List<BasePrediction>> _allVisiblePredictionsLazy => new Lazy<List<BasePrediction>>(() => GetAllVisiblePredictions());
+        private Lazy<List<BasePrediction>> _allVisiblePredictionsLazy { get; set; }
 
-        private List<BasePrediction> GetAllVisiblePredictions()
+        public PredictionAggregate()
         {
-            //var result = new List<BasePrediction>();
-
-            //result.AddRange(AiMovePredictions);
-            //result.AddRange(AiShotPredictions);
-            //result.AddRange(BulletPredictions);
-            //result.AddRange(EnemyMovePredictions);
-            //result.AddRange(EnemyShotPredictions);
-            //result.AddRange(MyMovePredictions);
-            //result.AddRange(MyShotPredictions);
-            //result.AddRange(MyKillPredictions);
-            //result.AddRange(DangerCellPredictions);
-
-            return GetVisiblePredictions(PredictionType.AiMove, AiMovePredictions.Select(x => (BasePrediction)x))
-                .Concat(GetVisiblePredictions(PredictionType.AiShot, AiShotPredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.Bullet, BulletPredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.EnemyMove, EnemyMovePredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.EnemyShot, EnemyShotPredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.MyMove, MyMovePredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.MyShot, MyShotPredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.MyKill, MyKillPredictions.Select(x => (BasePrediction)x)))
-                .Concat(GetVisiblePredictions(PredictionType.DangerCell, DangerCellPredictions.Select(x => (BasePrediction)x)))
-                .ToList();
+            InitLazyPredictions();
         }
 
-        private List<BasePrediction> GetVisiblePredictions(PredictionType type, IEnumerable<BasePrediction> list)
+        private void InitLazyPredictions()
         {
-            return PredictionSettings.GetVisible(type)
-                ? list.ToList()
-                : new List<BasePrediction>();
+            if (_allVisiblePredictionsLazy == null || _allVisiblePredictionsLazy.IsValueCreated)
+                _allVisiblePredictionsLazy = new Lazy<List<BasePrediction>>(() => GetVisiblePredictions());
         }
 
         public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
@@ -120,6 +98,8 @@ namespace FormUI.Predictions
 
             if (clearMySelectedKills)
                 MySelectedKillPredictions.Clear();
+
+            InitLazyPredictions();
         }
 
         public List<Note> GetPredictionNotes()
@@ -152,6 +132,50 @@ namespace FormUI.Predictions
                 .Select(g => g.First().GetBorderColor()).ToList();
 
             return colors.FirstOrDefault();
+        }
+
+        private List<BasePrediction> GetVisiblePredictions()
+        {
+            var result = new List<BasePrediction>();
+
+            var visibleTypes = PredictionSettings.Checkboxes
+                .Where(x => x.Value.Checked)
+                .Select(x => x.Key).ToList();
+
+            foreach (var visibleType in visibleTypes)
+            {
+                result.AddRange(GetPredictionsByType(visibleType));
+            }
+
+            return result;
+        }
+
+        private IEnumerable<BasePrediction> GetPredictionsByType(PredictionType type)
+        {
+            switch (type)
+            {
+                case PredictionType.DangerCell:
+                    return DangerCellPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.MyKill:
+                    return MyKillPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.MyShot:
+                    return MyShotPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.MyMove:
+                    return MyMovePredictions.Select(x => (BasePrediction)x);
+                case PredictionType.AiShot:
+                    return AiShotPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.Bullet:
+                    return BulletPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.AiMove:
+                    return AiMovePredictions.Select(x => (BasePrediction)x);
+                case PredictionType.EnemyShot:
+                    return EnemyShotPredictions.Select(x => (BasePrediction)x);
+                case PredictionType.EnemyMove:
+                    return EnemyMovePredictions.Select(x => (BasePrediction)x);
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
     }
 }

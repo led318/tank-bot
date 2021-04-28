@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using API.Components;
 using FormUI.FieldItems;
+using FormUI.Infrastructure;
 using FormUI.Predictions;
 using Point = API.Components.Point;
 
@@ -21,7 +22,7 @@ namespace FormUICore.Predictions
         //[Obsolete]
         public List<Direction> Commands { get; set; } = new List<Direction>();
 
-        public string CommandsText => string.Join(",", Commands);
+        public string CommandsText => Commands.CommandsToString();
 
         public Color? GetBorderColor()
         {

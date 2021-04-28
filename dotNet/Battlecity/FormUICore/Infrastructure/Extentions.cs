@@ -65,5 +65,12 @@ namespace FormUI.Infrastructure
 
             return Direction.Down;
         }
+
+
+        private static string _commandsSeparator = ",";
+        public static string CommandsToString(this IEnumerable<Direction> commands)
+        {
+            return string.Join(_commandsSeparator, commands);
+        }
     }
 }

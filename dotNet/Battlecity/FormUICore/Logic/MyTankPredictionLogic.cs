@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
@@ -50,7 +51,8 @@ namespace FormUICore.Logic
 
             AppendLog("=========================== STARTED ================================");
 
-            CalculateMyShotPredictions(myTank.Point, myTank.Direction.Value, new List<Direction>());
+            CalculateMyShotPredictions(myTank.Point, myTank.Direction.Value, new List<Direction>(), true);
+            //CalculateMyShotsForDirection(myTank.Point, myTank.Direction.Value, new List<Direction>(), true);
 
             CalculateMyMoveDepth(myTank.Point, 1, new List<Direction>());
 
@@ -113,6 +115,10 @@ namespace FormUICore.Logic
             if (cell.HasMyMovePrediction(depth))
                 return false;
 
+            var hasDepthAiTanks = cell.HasDepthPrediction(depth, x => x.AiMovePredictions);
+            if (hasDepthAiTanks)
+                return false;
+                
             var hasDepthBullets = cell.HasDepthPrediction(depth, x => x.NotMyBulletPredictions);
             if (hasDepthBullets)
                 return false;
@@ -133,13 +139,16 @@ namespace FormUICore.Logic
             if (hasDangerCells)
                 return false;
 
+            //if (cell.IsIce) //todo: maybe remove
+           //     return false;
+
             return true;
         }
 
-        private static void CalculateMyShotPredictions(Point currentPoint, Direction lastDirection, List<Direction> command)
+        private static void CalculateMyShotPredictions(Point currentPoint, Direction lastDirection, List<Direction> command, bool correctFirstShotDepth = false)
         {
             var currentCommand = command.ToList();
-            CalculateMyShotsForDirection(currentPoint, lastDirection, currentCommand, true);
+            CalculateMyShotsForDirection(currentPoint, lastDirection, currentCommand, correctFirstShotDepth);
 
             foreach (var direction in BaseMobile.ValidDirections)
             {
@@ -177,19 +186,32 @@ namespace FormUICore.Logic
                     break;
 
                 var depth = (int)Math.Ceiling((decimal)i / 2);
-                if (correctFirstShotDepth)
-                    depth--;
+                //if (correctFirstShotDepth)
+                //    depth--;
 
                 var directionActCommand = command.ToList();
                 directionActCommand.Add(Direction.Act);
 
                 var commandRoundsCount = directionActCommand.RoundsCount();
-                var shotCountDownLeft = State.ThisRound.MyTank.ShotCountdownLeft;
                 var shotDepth = depth;
 
-                var actualDepth = commandRoundsCount + shotCountDownLeft + shotDepth;
+                //var depthShotDelay = commandRoundsCount + shotDepth;
 
-                shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
+                //var shotCountDownDifference = State.ThisRound.MyTank.ShotCountdownLeft - depthShotDelay;
+
+                var shotCountDownLeft = State.ThisRound.MyTank.ShotCountdownLeft;
+                //var shotCountDownLeft = 0;
+
+                var actualDepth = commandRoundsCount + shotDepth + shotCountDownLeft;
+
+                //var currentDirectionStr = directionActCommand.CommandsToString();
+
+                //var shotCellPredictions = shotCell.Predictions.MyShotPredictions
+                //    .Where(x => x.CommandsText == currentDirectionStr && x.Depth == actualDepth)
+                //    .ToList();
+
+                //if (!shotCellPredictions.Any())
+                    shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommand);
 
                 if (shotCell.CanShootThrough)
                 {

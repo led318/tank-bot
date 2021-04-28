@@ -31,8 +31,15 @@ namespace FormUICore.Logic
 
         private static void CalculateEnemyTankShotPredictions(EnemyTank tank)
         {
-            if (tank.IsStuck && !tank.IsShoting)
+            if (tank.IsStuck)
+            {
+                if (!tank.IsShoting || !tank.Direction.HasValue)
+                    return;
+
+                CalculateEnemyShotForDirection(tank.Point, tank.Direction.Value, tank);
+
                 return;
+            }
 
             var directions = BaseMobile.ValidDirections;
             foreach (var direction in directions)

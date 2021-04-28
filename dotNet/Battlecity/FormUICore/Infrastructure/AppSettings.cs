@@ -8,6 +8,7 @@ namespace FormUI.Infrastructure
         public static int StuckAiPredictionDepth { get; set; }
         public static int MyShotPredictionDepth { get; set; }
         public static int MyMovePredictionDepth { get; set; }
+        public static int DangerCellPredictionDepth { get; set; }
         public static int EnemyTankMovePredictionDepth { get; set; }
         public static int EnemyTankShotPredictionDepth { get; set; }
         public static bool EnableEnemyTankNotForwardNearestMoves { get; set; }
@@ -27,6 +28,7 @@ namespace FormUI.Infrastructure
             StuckAiPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckAiPredictionDepth"]);
             MyShotPredictionDepth = int.Parse(ConfigurationManager.AppSettings["myShotPredictionDepth"]);
             MyMovePredictionDepth = int.Parse(ConfigurationManager.AppSettings["myMovePredictionDepth"]);
+            DangerCellPredictionDepth = int.Parse(ConfigurationManager.AppSettings["dangerCellPredictionDepth"]);
 
             DrawBaseBorders = bool.Parse(ConfigurationManager.AppSettings["drawBaseBorders"]);
             IgnorePrizeAiTanks = bool.Parse(ConfigurationManager.AppSettings["ignorePrizeAiTanks"]);

@@ -52,11 +52,7 @@ namespace FormUICore.FieldObjects
         public bool IsIce => Items.Any(x => x.Element == Element.ICE);
         public bool IsTree => Items.Any(x => x.Element == Element.TREE);
         public bool IsPrize => Items.Any(x => BasePrize.IsPrize(x.Element));
-
-
-        public int DangerCount => Predictions.DangerCellPredictions.Count();
-        public int CriticalDangerCount => Predictions.DangerCellPredictions.Count(x => x.IsCritical);
-        public int NonCriticalDangerCount => Predictions.DangerCellPredictions.Count(x => !x.IsCritical);
+        public bool IsBlast => Items.Any(x => x.Element == Element.BANG);
 
         public List<Note> Notes => PredictionNotes.Concat(Items.SelectMany(x => x.Notes).ToList()).ToList();
         public List<Note> PredictionNotes => Predictions.GetPredictionNotes();
@@ -70,6 +66,16 @@ namespace FormUICore.FieldObjects
         public Cell(int i, int j)
         {
             Point = new Point(i, j);
+        }
+
+        public int CriticalDangerCount(int depth = 1)
+        {
+            return Predictions.DangerCellPredictions.Count(x => x.Depth == depth && x.IsCritical);
+        }
+        
+        public int NonCriticalDangerCount(int depth = 1)
+        {
+            return Predictions.DangerCellPredictions.Count(x => x.Depth == depth && !x.IsCritical);
         }
 
         public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null, BaseItem item = null)

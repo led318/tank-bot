@@ -85,10 +85,10 @@ namespace FormUICore.Logic
                     index += 1000;
                 }
 
-                var criticalDangerCount = cell.CriticalDangerCount;
+                var criticalDangerCount = cell.CriticalDangerCount();
                 index += criticalDangerCount * 100;
 
-                var nonCriticalDangerCount = cell.NonCriticalDangerCount;
+                var nonCriticalDangerCount = cell.NonCriticalDangerCount();
                 index += nonCriticalDangerCount * 10;
 
                 if (cell.IsIce)
