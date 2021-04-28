@@ -39,18 +39,7 @@ namespace FormUI.Infrastructure
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
         }
 
-        public static bool IsSingleAct(this List<Direction> commands)
-        {
-            return commands.Count == 1 && commands[0] == Direction.Act;
-        }
 
-        public static int RoundsCount(this List<Direction> commands)
-        {
-            if (commands.IsSingleAct())
-                return 1;
-
-            return commands.Count(x => x != Direction.Act);
-        }
 
         public static Direction CalculateDirectionToPoint(this Point startPoint, Point endPoint)
         {

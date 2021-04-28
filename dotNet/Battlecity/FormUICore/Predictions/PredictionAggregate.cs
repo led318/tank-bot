@@ -8,6 +8,7 @@ using FormUI.FieldItems.Helpers;
 using FormUI.Infrastructure;
 using FormUI.Predictions;
 using FormUICore.FieldItems;
+using FormUICore.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUICore.Predictions
@@ -43,9 +44,9 @@ namespace FormUICore.Predictions
                 _allVisiblePredictionsLazy = new Lazy<List<BasePrediction>>(() => GetVisiblePredictions());
         }
 
-        public BasePrediction Add(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
+        public BasePrediction Add(PredictionType type, int depth, Point point, List<Command> commands = null, BaseItem item = null)
         {
-            var prediction = PredictionFactory.Get(type, depth, point, command, item);
+            var prediction = PredictionFactory.Get(type, depth, point, commands, item);
 
             switch (type)
             {

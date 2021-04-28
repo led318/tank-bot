@@ -78,9 +78,20 @@ namespace FormUICore.FieldObjects
             return Predictions.DangerCellPredictions.Count(x => x.Depth == depth && !x.IsCritical);
         }
 
-        public BasePrediction AddPrediction(int depth, PredictionType type, List<Direction> command = null, BaseItem item = null)
+        public BasePrediction AddPrediction(int depth, PredictionType type, List<Command> commands = null, BaseItem item = null)
         {
-            var addedPrediction = Predictions.Add(type, depth, Point, command, item);
+            if (type == PredictionType.MyMove || type == PredictionType.MyShot)
+            {
+                if (commands.Any())
+                {
+                    if (commands[0].Count > 2)
+                    {
+
+                    }
+                }
+            }
+
+            var addedPrediction = Predictions.Add(type, depth, Point, commands, item);
             IsDirty = true;
 
             return addedPrediction;

@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using API.Components;
 using FormUI.FieldItems;
-using FormUICore.Predictions;
+using FormUI.Predictions;
+using FormUICore.FieldObjects;
 
-namespace FormUI.Predictions
+namespace FormUICore.Predictions
 {
     public static class PredictionFactory
     {
-        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Direction> command = null, BaseItem item = null)
+        public static BasePrediction Get(PredictionType type, int depth, Point point, List<Command> commands = null, BaseItem item = null)
         {
             var prediction = Get(type);
             prediction.Depth = depth;
             prediction.Point = point;
             prediction.Item = item;
 
-            if (command != null)
-                prediction.Commands.AddRange(command);
+            if (commands != null)
+                prediction.Commands.AddRange(commands);
 
             return prediction;
         }

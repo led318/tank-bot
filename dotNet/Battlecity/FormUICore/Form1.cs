@@ -9,19 +9,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API;
-using FormUI.Controls;
+using FormUI;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
-using FormUI.Logic;
-using FormUI.Predictions;
 using FormUICore.Controls;
 using FormUICore.Infrastructure;
 using FormUICore.Logic;
 using FormUICore.Predictions;
 using Newtonsoft.Json;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
+// ReSharper disable InconsistentNaming
 
-namespace FormUI
+namespace FormUICore
 {
     public partial class Form1 : Form
     {
@@ -238,24 +237,9 @@ namespace FormUI
         private string FormatCommandString()
         {
             var killCommandsTrimmedStr = string.Empty;
-            if (!string.IsNullOrEmpty(State.ThisRound.CurrentMoveSelectedPrediction?.CommandsText))
+            if (State.ThisRound.CurrentMoveSelectedPrediction != null && State.ThisRound.CurrentMoveSelectedPrediction.Commands.Any())
             {
-                var breakLimit = 7;
-                var commands = State.ThisRound.CurrentMoveSelectedPrediction.Commands;
-                if (commands.Count > breakLimit)
-                {
-                    var currentIndex = 0;
-                    while (currentIndex < commands.Count)
-                    {
-                        var subList = commands.Skip(currentIndex).Take(breakLimit).ToList();
-                        killCommandsTrimmedStr += string.Join(",", subList) + Environment.NewLine;
-                        currentIndex += breakLimit;
-                    }
-                }
-                else
-                {
-                    killCommandsTrimmedStr = State.ThisRound.CurrentMoveSelectedPrediction?.CommandsText;
-                }
+                killCommandsTrimmedStr = State.ThisRound.CurrentMoveSelectedPrediction?.CommandsText;
             }
 
             return killCommandsTrimmedStr;

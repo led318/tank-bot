@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
@@ -44,7 +43,7 @@ namespace FormUICore.Logic
             foreach (var directionsGroup in groupedEvaluatedDirections)
             {
                 var directions = directionsGroup.Select(x => x.Direction).ToList();
-                var directionMyKills = orderedMyKillPredictions.Where(x => directions.Contains(x.Commands[0])).ToList();
+                var directionMyKills = orderedMyKillPredictions.Where(x => x.Commands.StartWith(directions)).ToList();
                 if (directionMyKills.Any())
                 {
                     var prediction = directionMyKills.FirstOrDefault();
@@ -54,7 +53,7 @@ namespace FormUICore.Logic
                     return true;
                 }
 
-                var directionDefaultTargetPredictions = orderedDefaultTargetPredictions.Where(x => directions.Contains(x.Commands[0])).ToList();
+                var directionDefaultTargetPredictions = orderedDefaultTargetPredictions.Where(x => x.Commands.StartWith(directions)).ToList();
                 if (directionDefaultTargetPredictions.Any())
                 {
                     var prediction = directionDefaultTargetPredictions.FirstOrDefault();
@@ -110,7 +109,7 @@ namespace FormUICore.Logic
             var myKillPredictions = Field.GetPredictions(x => x.MyKillPredictions)
                 .Select(x => (MyKillPrediction)x)
                 .OrderBy(x => x.Depth)
-                .ThenBy(x => x.Commands.RoundsCount())
+                .ThenBy(x => x.Commands.Count())
                 .ToList();
 
             result.AddRange(myKillPredictions);
@@ -118,32 +117,29 @@ namespace FormUICore.Logic
             return result;
 
 
+            //if (AppSettings.ChooseKillOnlyByCommandsLength)
+            //{
+            //    var minCommandsCount = myKillPredictions.Min(x => x.Commands.RoundsCount());
+            //    var minCommandsKills = myKillPredictions.Where(x => x.Commands.RoundsCount() == minCommandsCount).ToList();
+
+            //    //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
+            //    //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+
+            //    //nearestKill = minCommandsKills.First();
+            //}
+            //else
+            //{
+            //    var minDepth = myKillPredictions.Min(x => x.Depth);
+            //    var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
+
+            //    var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
+            //    var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
+
+            //    //nearestKill = minMovesKills.First();
+            //}
 
 
-
-            if (AppSettings.ChooseKillOnlyByCommandsLength)
-            {
-                var minCommandsCount = myKillPredictions.Min(x => x.Commands.RoundsCount());
-                var minCommandsKills = myKillPredictions.Where(x => x.Commands.RoundsCount() == minCommandsCount).ToList();
-
-                //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-                //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
-
-                //nearestKill = minCommandsKills.First();
-            }
-            else
-            {
-                var minDepth = myKillPredictions.Min(x => x.Depth);
-                var minDepthKills = myKillPredictions.Where(x => x.Depth == minDepth).ToList();
-
-                var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
-                var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
-
-                //nearestKill = minMovesKills.First();
-            }
-
-
-            return result;
+            //return result;
         }
 
         private static List<BasePrediction> GetDefaultTargetPredictionsOrderedByDepth()
@@ -176,8 +172,8 @@ namespace FormUICore.Logic
 
             if (AppSettings.ChooseKillOnlyByCommandsLength)
             {
-                var minCommandsCount = myKillPredictions.Min(x => x.Commands.RoundsCount());
-                var minCommandsKills = myKillPredictions.Where(x => x.Commands.RoundsCount() == minCommandsCount).ToList();
+                var minCommandsCount = myKillPredictions.Min(x => x.Commands.Count());
+                var minCommandsKills = myKillPredictions.Where(x => x.Commands.Count() == minCommandsCount).ToList();
 
                 //var minMovesCount = minDepthKills.Min(x => x.Commands.Count);
                 //var minMovesKills = minDepthKills.Where(x => x.Commands.Count == minMovesCount).ToList();
@@ -217,10 +213,9 @@ namespace FormUICore.Logic
             if (!prediction.Commands.Any())
                 return;
 
-            State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[0]);
+            var command = prediction.Commands[0];
 
-            if (prediction.Commands.Count > 1 && prediction.Commands[1] == Direction.Act)
-                State.ThisRound.CurrentMoveCommands.Add(prediction.Commands[1]);
+            State.ThisRound.CurrentMoveCommands.AddRange(command);
         }
 
         private static bool IsMyCellSafe()

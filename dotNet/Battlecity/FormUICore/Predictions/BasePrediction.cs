@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using API.Components;
+﻿using System.Drawing;
 using FormUI.FieldItems;
-using FormUI.Infrastructure;
-using FormUI.Predictions;
+using FormUICore.FieldObjects;
 using Point = API.Components.Point;
 
 namespace FormUICore.Predictions
 {
     public abstract class BasePrediction
     {
+
         public Point Point { get; set; }
         public int Depth { get; set; }
         public abstract PredictionType Type { get; }
@@ -20,9 +17,9 @@ namespace FormUICore.Predictions
         public BaseItem Item { get; set; }
 
         //[Obsolete]
-        public List<Direction> Commands { get; set; } = new List<Direction>();
+        public CommandsAggregate Commands { get; set; } = new CommandsAggregate();
 
-        public string CommandsText => Commands.CommandsToString();
+        public string CommandsText => Commands.ToString();
 
         public Color? GetBorderColor()
         {

@@ -1,5 +1,5 @@
 ﻿
-namespace FormUI
+namespace FormUICore
 {
     partial class Form1
     {
@@ -57,20 +57,19 @@ namespace FormUI
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label2.Location = new System.Drawing.Point(12, 211);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 15);
+            this.label2.Size = new System.Drawing.Size(419, 293);
             this.label2.TabIndex = 2;
             this.label2.Text = "label2";
             // 
             // logTextBox
             // 
-            this.logTextBox.Location = new System.Drawing.Point(12, 410);
+            this.logTextBox.Location = new System.Drawing.Point(12, 537);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
-            this.logTextBox.Size = new System.Drawing.Size(419, 456);
+            this.logTextBox.Size = new System.Drawing.Size(419, 329);
             this.logTextBox.TabIndex = 3;
             // 
             // checkBoxRunProcessing
@@ -78,7 +77,7 @@ namespace FormUI
             this.checkBoxRunProcessing.AutoSize = true;
             this.checkBoxRunProcessing.Checked = true;
             this.checkBoxRunProcessing.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxRunProcessing.Location = new System.Drawing.Point(12, 374);
+            this.checkBoxRunProcessing.Location = new System.Drawing.Point(12, 507);
             this.checkBoxRunProcessing.Name = "checkBoxRunProcessing";
             this.checkBoxRunProcessing.Size = new System.Drawing.Size(131, 24);
             this.checkBoxRunProcessing.TabIndex = 4;
@@ -109,7 +108,6 @@ namespace FormUI
         private System.Windows.Forms.Panel fieldPanel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox logTextBox;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBoxRunProcessing;
     }
 }
