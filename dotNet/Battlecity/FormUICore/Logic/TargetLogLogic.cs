@@ -7,7 +7,7 @@ using FormUICore.Predictions;
 
 namespace FormUICore.Infrastructure
 {
-    public static class TargetLog
+    public static class TargetLogLogic
     {
         private static List<Point> _targets = new List<Point>();
 
@@ -24,7 +24,7 @@ namespace FormUICore.Infrastructure
         public static bool IsSameTargetMultipleRounds(BasePrediction prediction)
         {
             var targetsToScan = 10;
-            var threshold = 8;
+            var threshold = 9;
 
             var lastXTargets = _targets.TakeLast(targetsToScan).ToList();
 
@@ -36,6 +36,11 @@ namespace FormUICore.Infrastructure
                     {
                         return false;
                     }
+                }
+
+                if (prediction.Item is AiTank aiTank)
+                {
+                    return false;
                 }
             }
 

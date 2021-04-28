@@ -203,11 +203,11 @@ namespace FormUICore.Logic
                 //var currentDirectionStr = directionActCommand.CommandsToString();
 
                 //var shotCellPredictions = shotCell.Predictions.MyShotPredictions
-                //    .Where(x => x.CommandsText == currentDirectionStr && x.Depth == actualDepth)
+                 //   .Where(x => x.Depth == actualDepth && x.Commands.AreSameCommands(directionActCommands))
                 //    .ToList();
 
                 //if (!shotCellPredictions.Any())
-                shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommands);
+                    shotCell.AddPrediction(actualDepth, PredictionType.MyShot, directionActCommands);
 
                 if (shotCell.CanShootThrough)
                 {

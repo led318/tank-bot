@@ -169,7 +169,7 @@ namespace FormUICore.Logic
 
         private static List<BasePrediction> FilterOutRepeatedTargets(List<BasePrediction> allMyKillPredictions)
         {
-            return allMyKillPredictions.Where(x => !TargetLog.IsSameTargetMultipleRounds(x)).ToList();
+            return allMyKillPredictions.Where(x => !TargetLogLogic.IsSameTargetMultipleRounds(x)).ToList();
         }
 
         private static List<BasePrediction> FilterOutRendezvous(List<BasePrediction> allMyKillPredictions)
@@ -225,7 +225,7 @@ namespace FormUICore.Logic
         [Obsolete]
         public static void SetCurrentMove(BasePrediction prediction)
         {
-            TargetLog.Add(prediction.Point);
+            TargetLogLogic.Add(prediction.Point);
 
             State.ThisRound.CurrentMoveSelectedPrediction = prediction;
 

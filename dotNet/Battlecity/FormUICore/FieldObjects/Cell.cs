@@ -80,17 +80,6 @@ namespace FormUICore.FieldObjects
 
         public BasePrediction AddPrediction(int depth, PredictionType type, List<Command> commands = null, BaseItem item = null)
         {
-            if (type == PredictionType.MyMove || type == PredictionType.MyShot)
-            {
-                if (commands.Any())
-                {
-                    if (commands[0].Count > 2)
-                    {
-
-                    }
-                }
-            }
-
             var addedPrediction = Predictions.Add(type, depth, Point, commands, item);
             IsDirty = true;
 

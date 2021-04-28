@@ -34,6 +34,7 @@ namespace FormUICore
             this.label2 = new System.Windows.Forms.Label();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.checkBoxRunProcessing = new System.Windows.Forms.CheckBox();
+            this.keyControlTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -85,11 +86,19 @@ namespace FormUICore
             this.checkBoxRunProcessing.UseVisualStyleBackColor = true;
             this.checkBoxRunProcessing.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // keyControlTextBox
+            // 
+            this.keyControlTextBox.Location = new System.Drawing.Point(306, 504);
+            this.keyControlTextBox.Name = "keyControlTextBox";
+            this.keyControlTextBox.Size = new System.Drawing.Size(125, 27);
+            this.keyControlTextBox.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1422, 878);
+            this.Controls.Add(this.keyControlTextBox);
             this.Controls.Add(this.checkBoxRunProcessing);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.label2);
@@ -109,6 +118,7 @@ namespace FormUICore
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox logTextBox;
         private System.Windows.Forms.CheckBox checkBoxRunProcessing;
+        private System.Windows.Forms.TextBox keyControlTextBox;
     }
 }
 

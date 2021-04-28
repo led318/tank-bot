@@ -1,9 +1,18 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace FormUI.Infrastructure
 {
     public static class AppSettings
     {
+        private static string _urlArtem = "https://epam-botchallenge.com/codenjoy-contest/board/player/vsw86l76vx5va61b7ju4?code=8749211683513820687";
+        private static string _urlRuslana = "https://epam-botchallenge.com/codenjoy-contest/board/player/s7aq92okytrsnnnrb2lx?code=5922020647759530101";
+
+        public static bool IsProd { get; set; }
+        public static string ServerURL { get; set; }
+        public static string TestServerURL { get; set; }
+        public static User User { get; set; }
+
         public static int PredictionDepth { get; set; }
         public static int StuckAiPredictionDepth { get; set; }
         public static int MyShotPredictionDepth { get; set; }
@@ -24,6 +33,25 @@ namespace FormUI.Infrastructure
 
         static AppSettings()
         {
+            IsProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
+            TestServerURL = ConfigurationManager.AppSettings["testServerURL"];
+            User = (User) int.Parse(ConfigurationManager.AppSettings["user"]);
+
+            switch (User)
+            {
+                case User.Artem:
+                    ServerURL = _urlArtem;
+                    break;
+                case User.Ruslana:
+                    ServerURL = _urlRuslana;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
+
+
             PredictionDepth = int.Parse(ConfigurationManager.AppSettings["predictionDepth"]);
             StuckAiPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckAiPredictionDepth"]);
             MyShotPredictionDepth = int.Parse(ConfigurationManager.AppSettings["myShotPredictionDepth"]);
@@ -44,5 +72,11 @@ namespace FormUI.Infrastructure
 
             IsOldMap = bool.Parse(ConfigurationManager.AppSettings["isOldMap"]);
         }
+    }
+
+    public enum User
+    {
+        Artem = 1,
+        Ruslana = 2
     }
 }

@@ -50,5 +50,19 @@ namespace FormUICore.FieldObjects
         {
             return string.Join(_commandsSeparator, this);
         }
+
+        public bool AreSameCommands(List<Command> target)
+        {
+            if (Count != target.Count)
+                return false;
+
+            for (var i = 0; i < Count; i++)
+            {
+                if (!this[i].IsSameCommand(target[i]))
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

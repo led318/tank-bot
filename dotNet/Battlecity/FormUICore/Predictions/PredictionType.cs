@@ -6,7 +6,7 @@ namespace FormUICore.Predictions
 {
     public enum PredictionType
     {
-        [IsDefaultSelected(Selected = true)]
+        //[IsDefaultSelected(Selected = true)]
         DangerCell,
 
         //[IsDefaultSelected(Selected = true)]

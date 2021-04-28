@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using API;
+using API.Components;
 using FormUI;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
@@ -30,20 +32,33 @@ namespace FormUICore
 
         public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
 
+        #region KeyControl
+        private string _separator = ",";
+        private readonly List<Direction> _keyControlDirections = new List<Direction>();
+
+        public List<Direction> KeyControlCommand => _keyControlDirections.ToList();
+        public string KeyControlCommandText => string.Join(_separator, _keyControlDirections);
+
+        public bool IsKeyControl => _keyControlDirections.Any();
+        #endregion KeyControl
+
         public Form1()
         {
-            var serverUrl = ConfigurationManager.AppSettings["serverURL"];
-            var testServerUrl = ConfigurationManager.AppSettings["testServerURL"];
-            var isProd = bool.Parse(ConfigurationManager.AppSettings["isProd"]);
-
             InitializeComponent();
+            Activated += Form1_Activated;
+
+            keyControlTextBox.KeyUp += Form1_KeyDown;
+
+            var testServerPart = AppSettings.IsProd ? string.Empty : " - Test";
+            Text = $"{Text} {AppSettings.User}{testServerPart}";
+
             Task.Run(InitSettings);
 
             InitFieldPanel();
             InitPredictionCheckboxes();
 
             // Creating custom AI client
-            var bot = new YourSolver(isProd ? serverUrl : testServerUrl);
+            var bot = new YourSolver(AppSettings.IsProd ? AppSettings.ServerURL : AppSettings.TestServerURL);
             bot.RoundCallbackHandler += SetBoard;
 
             Logger.LoggerTextBox = logTextBox;
@@ -178,6 +193,7 @@ namespace FormUICore
                     {
                         //todo: perform calculations
                         Task.Run(CalculationLogic.PerformCalculations).Wait();
+                        //CalculationLogic.PerformCalculations();
 
                         for (var i = 0; i < Constants.FieldWidth; i++)
                         {
@@ -194,13 +210,20 @@ namespace FormUICore
                         //    result = $"{Direction.Act}";
                         //}
 
+                        if (IsKeyControl)
+                        {
+                            State.ThisRound.CurrentMoveCommands.Clear();
+                            State.ThisRound.CurrentMoveCommands.AddRange(KeyControlCommand);
+                            ResetKeyControls();
+                        }
+
                         resultString = State.ThisRound.CurrentMoveCommandString;
                     }
                     else
                     {
                         //logTextBox.Clear();
                         Field.Reset(true);
-                        TargetLog.Clear();
+                        TargetLogLogic.Clear();
                     }
 
                     _stopWatch.Stop();
@@ -264,6 +287,51 @@ namespace FormUICore
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_Activated(object sender, EventArgs e)
+        {
+            keyControlTextBox.Focus();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            ProcessKey(e.KeyCode);
+            keyControlTextBox.Text = KeyControlCommandText;
+        }
+
+        public void ResetKeyControls()
+        {
+            _keyControlDirections.Clear();
+        }
+
+        private void ProcessKey(Keys key)
+        {
+            if (IsKeyControl)
+                ResetKeyControls();
+
+            switch (key)
+            {
+                case Keys.Left:
+                    _keyControlDirections.Add(Direction.Left);
+                    break;
+
+                case Keys.Right:
+                    _keyControlDirections.Add(Direction.Right);
+                    break;
+
+                case Keys.Up:
+                    _keyControlDirections.Add(Direction.Up);
+                    break;
+
+                case Keys.Down:
+                    _keyControlDirections.Add(Direction.Down);
+                    break;
+
+                case Keys.Space:
+                    _keyControlDirections.Add(Direction.Act);
+                    break;
+            }
         }
     }
 }
