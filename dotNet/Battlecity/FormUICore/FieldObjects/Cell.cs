@@ -51,6 +51,7 @@ namespace FormUICore.FieldObjects
         };
 
         public bool IsWall => IsBorderBattleWall || Items.Any(x => _wallElements.Contains(x.Element));
+        public bool IsBattleWall => Items.Any(x => x.Element == Element.BATTLE_WALL);
         public bool IsIce => Items.Any(x => x.Element == Element.ICE);
         public bool IsTree => Items.Any(x => x.Element == Element.TREE);
         public bool IsPrize => Items.Any(x => BasePrize.IsPrize(x.Element));

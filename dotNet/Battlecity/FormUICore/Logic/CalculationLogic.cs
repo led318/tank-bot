@@ -46,7 +46,10 @@ namespace FormUICore.Logic
         private static void CalculateCurrentMove()
         {
             if (NextCommandCalculationLogic.CalculateNextCommand())
+            {
+                DeadZoneLogic.ResetDeadZoneIndex();
                 return;
+            }
 
             if (DeadZoneLogic.ProcessDeadZone())
                 return;

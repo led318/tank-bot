@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using API.Components;
 using FormUI.FieldObjects;
-using FormUICore.FieldObjects;
 using FormUICore.Infrastructure;
 
 namespace FormUICore.Logic
@@ -10,7 +8,10 @@ namespace FormUICore.Logic
     public static class DeadZoneLogic
     {
         // ReSharper disable once InconsistentNaming
-        private static readonly List<DeadZone> _deadZones = new List<DeadZone>();
+        //private static readonly List<DeadZone> _deadZones = new List<DeadZone>();
+
+        private static readonly int _deadZoneRoundsThreshold = 5;
+        private static int _deadZoneCurrentIndex;
 
         static DeadZoneLogic()
         {
@@ -26,22 +27,43 @@ namespace FormUICore.Logic
             //}
         }
 
+        public static void ResetDeadZoneIndex()
+        {
+            _deadZoneCurrentIndex = 0;
+
+        }
+
         public static bool ProcessDeadZone()
         {
             if (State.ThisRound.MyTank == null)
+            {
+                ResetDeadZoneIndex();
                 return false;
+            }
+
+            if (State.PrevRound == null)
+            {
+                ResetDeadZoneIndex();
+                return false;
+            }
+
+            _deadZoneCurrentIndex++;
+            if (_deadZoneCurrentIndex < _deadZoneRoundsThreshold)
+            {
+                return false;
+            }
 
             var myTank = State.ThisRound.MyTank;
 
             var leftPoint = myTank.Point.ShiftLeft();
             var leftCell = Field.GetCell(leftPoint);
 
-            if (leftCell.Predictions.DangerCellPredictions.Any())
+            if (leftCell.IsBattleWall || leftCell.Predictions.DangerCellPredictions.Any())
                 return false;
 
             State.ThisRound.IsInDeadZone = true;
-            State.ThisRound.CurrentMoveCommands.Add(Direction.Left);
             State.ThisRound.CurrentMoveCommands.Add(Direction.Act);
+            State.ThisRound.CurrentMoveCommands.Add(Direction.Left);
 
             return true;
         }

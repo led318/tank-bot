@@ -40,9 +40,9 @@ namespace FormUICore.Logic
 
             if (rendezvousPrediction?.Item != null)
             {
-                if (rendezvousPrediction.Item is AiTank rendezvousTarget)
+                if (rendezvousPrediction.Item is AiTank || rendezvousPrediction.Item is EnemyTank)
                 {
-                    var sameTargetPredictions = predictions.Where(x => x.Item.Point == rendezvousTarget.Point).ToList();
+                    var sameTargetPredictions = predictions.Where(x => x.Item.Point == rendezvousPrediction.Item.Point).ToList();
                     foreach (var sameTargetPrediction in sameTargetPredictions)
                         sameTargetPrediction.IsRendezvous = true;
                 }
