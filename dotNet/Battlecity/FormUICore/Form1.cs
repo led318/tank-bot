@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -175,7 +176,14 @@ namespace FormUICore
             var pictureBox = new MyPictureBox(Field.Cells[i, j]);
             pictureBox.Width = Constants.CellSize;
             pictureBox.Height = Constants.CellSize;
+
+            //var imgStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("FormUICore.Resources.NONE.png");
+            //pictureBox.BackgroundImage = new Bitmap(imgStream);
+            //_dictionary[element] = new Bitmap(imgStream);
+
             pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
+
+
             pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
             pictureBox.Left = i * Constants.CellSize;
             pictureBox.Top = fieldPanel.Height - ((j + 1) * Constants.CellSize);

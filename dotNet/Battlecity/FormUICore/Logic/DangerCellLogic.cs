@@ -35,7 +35,7 @@ namespace FormUICore.Logic
             var bulletPredictions = cell.Predictions.BulletPredictions.Where(x => x.Depth == depth - 1 || x.Depth == depth).ToList();
             foreach (var bulletPrediction in bulletPredictions)
             {
-                var bullet = (Bullet) bulletPrediction.Item;
+                var bullet = (Bullet)bulletPrediction.Item;
                 if (bullet.IsMyBullet)
                     continue;
 
@@ -62,12 +62,15 @@ namespace FormUICore.Logic
                     MarkCellAsDangerous(cell, depth);
                 }
 
-                var aiTank = State.ThisRound.AiTanks.FirstOrDefault(x => x.Point == cell.Point);
-                if (aiTank != null)
+                if (AppSettings.AiShotCellIsDangerousToStep)
                 {
-                    if (aiTank.IsShotThisRound)
+                    var aiTank = State.ThisRound.AiTanks.FirstOrDefault(x => x.Point == cell.Point);
+                    if (aiTank != null)
                     {
-                        MarkCellAsDangerous(cell, depth, true);
+                        if (aiTank.IsShotThisRound)
+                        {
+                            MarkCellAsDangerous(cell, depth, true);
+                        }
                     }
                 }
             }

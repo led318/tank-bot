@@ -32,6 +32,7 @@ namespace FormUICore.Infrastructure
         public static bool ChooseKillOnlyByCommandsLength { get; set; }
         public static bool StoreMySelectedKillPredictions { get; set; }
         public static bool IceIsDangerousToStep { get; set; }
+        public static bool AiShotCellIsDangerousToStep { get; set; }
 
         static AppSettings()
         {
@@ -72,6 +73,7 @@ namespace FormUICore.Infrastructure
             StuckEnemyPredictionDepth = int.Parse(ConfigurationManager.AppSettings["stuckEnemyPredictionDepth"]);
             StoreMySelectedKillPredictions = bool.Parse(ConfigurationManager.AppSettings["storeMySelectedKillPredictions"]);
             IceIsDangerousToStep = bool.Parse(ConfigurationManager.AppSettings["iceIsDangerousToStep"]);
+            AiShotCellIsDangerousToStep = bool.Parse(ConfigurationManager.AppSettings["aiShotCellIsDangerousToStep"]);
         }
     }
 

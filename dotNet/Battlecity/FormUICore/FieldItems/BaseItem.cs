@@ -17,6 +17,7 @@ namespace FormUICore.FieldItems
         public List<Note> Notes { get; set; } = new List<Note>();
 
         public string Sprite => $"./Sprites/{Element}.png";
+        public string EmbeddedSprite => $"FormUICore.Resources.{Element}.png";
 
         [JsonIgnore]
         public Image Image =>  ItemImageProvider.GetItemImage(this);

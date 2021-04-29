@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using API.Components;
 using FormUICore.FieldItems;
 
@@ -20,6 +22,9 @@ namespace FormUICore.Infrastructure
         {
             if (!_dictionary.ContainsKey(element))
             {
+                //var imgStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(sprite);
+                //_dictionary[element] = new Bitmap(imgStream);
+
                 _dictionary[element] = Image.FromFile(sprite);
             }
 
