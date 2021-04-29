@@ -71,6 +71,11 @@ namespace FormUICore.FieldObjects
             Point = new Point(i, j);
         }
 
+        public int DangerCount(int depth = 1)
+        {
+            return Predictions.DangerCellPredictions.Count(x => x.Depth == depth);
+        }
+
         public int CriticalDangerCount(int depth = 1)
         {
             return Predictions.DangerCellPredictions.Count(x => x.Depth == depth && x.IsCritical);

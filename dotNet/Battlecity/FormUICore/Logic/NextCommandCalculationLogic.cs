@@ -133,6 +133,9 @@ namespace FormUICore.Logic
                 var nonCriticalDangerCount = cell.NonCriticalDangerCount();
                 index += nonCriticalDangerCount * 10;
 
+                var nextDepthDangerCount = cell.DangerCount(2);
+                index += nextDepthDangerCount * 3;
+
                 if (AppSettings.IceIsDangerousToStep && cell.IsIce)
                     index += 5;
 

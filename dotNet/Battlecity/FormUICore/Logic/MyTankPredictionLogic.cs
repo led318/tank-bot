@@ -5,7 +5,6 @@ using API.Components;
 using FormUI.FieldItems;
 using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
-using FormUI.Infrastructure;
 using FormUI.Predictions;
 using FormUICore.FieldItems;
 using FormUICore.FieldObjects;
@@ -239,7 +238,7 @@ namespace FormUICore.Logic
 
                     foreach (var mySameDepthShot in mySameDepthShots)
                     {
-                        var killPrediction = (MyKillPrediction)aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        var killPrediction = (MyKillPrediction)aiMoveCell.AddPrediction(aiMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands, aiMovePrediction.Item);
                         killPrediction.MyShot = mySameDepthShot;
                         killPrediction.TargetMove = aiMovePrediction;
                     }
@@ -265,7 +264,7 @@ namespace FormUICore.Logic
 
                     foreach (var mySameDepthShot in mySameDepthShots)
                     {
-                        var killPrediction = (MyKillPrediction)enemyMoveCell.AddPrediction(enemyMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands);
+                        var killPrediction = (MyKillPrediction)enemyMoveCell.AddPrediction(enemyMovePrediction.Depth, PredictionType.MyKill, mySameDepthShot.Commands, enemyMovePrediction.Item);
                         killPrediction.MyShot = mySameDepthShot;
                         killPrediction.TargetMove = enemyMovePrediction;
                     }

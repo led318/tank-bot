@@ -7,6 +7,176 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Sprites\AI_TANK_DOWN.png" />
+    <None Remove="Sprites\AI_TANK_LEFT.png" />
+    <None Remove="Sprites\AI_TANK_PRIZE.png" />
+    <None Remove="Sprites\AI_TANK_RIGHT.png" />
+    <None Remove="Sprites\AI_TANK_UP.png" />
+    <None Remove="Sprites\BANG.png" />
+    <None Remove="Sprites\BATTLE_WALL.png" />
+    <None Remove="Sprites\BULLET.png" />
+    <None Remove="Sprites\ICE.png" />
+    <None Remove="Sprites\NONE.png" />
+    <None Remove="Sprites\OTHER_TANK_DOWN.png" />
+    <None Remove="Sprites\OTHER_TANK_LEFT.png" />
+    <None Remove="Sprites\OTHER_TANK_RIGHT.png" />
+    <None Remove="Sprites\OTHER_TANK_UP.png" />
+    <None Remove="Sprites\PRIZE.png" />
+    <None Remove="Sprites\PRIZE_BREAKING_WALLS.png" />
+    <None Remove="Sprites\PRIZE_IMMORTALITY.png" />
+    <None Remove="Sprites\PRIZE_NO_SLIDING.png" />
+    <None Remove="Sprites\PRIZE_VISIBILITY.png" />
+    <None Remove="Sprites\PRIZE_WALKING_ON_WATER.png" />
+    <None Remove="Sprites\RIVER.png" />
+    <None Remove="Sprites\TANK_DOWN.png" />
+    <None Remove="Sprites\TANK_LEFT.png" />
+    <None Remove="Sprites\TANK_RIGHT.png" />
+    <None Remove="Sprites\TANK_UP.png" />
+    <None Remove="Sprites\TREE.png" />
+    <None Remove="Sprites\WALL.png" />
+    <None Remove="Sprites\WALL_DESTROYED_DOWN.png" />
+    <None Remove="Sprites\WALL_DESTROYED_DOWN_LEFT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_DOWN_RIGHT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_DOWN_TWICE.png" />
+    <None Remove="Sprites\WALL_DESTROYED_LEFT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_LEFT_RIGHT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_LEFT_TWICE.png" />
+    <None Remove="Sprites\WALL_DESTROYED_RIGHT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_RIGHT_TWICE.png" />
+    <None Remove="Sprites\WALL_DESTROYED_RIGHT_UP.png" />
+    <None Remove="Sprites\WALL_DESTROYED_UP.png" />
+    <None Remove="Sprites\WALL_DESTROYED_UP_DOWN.png" />
+    <None Remove="Sprites\WALL_DESTROYED_UP_LEFT.png" />
+    <None Remove="Sprites\WALL_DESTROYED_UP_TWICE.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Sprites\AI_TANK_DOWN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\AI_TANK_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\AI_TANK_PRIZE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\AI_TANK_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\AI_TANK_UP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\BANG.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\BATTLE_WALL.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\BULLET.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\ICE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\NONE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\OTHER_TANK_DOWN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\OTHER_TANK_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\OTHER_TANK_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\OTHER_TANK_UP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE_BREAKING_WALLS.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE_IMMORTALITY.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE_NO_SLIDING.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE_VISIBILITY.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\PRIZE_WALKING_ON_WATER.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\RIVER.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\TANK_DOWN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\TANK_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\TANK_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\TANK_UP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\TREE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_DOWN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_DOWN_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_DOWN_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_DOWN_TWICE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_LEFT_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_LEFT_TWICE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_RIGHT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_RIGHT_TWICE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_RIGHT_UP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_UP.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_UP_DOWN.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_UP_LEFT.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sprites\WALL_DESTROYED_UP_TWICE.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
@@ -28,129 +198,6 @@
 
   <ItemGroup>
     <None Update="App.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\AI_TANK_DOWN.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\AI_TANK_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\AI_TANK_PRIZE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\AI_TANK_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\AI_TANK_UP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\BANG.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\BATTLE_WALL.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\BULLET.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\ICE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\NONE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\OTHER_TANK_DOWN.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\OTHER_TANK_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\OTHER_TANK_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\OTHER_TANK_UP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE_BREAKING_WALLS.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE_IMMORTALITY.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE_NO_SLIDING.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE_VISIBILITY.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\PRIZE_WALKING_ON_WATER.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\RIVER.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\TANK_DOWN.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\TANK_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\TANK_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\TANK_UP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\TREE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_DOWN.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_DOWN_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_DOWN_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_DOWN_TWICE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_LEFT_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_LEFT_TWICE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_RIGHT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_RIGHT_TWICE.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_RIGHT_UP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_UP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_UP_DOWN.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_UP_LEFT.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Sprites\WALL_DESTROYED_UP_TWICE.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

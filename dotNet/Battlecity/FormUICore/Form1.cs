@@ -32,6 +32,8 @@ namespace FormUICore
 
         public MyPictureBox[,] _field = new MyPictureBox[Constants.FieldWidth, Constants.FieldHeight];
 
+        private Image _defaultImage;
+
         #region KeyControl
         private string _separator = ",";
         private readonly List<Direction> _keyControlDirections = new List<Direction>();
@@ -137,6 +139,9 @@ namespace FormUICore
         {
             InitFieldItem += Form1_InitFieldItem;
 
+            var imgStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("FormUICore.Sprites.NONE.png");
+            _defaultImage = new Bitmap(imgStream);
+
             fieldPanel.Width = Constants.FieldWidth * Constants.CellSize;
             fieldPanel.Height = Constants.FieldHeight * Constants.CellSize;
 
@@ -166,7 +171,8 @@ namespace FormUICore
                 InitFieldItemAction(data);
         }
 
-        private readonly object _initFieldItemLock = new Object();
+        private readonly object _initFieldItemLock = new object();
+        private readonly object _initFieldBackgroundImageLock = new object();
 
         private void InitFieldItemAction(InitFieldItemEvent data)
         {
@@ -177,14 +183,12 @@ namespace FormUICore
             pictureBox.Width = Constants.CellSize;
             pictureBox.Height = Constants.CellSize;
 
-            //var imgStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("FormUICore.Resources.NONE.png");
-            //pictureBox.BackgroundImage = new Bitmap(imgStream);
-            //_dictionary[element] = new Bitmap(imgStream);
-
-            pictureBox.BackgroundImage = Image.FromFile("./Sprites/NONE.png");
-
-
-            pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+            lock (_initFieldBackgroundImageLock)
+            {
+                pictureBox.BackgroundImage = _defaultImage;
+                pictureBox.BackgroundImageLayout = ImageLayout.Stretch;
+            }
+            
             pictureBox.Left = i * Constants.CellSize;
             pictureBox.Top = fieldPanel.Height - ((j + 1) * Constants.CellSize);
 

@@ -70,27 +70,7 @@ namespace FormUICore.Logic
 
             var maxChunkPopulation = chunks.Max(x => x.AiTanks.Count);
             var mostPopulatedChunks = chunks.Where(x => x.AiTanks.Count == maxChunkPopulation).ToList();
-
-            //var targetTanks = mostPopulatedChunks.SelectMany(x => x.AiTanks).ToList();
-
-            //var targetTanksMyMovePredictions = new List<BasePrediction>();
-            //foreach (var targetTank in targetTanks)
-            //{
-            //    var cell = Field.GetCell(targetTank.Point);
-
-            //    var nearestMyMovePrediction = cell.Predictions.MyMovePredictions.OrderBy(x => x.Depth).FirstOrDefault();
-            //    if (nearestMyMovePrediction != null)
-            //        targetTanksMyMovePredictions.Add(nearestMyMovePrediction);
-            //}
-
-            //var nearestAiTankMyMovePrediction = targetTanksMyMovePredictions.OrderBy(x => x.Depth).FirstOrDefault();
-            //if (nearestAiTankMyMovePrediction != null)
-            //{
-            //    _currentDefaultTargetPoint = nearestAiTankMyMovePrediction.Point;
-            //    return;
-            //}
-
-            //var mostPopulatedChunks
+            
             if (InitRandomEmptyCell(mostPopulatedChunks))
                 return;
 
@@ -110,9 +90,11 @@ namespace FormUICore.Logic
                 .Where(x => mostPopulatedChunks.Any(c => x.Point.IsInArea(c.Start, c.End)))
                 .ToList();
 
-            var notNearEmptyItems = emptyItems.Where(x => x.Point.DistantionTo(myTank.Point) > 10).ToList();
-            var tries = 0;
+            var notNearEmptyItems = emptyItems.Where(x => x.Point.DistantionTo(myTank.Point) > 6).ToList();
+            if (!notNearEmptyItems.Any())
+                return false;
 
+            var tries = 0;
             while (tries < 100)
             {
                 var randomEmptyItem = notNearEmptyItems[_random.Next(notNearEmptyItems.Count - 1)];
