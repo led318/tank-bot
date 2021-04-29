@@ -182,7 +182,6 @@ namespace FormUICore.Logic
             return result;
         }
 
-        [Obsolete]
         public static void SetCurrentMove(BasePrediction prediction)
         {
             TargetLogLogic.Add(prediction.Point);

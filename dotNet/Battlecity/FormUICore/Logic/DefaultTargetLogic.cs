@@ -13,13 +13,14 @@ namespace FormUICore.Logic
 {
     public static class DefaultTargetLogic
     {
-        private static readonly int _chunksPerLine = 4;
+        private static readonly int _chunksPerLine = 2;
+        private static readonly Random _random = new Random();
 
         private static Point _currentDefaultTargetPoint;
 
         static DefaultTargetLogic()
         {
-            InitNewDefaultTargetPoint();
+            RecalculateDefaultTargetPoint();
         }
 
         public static List<MyMovePrediction> GetDefaultTargetMovePredictions()
@@ -74,7 +75,39 @@ namespace FormUICore.Logic
 
             var nearestAiTankMyMovePrediction = targetTanksMyMovePredictions.OrderBy(x => x.Depth).FirstOrDefault();
             if (nearestAiTankMyMovePrediction != null)
+            {
                 _currentDefaultTargetPoint = nearestAiTankMyMovePrediction.Point;
+                return;
+            }
+
+            InitRandomEmptyCell();
+        }
+
+        private static void InitRandomEmptyCell()
+        {
+            var myTank = State.ThisRound.MyTank;
+            var emptyItems = State.ThisRound.EmptyItems;
+            var notNearEmptyItems = emptyItems.Where(x => x.Point.DistantionTo(myTank.Point) > 10).ToList();
+            var tries = 0;
+
+            while (tries < 100)
+            {
+                var randomEmptyItem = notNearEmptyItems[_random.Next(notNearEmptyItems.Count - 1)];
+                var emptyCell = Field.GetCell(randomEmptyItem.Point);
+
+                var isDangerous = emptyCell.Predictions.DangerCellPredictions.Where(x => x.Depth != 1).Any();
+                if (!isDangerous)
+                {
+                    var isReachable = emptyCell.Predictions.MyMovePredictions.Any();
+                    if (isReachable)
+                    {
+                        _currentDefaultTargetPoint = emptyCell.Point;
+                        return;
+                    }
+                }
+
+                tries++;
+            }
         }
     }
 }
