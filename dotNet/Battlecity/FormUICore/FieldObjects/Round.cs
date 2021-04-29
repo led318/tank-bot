@@ -34,6 +34,7 @@ namespace FormUICore.FieldObjects
         public BasePrediction CurrentMoveSelectedPrediction { get; set; }
         public List<Direction> CurrentMoveCommands { get; } = new List<Direction>();
         public string CurrentMoveCommandString => string.Join(",", CurrentMoveCommands);
+        public bool CurrentMoveIsToDefaultTarget { get; set; }
 
         public bool IsInDeadZone { get; set; }
 

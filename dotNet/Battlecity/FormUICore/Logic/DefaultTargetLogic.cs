@@ -20,7 +20,7 @@ namespace FormUICore.Logic
 
         static DefaultTargetLogic()
         {
-            RecalculateDefaultTargetPoint();
+            InitNewDefaultTargetPoint();
         }
 
         public static List<MyMovePrediction> GetDefaultTargetMovePredictions()
@@ -34,14 +34,18 @@ namespace FormUICore.Logic
 
         private static void RecalculateDefaultTargetPoint()
         {
-            if (State.ThisRound.MyTank == null)
-                return;
+            var myTankIsOnDefaultPoint = State.ThisRound.MyTank.Point == _currentDefaultTargetPoint;
+            var prevStepIsToDefaultPoint = State.PrevRound is { CurrentMoveIsToDefaultTarget: true };
 
-            InitNewDefaultTargetPoint();
+            if (myTankIsOnDefaultPoint || !prevStepIsToDefaultPoint)
+                InitNewDefaultTargetPoint();
         }
 
         private static void InitNewDefaultTargetPoint()
         {
+            if (State.ThisRound.MyTank == null)
+                return;
+
             var aiTanks = State.ThisRound.AiTanks;
             var chunkSize = State.ThisRound.Board.Size / _chunksPerLine;
             var chunks = new Dictionary<Tuple<int, int>, List<AiTank>>();

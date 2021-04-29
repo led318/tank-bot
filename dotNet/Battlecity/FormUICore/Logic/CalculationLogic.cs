@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using API.Components;
 using FormUI.FieldItems;
+using FormUI.FieldItems.Tank;
 using FormUI.FieldObjects;
 using FormUI.Infrastructure;
 using FormUI.Logic;
 using FormUICore.Infrastructure;
+using FormUICore.Predictions;
 
 // ReSharper disable InconsistentNaming
 
@@ -54,8 +57,63 @@ namespace FormUICore.Logic
             if (DeadZoneLogic.ProcessDeadZone())
                 return;
 
+            if (EnableKamikazeMode())
+                return;
+
             if (ProcessMyTankLost())
                 return;
+        }
+
+        private static bool EnableKamikazeMode()
+        {
+            if (State.ThisRound.MyTank == null)
+                return false;
+
+            var enemyTanks = State.ThisRound.EnemyTanks.Select(x => (BaseTank)x).ToList();
+            if (ChoseKamikazeTarget(enemyTanks))
+                return true;
+
+            var aiTanks = State.ThisRound.AiTanks.Select(x => (BaseTank)x).ToList();
+            if (ChoseKamikazeTarget(aiTanks))
+                return true;
+
+            return false;
+        }
+
+        private static bool ChoseKamikazeTarget(List<BaseTank> tanks)
+        {
+            var myTank = State.ThisRound.MyTank;
+            var nearPoints = myTank.Point.GetNearPoints();
+
+            var nearTanks = tanks.Where(x => nearPoints.Contains(x.Point)).ToList();
+            BaseTank nearTank = null;
+            if (nearTanks.Count() > 1)
+            {
+                foreach (var tank in nearTanks)
+                {
+                    var directionToMe = tank.Point.CalculateDirectionToPoint(myTank.Point);
+                    if (tank.Direction != directionToMe)
+                        continue;
+
+                    nearTank = tank;
+                }
+            }
+
+            if (nearTank == null)
+                nearTank = nearTanks.FirstOrDefault();
+            
+            if (nearTank != null)
+            {
+                var direction = myTank.Point.CalculateDirectionToPoint(nearTank.Point);
+
+                if (myTank.Direction != direction)
+                    State.ThisRound.CurrentMoveCommands.Add(direction);
+
+                State.ThisRound.CurrentMoveCommands.Add(Direction.Act);
+                return true;
+            }
+
+            return false;
         }
 
         private static bool ProcessMyTankLost()
@@ -71,7 +129,7 @@ namespace FormUICore.Logic
                     prevRoundCommands.Add(randomDirection);
                 }
 
-                if(!prevRoundCommands.Contains(Direction.Act))
+                if (!prevRoundCommands.Contains(Direction.Act))
                     prevRoundCommands.Add(Direction.Act);
 
                 State.ThisRound.CurrentMoveCommands.AddRange(prevRoundCommands);

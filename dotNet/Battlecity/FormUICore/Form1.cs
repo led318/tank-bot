@@ -48,8 +48,7 @@ namespace FormUICore
 
             keyControlTextBox.KeyUp += Form1_KeyDown;
 
-            var testServerPart = AppSettings.IsProd ? string.Empty : " - Test";
-            Text = $"{Text} {AppSettings.User}{testServerPart}";
+            Text = AppSettings.IsProd ? AppSettings.User.ToString() : "Test";
 
             Task.Run(InitSettings);
 

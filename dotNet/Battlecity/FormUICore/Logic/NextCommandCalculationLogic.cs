@@ -51,7 +51,7 @@ namespace FormUICore.Logic
                 var preferredDefaultTarget = SelectPreferredPrediction(orderedDefaultTargetPredictions, directions);
                 if (preferredDefaultTarget != null)
                 {
-                    SetCurrentMove(preferredDefaultTarget);
+                    SetCurrentMove(preferredDefaultTarget, true);
                     return true;
                 }
 
@@ -182,11 +182,12 @@ namespace FormUICore.Logic
             return result;
         }
 
-        public static void SetCurrentMove(BasePrediction prediction)
+        public static void SetCurrentMove(BasePrediction prediction, bool isDefaultTarget = false)
         {
             TargetLogLogic.Add(prediction.Point);
 
             State.ThisRound.CurrentMoveSelectedPrediction = prediction;
+            State.ThisRound.CurrentMoveIsToDefaultTarget = isDefaultTarget;
 
             if (!prediction.Commands.Any())
                 return;
