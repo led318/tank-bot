@@ -43,7 +43,7 @@ namespace FormUI.FieldItems.Tank
                 var prevEnemyTank = (EnemyTank) prevStepItem;
                 StuckIndex = prevEnemyTank.StuckIndex + 1;
 
-                if (StuckIndex > 1)
+                if (StuckIndex > 3)
                 {
                     IsStuck = true;
                     AddNote("S", Brushes.GreenYellow, NoteType.Other);

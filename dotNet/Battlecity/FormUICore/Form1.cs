@@ -259,7 +259,18 @@ namespace FormUICore
                 {
                     _stopWatch.Restart();
 
+                    if (State.IsNewBoardString(board))
+                    {
+                        if (State.PrevRound != null && !State.PrevRound.GameIsRunning)
+                        {
+                            Field.Reset(true);
+                            TargetLogLogic.Clear();
+                        }
+                    }
+
                     State.SetThisRound(board);
+
+                    State.ThisRound.GameIsRunning = State.GameIsRunning;
 
                     if (State.GameIsRunning)
                     {

@@ -10,7 +10,7 @@ namespace FormUI.FieldItems.Prize
 {
     public class BasePrize : BaseItem
     {
-        public override bool CanShootThrough => true;
+        public override bool CanShootThrough => AppSettings.CanShotThroughPrize;
         public override bool CanMove => true;
 
         private static readonly HashSet<Element> _prizeElements = new HashSet<Element>

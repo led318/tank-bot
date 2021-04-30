@@ -38,6 +38,7 @@ namespace FormUICore.FieldObjects
 
         public bool IsInDeadZone { get; set; }
 
+        public bool GameIsRunning { get; set; }
 
         public Round(Board board)
         {

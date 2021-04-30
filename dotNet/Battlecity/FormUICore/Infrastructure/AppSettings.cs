@@ -33,6 +33,7 @@ namespace FormUICore.Infrastructure
         public static bool StoreMySelectedKillPredictions { get; set; }
         public static bool IceIsDangerousToStep { get; set; }
         public static bool AiShotCellIsDangerousToStep { get; set; }
+        public static bool CanShotThroughPrize { get; set; }
 
         static AppSettings()
         {
@@ -74,6 +75,7 @@ namespace FormUICore.Infrastructure
             StoreMySelectedKillPredictions = bool.Parse(ConfigurationManager.AppSettings["storeMySelectedKillPredictions"]);
             IceIsDangerousToStep = bool.Parse(ConfigurationManager.AppSettings["iceIsDangerousToStep"]);
             AiShotCellIsDangerousToStep = bool.Parse(ConfigurationManager.AppSettings["aiShotCellIsDangerousToStep"]);
+            CanShotThroughPrize = bool.Parse(ConfigurationManager.AppSettings["canShotThroughPrize"]);
         }
     }
 

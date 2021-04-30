@@ -19,5 +19,10 @@ namespace FormUICore.Infrastructure
             PrevRound = ThisRound;
             ThisRound = new Round(board);
         }
+
+        public static bool IsNewBoardString(Board thisRoundBoard)
+        {
+            return thisRoundBoard.BoardString != PrevRound?.Board?.BoardString;
+        }
     }
 }
